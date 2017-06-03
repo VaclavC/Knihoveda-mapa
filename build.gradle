@@ -2,6 +2,7 @@ apply plugin: 'java'
 apply plugin: 'war'
 apply plugin: 'eclipse'
 apply plugin: 'eclipse-wtp'
+project.webAppDirName = 'WebContent'
 
 ext.slf4j = "1.7.25"
 ext.wicket = "8.0.0-M6"
@@ -16,4 +17,3 @@ dependencies {
 	compile "org.apache.wicket:wicket:${wicket}"
 	compile group: 'javax.servlet', name: 'javax.servlet-api', version: "${servletApi}"
 }
-
