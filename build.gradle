@@ -1,0 +1,19 @@
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'eclipse'
+apply plugin: 'eclipse-wtp'
+
+ext.slf4j = "1.7.25"
+ext.wicket = "8.0.0-M6"
+ext.servletApi = "3.1.0"
+
+repositories {
+	jcenter()
+}
+
+dependencies {
+	compile "org.slf4j:slf4j-api:${slf4j}"
+	compile "org.apache.wicket:wicket:${wicket}"
+	compile group: 'javax.servlet', name: 'javax.servlet-api', version: "${servletApi}"
+}
+
