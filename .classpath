@@ -2,61 +2,11 @@
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src/main/resources"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8/"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.buildship.core.gradleclasspathcontainer">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
-	<classpathentry kind="lib" path="/home/disnel/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.25/da76ca59f6a57ee3102f8f9bd9cee742973efa8a/slf4j-api-1.7.25.jar" sourcepath="/home/disnel/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.25/962153db4a9ea71b79d047dfd1b2a0d80d8f4739/slf4j-api-1.7.25-sources.jar">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/disnel/.gradle/caches/modules-2/files-2.1/javax.servlet/javax.servlet-api/3.1.0/3cd63d075497751784b2fa84be59432f4905bf7c/javax.servlet-api-3.1.0.jar" sourcepath="/home/disnel/.gradle/caches/modules-2/files-2.1/javax.servlet/javax.servlet-api/3.1.0/ab3976d4574c48d22dc1abf6a9e8bd0fdf928223/javax.servlet-api-3.1.0-sources.jar">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/disnel/.gradle/caches/modules-2/files-2.1/org.apache.wicket/wicket-core/8.0.0-M6/8be72f22fc572091672caeda3eb7c60fa101c284/wicket-core-8.0.0-M6.jar" sourcepath="/home/disnel/.gradle/caches/modules-2/files-2.1/org.apache.wicket/wicket-core/8.0.0-M6/d2427d8d51ba671b80f37056d4a059c7ab3c66fe/wicket-core-8.0.0-M6-sources.jar">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/disnel/.gradle/caches/modules-2/files-2.1/org.apache.wicket/wicket-request/8.0.0-M6/474ba3cb8258b828435901936573f746ee882647/wicket-request-8.0.0-M6.jar" sourcepath="/home/disnel/.gradle/caches/modules-2/files-2.1/org.apache.wicket/wicket-request/8.0.0-M6/515c8acbec734cf164e454fb7ad1b9e67a3433be/wicket-request-8.0.0-M6-sources.jar">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/disnel/.gradle/caches/modules-2/files-2.1/org.apache.wicket/wicket-util/8.0.0-M6/9c576ed1f449820a1f0274182f024b6607bd3ab2/wicket-util-8.0.0-M6.jar" sourcepath="/home/disnel/.gradle/caches/modules-2/files-2.1/org.apache.wicket/wicket-util/8.0.0-M6/d138f4f15ea702bc9059ee4f9af3981d3d80a155/wicket-util-8.0.0-M6-sources.jar">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/disnel/.gradle/caches/modules-2/files-2.1/org.danekja/jdk-serializable-functional/1.8.2/38745e0583b52bfc39a1917769311ca2c8e6a1b5/jdk-serializable-functional-1.8.2.jar" sourcepath="/home/disnel/.gradle/caches/modules-2/files-2.1/org.danekja/jdk-serializable-functional/1.8.2/eb01af06f184abbcfa21a8abb566369b007640bb/jdk-serializable-functional-1.8.2-sources.jar">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/disnel/.gradle/caches/modules-2/files-2.1/com.github.openjson/openjson/1.0.6/3978e613469329bde43179e74d162180097af68d/openjson-1.0.6.jar" sourcepath="/home/disnel/.gradle/caches/modules-2/files-2.1/com.github.openjson/openjson/1.0.6/dce3600ebc24e0db6ac710996d9ecfd1de3ef7de/openjson-1.0.6-sources.jar">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/disnel/.gradle/caches/modules-2/files-2.1/commons-fileupload/commons-fileupload/1.3.2/5d7491ed6ebd02b6a8d2305f8e6b7fe5dbd95f72/commons-fileupload-1.3.2.jar" sourcepath="/home/disnel/.gradle/caches/modules-2/files-2.1/commons-fileupload/commons-fileupload/1.3.2/23996750d5a80dc74dad55633c2a0f3db91462cb/commons-fileupload-1.3.2-sources.jar">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/disnel/.gradle/caches/modules-2/files-2.1/commons-io/commons-io/2.5/2852e6e05fbb95076fc091f6d1780f1f8fe35e0f/commons-io-2.5.jar" sourcepath="/home/disnel/.gradle/caches/modules-2/files-2.1/commons-io/commons-io/2.5/caf033a4a7c37b4a8ff3ea084cba591539b0b69/commons-io-2.5-sources.jar">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/disnel/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-collections4/4.1/a4cf4688fe1c7e3a63aa636cc96d013af537768e/commons-collections4-4.1.jar" sourcepath="/home/disnel/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-collections4/4.1/f305f3aa45a3b208c013ef92328f8f230329f20e/commons-collections4-4.1-sources.jar">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="output" path="bin"/>

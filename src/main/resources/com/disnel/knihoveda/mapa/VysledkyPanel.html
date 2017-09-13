@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:wicket="http://my.site.org">
+<body>
+
+<wicket:panel>
+
+<div class="scroll-cont right" wicket:id="main_cont">
+	<div class="sresult" wicket:id="result">
+		<div class="line">
+			<span class="titul" wicket:id="titul">[TITUL]</span>
+		</div>
+		<div class="line">
+			<wicket:message class="label" key="sr.autor" /> <span class="autor" wicket:id="autor">[AUTOR]</span>,
+			<wicket:message class="label" key="sr.rok_vydani" /> <span class="rok_vydani" wicket:id="rok_vydani">[ROK]</span>
+		</div>
+		<div class="line">
+			<span class="label"><wicket:message key="sr.vydavatel" /></span>
+			<span class="field line" wicket:id="vydavatel">[LINE]</span>
+		</div>
+		<div class="line">
+			<span class="label"><wicket:message key="sr.tiskar" /></span>
+			<span class="field line" wicket:id="tiskar">[LINE]</span>
+		</div>
+		<div class="line">
+			<span class="label"><wicket:message key="sr.hesla" /></span>
+			<span class="field area" wicket:id="hesla">[LINE]</span>
+		</div>
+		<div class="line">
+			<span class="label"><wicket:message key="sr.zanry" /></span>
+			<span class="field area" wicket:id="zanry">[LINE]</span>
+		</div>
+	</div>
+</div>
+
+</wicket:panel>
+
+</body>
+</html>
