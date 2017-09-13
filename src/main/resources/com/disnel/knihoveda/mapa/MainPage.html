@@ -13,11 +13,30 @@
 <div id="mapa" wicket:id="mapa">
 </div>
 
-<div id="lcol" class="panel" wicket:id="lcol">
+<div id="lcol">
+	<div class="content" wicket:id="lcol" ></div>
 </div>
 
-<div id="rcol" wicket:id="rcol">
+<div id="rcol">
+	<div class="control">
+		<span id="control-mapa-skryt">Skrýt mapu</span>
+		<span id="control-mapa-zobrazit" style="display: none;">Zobrazit mapu</span>
+	</div>
+	<div class="content" wicket:id="rcol" >&nbsp;</div>
 </div>
+
+<script>
+	$('#control-mapa-skryt').click(function() {
+		$('body').addClass('mapaCollapsed');
+		$('#control-mapa-skryt').hide();
+		$('#control-mapa-zobrazit').show();
+	});
+	$('#control-mapa-zobrazit').click(function() {
+		$('body').removeClass('mapaCollapsed');
+		$('#control-mapa-skryt').show();
+		$('#control-mapa-zobrazit').hide();
+	});
+</script>
 
 </body>
 </html>

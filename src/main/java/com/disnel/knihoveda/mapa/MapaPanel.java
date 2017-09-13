@@ -21,6 +21,7 @@ import org.wicketstuff.openlayers3.api.coordinate.LongLat;
 import org.wicketstuff.openlayers3.api.geometry.Point;
 import org.wicketstuff.openlayers3.api.layer.Layer;
 import org.wicketstuff.openlayers3.api.layer.Tile;
+import org.wicketstuff.openlayers3.api.source.tile.Osm;
 import org.wicketstuff.openlayers3.api.source.vector.VectorSource;
 import com.disnel.knihoveda.dao.PlaceLocationDAO;
 import com.disnel.knihoveda.dao.SolrDAO;
@@ -42,11 +43,12 @@ public class MapaPanel extends Panel
 				
 				Arrays.<Layer>asList(
 						new Tile(
-								"Mapa",
-								new CustomTileSource("http://localhost/osm_tiles/{z}/{x}/{y}.png")),
-						
-						mapaVectorLayer = new AjaxVector(
-								new VectorSource(getMapFeatures(null)))
+								new Osm())
+//								"Mapa",
+//								new CustomTileSource("http://localhost/osm_tiles/{z}/{x}/{y}.png")),
+//						
+//						mapaVectorLayer = new AjaxVector(
+//								new VectorSource(getMapFeatures(null)))
 				),
 				
 				new View(new LongLat(15.335125, 49.741807, "EPSG:4326" ).transform(View.DEFAULT_PROJECTION), 7)))));

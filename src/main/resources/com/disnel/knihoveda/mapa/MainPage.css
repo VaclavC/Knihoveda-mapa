@@ -66,8 +66,8 @@ body {
 /**********/
 /* Layout */
 
-#titul, .panel, #mapa, #rcol { position: fixed; box-sizing: border-box; }
-#titul, .panel {
+#titul, #lcol, #mapa, #rcol { position: fixed; box-sizing: border-box; }
+#titul, #lcol {
 	width: 24em;
 }
 
@@ -85,9 +85,9 @@ body {
 	color: red;
 }
 
-.panel {
+#lcol {
 	top: 0; left: 0; bottom: 0;
-	padding: 0.5em; padding-top: 7em;
+	padding-top: 7em;
 	box-shadow: 0.5em 0 0.5em rgba(0, 0, 0, 0.3);
 }
 
@@ -101,31 +101,41 @@ body {
 #rcol {
 	top: 0; bottom: 0; right: 0; width: 32em;
 	box-shadow: -0.5em 0 0.5em rgba(0, 0, 0, 0.3);
-	padding: 1em 0.5em;
 }
 
+#rcol .control { position: absolute; top: 0; left: 0; bottom: 0; width: 2em; }
+#rcol .control span {
+	display: block; position: absolute; left: 100%; bottom: 2em; width: 24em; line-height: 2em;
+	transform: rotate(-90deg); transform-origin: 0% 100%; }
+#rcol .content { margin-left: 2em; }
+
 .scroll-cont { overflow-y: auto; width: 100%; height: 100%; }
+
+.content { margin: 0 0.5em }
+
+.control { cursor: pointer; }
+.control:hover { background: #f0f0f0; }
 
 /******************/
 /* Vyberovy panel */
 
-.panel { display: flex; flex-direction: column; }
-.panel .main { flex-grow: 1.0; }
+.content { display: flex; flex-direction: column; }
+.content .main { flex-grow: 1.0; }
 
-.panel form { position: relative; display: block; }
-.panel form>div { margin-bottom: 0.75em; }
-.panel label { display: block; }
-.panel input, .panel button { width: 100%; box-sizing: border-box; }
-.panel form div.line { display: flex; align-items: center; }
-.panel form div.line .hfill { flex-grow: 1.0; }
-.panel form div.line label { margin: 0 0.5em; }
-.panel form div.line label:FIRST-CHILD { margin-left: 0; }
-.panel form div.line input { width: auto; min-width: 0; }
-.panel form button { margin-top: 2em; }
+.content form { position: relative; display: block; }
+.content form>div { margin-bottom: 0.75em; }
+.content label { display: block; }
+.content input, .content button { width: 100%; box-sizing: border-box; }
+.content form div.line { display: flex; align-items: center; }
+.content form div.line .hfill { flex-grow: 1.0; }
+.content form div.line label { margin: 0 0.5em; }
+.content form div.line label:FIRST-CHILD { margin-left: 0; }
+.content form div.line input { width: auto; min-width: 0; }
+.content form button { margin-top: 2em; }
 
-.panel label.heading { margin-bottom: 0.25em; font-weight: bolder; }
-.panel .undefined label { color: gray; }
-.panel .unsaved label { color: red; }
+.content label.heading { margin-bottom: 0.25em; font-weight: bolder; }
+.content .undefined label { color: gray; }
+.content .unsaved label { color: red; }
 
 /********************/
 /* Vysledkovy panel */
@@ -133,3 +143,11 @@ body {
 .sresult { margin-bottom: 1.5em; }
 .sresult .label::AFTER { content: ": " }
 .sresult .titul { font-weight: bold; font-size: 105%; margin-bottom: 0.4em; }
+
+
+/************/
+/* Ovladani */
+
+.mapaCollapsed #mapa { display: none; }
+.mapaCollapsed #rcol { width: auto; left: 24.5em; }
+
