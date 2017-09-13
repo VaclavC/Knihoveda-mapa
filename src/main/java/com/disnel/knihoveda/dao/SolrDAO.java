@@ -60,7 +60,9 @@ public class SolrDAO
 				
 				qPars.append(pair.getKey());
 				qPars.append(":");
+				qPars.append('"');
 				qPars.append(pair.getValue());
+				qPars.append('"');
 				
 				if ( delim == null )
 					delim = " AND ";

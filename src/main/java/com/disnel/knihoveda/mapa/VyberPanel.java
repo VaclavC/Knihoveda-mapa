@@ -5,6 +5,7 @@ import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.event.Broadcast;
+import org.apache.wicket.event.IEvent;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.NumberTextField;
@@ -14,6 +15,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.validation.validator.RangeValidator;
 
+import com.disnel.knihoveda.mapa.events.MistoSelectEvent;
 import com.disnel.knihoveda.mapa.events.SearchEvent;
 
 @SuppressWarnings("unused")
@@ -47,6 +49,7 @@ public class VyberPanel extends Panel
 		protected String title;
 		protected String author;
 		protected Boolean mainAuthor;
+		protected String publishPlace;
 		protected Integer publishYearFrom;
 		protected Integer publishYearTo;
 		protected String publisher;
@@ -62,6 +65,7 @@ public class VyberPanel extends Panel
 			add(new TextField<String>("title"));
 			add(new TextField<String>("author"));
 			add(new CheckBox("mainAuthor"));
+			add(new TextField<String>("publishPlace"));
 			add(new NumberTextField<Integer>("publishYearFrom")
 					.add(new RangeValidator<Integer>(1000, 2000)));
 			add(new NumberTextField<Integer>("publishYearTo")
@@ -96,6 +100,8 @@ public class VyberPanel extends Panel
 		else
 			addStringParameter(params, "author", form.author);
 	
+		addStringParameter(params, "publishPlace", form.publishPlace);
+		
 		if ( form.publishYearFrom != null || form.publishYearTo != null )
 		{
 			StringBuilder sb = new StringBuilder("[");
@@ -129,6 +135,20 @@ public class VyberPanel extends Panel
 	{
 		if ( value != null && !value.isEmpty() )
 			params.add(name, value);
+	}
+	
+	@Override
+	public void onEvent(IEvent<?> event)
+	{
+		if ( event.getPayload() instanceof MistoSelectEvent )
+		{
+			MistoSelectEvent ev = (MistoSelectEvent) event.getPayload();
+			
+			form.publishPlace = ev.getNazevMista();
+			form.modelChanged();
+			
+			ev.getTarget().add(form);
+		}
 	}
 	
 }

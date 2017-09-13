@@ -109,9 +109,12 @@ body {
 	transform: rotate(-90deg); transform-origin: 0% 100%; }
 #rcol .content { margin-left: 2em; }
 
-.scroll-cont { overflow-y: auto; width: 100%; height: 100%; }
+/* .scroll-cont {  } */
 
-.content { margin: 0 0.5em }
+.content {
+	overflow-y: auto; height: 100%;
+	margin: 0 0.5em
+}
 
 .control { cursor: pointer; }
 .control:hover { background: #f0f0f0; }
@@ -163,7 +166,7 @@ body {
 	text-align: center;
 	border-radius: 4px;
 }
-.mistoOverlay:hover { background: black; color: white; }
+.mistoOverlay:hover, .mistoOverlay.active { background: black; color: white; }
 .mistoOverlay a>span { display: block; }
 .mistoOverlay a>span.misto { font-size: 85%; }
 .mistoOverlay a>span.pocet { font-weight: bolder; }
