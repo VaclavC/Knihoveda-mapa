@@ -39,7 +39,8 @@ public class MapaPanel extends Panel
 	{
 		super(id);
 
-		add(new DefaultOpenLayersMap("mapa", Model.of(new Map(
+		Map mapa;
+		add(new DefaultOpenLayersMap("mapa", Model.of(mapa = new Map(
 				
 				Arrays.<Layer>asList(
 						new Tile(
@@ -49,9 +50,29 @@ public class MapaPanel extends Panel
 //						
 //						mapaVectorLayer = new AjaxVector(
 //								new VectorSource(getMapFeatures(null)))
+								"Mapa",
+								new Osm())
+//								new CustomTileSource("http://localhost/osm_tiles/{z}/{x}/{y}.png")),
+//						
+//						mapaVectorLayer = new AjaxVector(
+//								new VectorSource(getMapFeatures(null)))
+								"Mapa",
+								new Osm())
+//								new CustomTileSource("http://localhost/osm_tiles/{z}/{x}/{y}.png")),
+//						
+//						mapaVectorLayer = new AjaxVector(
+//								new VectorSource(getMapFeatures(null)))
 				),
 				
 				new View(new LongLat(15.335125, 49.741807, "EPSG:4326" ).transform(View.DEFAULT_PROJECTION), 7)))));
+		
+		
+		Panel misto;
+		add(misto = new MistoOverlay("misto", "Pokus", "25 467"));
+		
+		mapa.getOverlays().add(new Overlay(
+				misto,
+				new LongLat(15.335125, 49.741807, "EPSG:4326" ).transform(View.DEFAULT_PROJECTION)));
 	}
 
 	@Override

@@ -151,3 +151,19 @@ body {
 .mapaCollapsed #mapa { display: none; }
 .mapaCollapsed #rcol { width: auto; left: 24.5em; }
 
+
+/********/
+/* Mapa */
+
+.mistoOverlay {
+	display: block; position: relative; top: -50%; left: -50%;
+	cursor: pointer;
+	padding: 0.25em;
+	background: rgba(128, 128, 128, 0.5);
+	text-align: center;
+	border-radius: 4px;
+}
+.mistoOverlay:hover { background: black; color: white; }
+.mistoOverlay a>span { display: block; }
+.mistoOverlay a>span.misto { font-size: 85%; }
+.mistoOverlay a>span.pocet { font-weight: bolder; }

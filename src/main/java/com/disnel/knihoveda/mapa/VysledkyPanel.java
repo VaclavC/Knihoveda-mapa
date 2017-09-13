@@ -6,13 +6,17 @@ import java.util.List;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.event.IEvent;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
+
 import com.disnel.knihoveda.dao.SolrDAO;
+import com.disnel.knihoveda.mapa.events.MistoSelectEvent;
 import com.disnel.knihoveda.mapa.events.SearchEvent;
 
 public class VysledkyPanel extends Panel
@@ -26,6 +30,8 @@ public class VysledkyPanel extends Panel
 	private WebMarkupContainer mainCont;
 	
 	private int recordsDisplayed;
+	
+	private PageParameters searchParams = new PageParameters();
 	
 	public VysledkyPanel(String id)
 	{
@@ -44,45 +50,61 @@ public class VysledkyPanel extends Panel
 		{
 			SearchEvent ev = (SearchEvent) event.getPayload();
 	
-			// Pripravit dotaz
-			SolrQuery query = new SolrQuery();
-			SolrDAO.addQueryParameters(query, ev.getParameters());
-			query.setRows(NUM_RESULTS_PER_PART);
+			searchParams = ev.getParameters();
 			
-			System.out.println("Query for vysledky: " + query);
-			
-			// Provest dotaz
-			QueryResponse response = SolrDAO.getResponse(query);
-			
-			// Pripravit zobrazeni novych vysledku
-			WebMarkupContainer newCont;
-			newCont = new WebMarkupContainer(mainCont.getId());
-			newCont.setOutputMarkupId(true);
-			
-			newCont.add(new ListView<SolrDocument>("result", response.getResults())
-			{
-				@Override
-				protected void populateItem(ListItem<SolrDocument> item)
-				{
-					SolrDocument sdoc = item.getModelObject();
-					
-					item.add(labelFromSolrDoc("titul", sdoc, "Nedefinovaný titul", "title"));
-					item.add(labelFromSolrDoc("autor", sdoc, "neznámý", "author", "author2", "authorPersonal"));
-					item.add(labelFromSolrDoc("rok_vydani", sdoc, "neznámý", "publishDate"));
-					item.add(labelFromSolrDoc("vydavatel", sdoc, "neznámý", "publisher"));
-					item.add(labelFromSolrDoc("tiskar", sdoc, "neznámý", "masterPrinter"));
-					item.add(labelFromSolrDoc("hesla", sdoc, "", "topic"));
-					item.add(labelFromSolrDoc("zanry", sdoc, "", "genre"));
-				}
-			});
-			
-			// Zobrazit novy obsah
-			mainCont.replaceWith(mainCont = newCont);
-			ev.getTarget().add(mainCont);
-
-			// Zaznamenat vychozi pocet zobrazenych zaznamu
-			recordsDisplayed = NUM_RESULTS_PER_PART;
+			showNewResults(ev.getTarget(), searchParams);
 		}
+		
+		if ( event.getPayload() instanceof MistoSelectEvent )
+		{
+			MistoSelectEvent ev = (MistoSelectEvent) event.getPayload();
+			
+			searchParams.set("publishPlace", ev.getNazevMista());
+			
+			showNewResults(ev.getTarget(), searchParams);
+		}
+	}
+	
+	private void showNewResults(AjaxRequestTarget target, PageParameters searchParams)
+	{
+		// Pripravit dotaz
+		SolrQuery query = new SolrQuery();
+		SolrDAO.addQueryParameters(query, searchParams);
+		query.setRows(NUM_RESULTS_PER_PART);
+		
+		System.out.println("Query for vysledky: " + query);
+		
+		// Provest dotaz
+		QueryResponse response = SolrDAO.getResponse(query);
+		
+		// Pripravit zobrazeni novych vysledku
+		WebMarkupContainer newCont;
+		newCont = new WebMarkupContainer(mainCont.getId());
+		newCont.setOutputMarkupId(true);
+		
+		newCont.add(new ListView<SolrDocument>("result", response.getResults())
+		{
+			@Override
+			protected void populateItem(ListItem<SolrDocument> item)
+			{
+				SolrDocument sdoc = item.getModelObject();
+				
+				item.add(labelFromSolrDoc("titul", sdoc, "Nedefinovaný titul", "title"));
+				item.add(labelFromSolrDoc("autor", sdoc, "neznámý", "author", "author2", "authorPersonal"));
+				item.add(labelFromSolrDoc("rok_vydani", sdoc, "neznámý", "publishDate"));
+				item.add(labelFromSolrDoc("vydavatel", sdoc, "neznámý", "publisher"));
+				item.add(labelFromSolrDoc("tiskar", sdoc, "neznámý", "masterPrinter"));
+				item.add(labelFromSolrDoc("hesla", sdoc, "", "topic"));
+				item.add(labelFromSolrDoc("zanry", sdoc, "", "genre"));
+			}
+		});
+		
+		// Zobrazit novy obsah
+		mainCont.replaceWith(mainCont = newCont);
+		target.add(mainCont);
+
+		// Zaznamenat vychozi pocet zobrazenych zaznamu
+		recordsDisplayed = NUM_RESULTS_PER_PART;
 	}
 	
 	private Label labelFromSolrDoc(String id, SolrDocument sdoc, String defaultValue, String... fieldValue)
