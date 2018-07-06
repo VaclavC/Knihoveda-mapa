@@ -10,32 +10,20 @@
 	<h1><span><wicket:message key="titul.knihoveda">Knihověda</wicket:message></span><span><wicket:message key="titul.mapa">mapa</wicket:message></span></h1>
 </div>
 
+<!-- 
+<div wicket:id="mistaPanel" style="
+	position: fixed; top: 0; left: 0; bottom: 0; width: auto; z-index: 9999999;
+	background: white; overflow-y: scroll;
+	"></div>
+ -->
+ 
 <div id="mapa" wicket:id="mapa"></div>
 
-<div id="lcol">
-	<div class="content" wicket:id="lcol" ></div>
-</div>
+<div id="casovyGraf" wicket:id="casovyGraf"></div>
 
-<div id="rcol">
-	<div class="control">
-		<span id="control-mapa-skryt">Skrýt mapu</span>
-		<span id="control-mapa-zobrazit" style="display: none;">Zobrazit mapu</span>
-	</div>
-	<div class="content" wicket:id="rcol" >&nbsp;</div>
+<div id="vyberyDlePoli">
+	<div wicket:id="vyber"></div>
 </div>
-
-<script>
-	$('#control-mapa-skryt').click(function() {
-		$('body').addClass('mapaCollapsed');
-		$('#control-mapa-skryt').hide();
-		$('#control-mapa-zobrazit').show();
-	});
-	$('#control-mapa-zobrazit').click(function() {
-		$('body').removeClass('mapaCollapsed');
-		$('#control-mapa-skryt').show();
-		$('#control-mapa-zobrazit').hide();
-	});
-</script>
 
 </body>
 </html>

@@ -4,6 +4,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.text.Normalizer;
+import java.text.Normalizer.Form;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
@@ -16,14 +19,14 @@ import org.wicketstuff.openlayers3.api.View;
 import org.wicketstuff.openlayers3.api.coordinate.LongLat;
 import org.wicketstuff.openlayers3.api.geometry.Point;
 
+import com.disnel.knihoveda.mapa.KnihovedaMapaConfig;
 import com.disnel.knihoveda.wicket.AppError;
 import com.opencsv.CSVReader;
 
 public class PlaceLocationDAO
 {
-	
-	public static String LOCATIONS_FILE = "/home/disnel/Desktop/0Work/Knihoveda/locations.db";
-	public static String PLACES_MAP_NAME = "places";
+
+	public static final String PLACES_MAP_NAME = "places";
 	
 	private static DB placesDB;
 	private static ConcurrentMap<String, Point> placesMap;
@@ -31,7 +34,7 @@ public class PlaceLocationDAO
 	public static void init()
 	{
 		placesDB = DBMaker
-				.fileDB(LOCATIONS_FILE)
+				.fileDB(KnihovedaMapaConfig.locationsFileName)
 				.fileMmapEnable()
 				.closeOnJvmShutdown()
 				.make();
@@ -61,12 +64,12 @@ public class PlaceLocationDAO
 	
 	public static Point getPointForPlace(String placeName)
 	{
-		return placesMap.get(placeName);
+		return placesMap.get(removeAccents(placeName.toLowerCase()));
 	}
 	
 	public static void setPointForPlace(String placeName, Point point)
 	{
-		placesMap.put(placeName, point);
+		placesMap.put(removeAccents(placeName.toLowerCase()), point);
 		
 		placesDB.commit();
 	}
@@ -75,6 +78,10 @@ public class PlaceLocationDAO
 	{
 		CSVReader csvReader = new CSVReader(
 				new InputStreamReader(new ByteArrayInputStream(csvFile)));
+		
+		Set<String> placeNamesSearch = new HashSet<>();
+		for ( String placeName : placeNames)
+			placeNamesSearch.add(removeAccents(placeName.toLowerCase()));
 		
 		try
 		{
@@ -109,9 +116,15 @@ public class PlaceLocationDAO
 				Double lon = Double.valueOf(line[iLon]);
 				Double lat = Double.valueOf(line[iLat]);
 				
-				if ( placeNames.contains(nazev.toLowerCase()) )
+				String nazevSearch = removeAccents(nazev.toLowerCase());
+				
+				if ( placeNamesSearch.contains(nazevSearch) )
+				{
 					setPointForPlace(nazev, new Point(
 							new LongLat(lon, lat, "EPSG:4326").transform(View.DEFAULT_PROJECTION)));
+					
+					System.out.println("Found: " + nazev);
+				}
 				
 				line = csvReader.readNext();
 			}
@@ -142,6 +155,13 @@ public class PlaceLocationDAO
 				return true;
 		
 		return false;
+	}
+	
+	public static String removeAccents(String text)
+	{
+		return text == null ? null :
+			Normalizer.normalize(text, Form.NFD)
+				.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
 	}
 	
 }

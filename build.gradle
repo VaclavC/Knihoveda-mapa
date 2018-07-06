@@ -18,6 +18,11 @@ dependencies {
 	compile "org.slf4j:slf4j-simple:${slf4j}"
 	
 	compile "org.apache.wicket:wicket:${wicket}"
+	compile "com.googlecode.wicket-jquery-ui:wicket-jquery-ui:${wicket}"
+	compile "com.googlecode.wicket-jquery-ui:wicket-jquery-ui-theme-blitzer:${wicket}"
+	compile "com.googlecode.wicket-jquery-ui:wicket-kendo-ui:${wicket}"
+	compile "com.googlecode.wicket-jquery-ui:wicket-kendo-ui-theme-default:${wicket}"
+	
 	compile group: 'javax.servlet', name: 'javax.servlet-api', version: "${servletApi}"
 	
 	compile "org.apache.solr:solr-solrj:${solr}"
@@ -26,4 +31,7 @@ dependencies {
 	
 	compile 'org.mapdb:mapdb:3.0.5'
 	compile 'com.opencsv:opencsv:4.0'
+	
+	compile 'de.agilecoders.wicket:wicket-bootstrap-core:2.0.1'
+	compile 'de.agilecoders.wicket:wicket-bootstrap-extensions:2.0.1'
 }

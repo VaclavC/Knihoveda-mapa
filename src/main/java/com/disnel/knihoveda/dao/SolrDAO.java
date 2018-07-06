@@ -8,19 +8,23 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.wicket.request.mapper.parameter.INamedParameters.NamedPair;
+
+import com.disnel.knihoveda.mapa.KnihovedaMapaConfig;
+
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 public class SolrDAO
 {
 
-	public static String SOLR_URL = "http://localhost:8090/solr/biblio/";
-	
-	private static SolrClient solrClient;
+	private static HttpSolrClient solrClient;
 	
 	public static void init()
 	{
 		if ( solrClient == null )
-			solrClient = new HttpSolrClient(SOLR_URL);
+		{
+			solrClient = new HttpSolrClient(KnihovedaMapaConfig.solrURL);
+			solrClient.setFollowRedirects(true);
+		}
 	}
 	
 	public static SolrClient client()
@@ -35,37 +39,46 @@ public class SolrDAO
 	{
 		try
 		{
+			query.add("wt", "javabin");
+			
+			System.out.println("Query: " + query);
+			
 			return client().query(query);
 		}
 		catch (SolrServerException | IOException e)
 		{
-			throw new IllegalStateException("Solr query failed");
+			StringBuilder msg = new StringBuilder();
+			
+			if ( e instanceof SolrServerException )
+			{
+				msg.append(e.getCause());
+				msg.append('\n');
+			}
+			
+			msg.append("SolrJ query failed");
+			
+			throw new IllegalStateException(msg.toString());
 		}
 	}
 	
 	public static void addQueryParameters(SolrQuery query, PageParameters params)
 	{
 		StringBuilder qPars = new StringBuilder();
-		if ( params == null || params.isEmpty() )
+		
+		qPars.append("geo:*");
+		
+		if ( params != null && !params.isEmpty() )
 		{
-			qPars.append("*:*");
-		}
-		else
-		{
-			String delim = null;
+			String delim = " AND ";
 			for ( NamedPair pair : params.getAllNamed() )
 			{
-				if ( delim != null )
-					qPars.append(delim);
+				qPars.append(delim);
 				
 				qPars.append(pair.getKey());
 				qPars.append(":");
 				qPars.append('"');
 				qPars.append(pair.getValue());
 				qPars.append('"');
-				
-				if ( delim == null )
-					delim = " AND ";
 			}
 		}
 	

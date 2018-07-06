@@ -6,7 +6,9 @@ import java.util.List;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.FacetField.Count;
+import org.apache.solr.client.solrj.response.Group;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrDocument;
 import org.apache.wicket.event.IEvent;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -15,6 +17,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.wicketstuff.openlayers3.DefaultOpenLayersMap;
 import org.wicketstuff.openlayers3.api.View;
+import org.wicketstuff.openlayers3.api.coordinate.Coordinate;
 import org.wicketstuff.openlayers3.api.coordinate.LongLat;
 import org.wicketstuff.openlayers3.api.geometry.Point;
 import org.wicketstuff.openlayers3.api.layer.Layer;
@@ -42,10 +45,10 @@ public class MapaPanel extends Panel
 				Arrays.<Layer>asList(
 						new Tile(
 								"Mapa",
-								new CustomTileSource("http://localhost/osm_tiles/{z}/{x}/{y}.png"))
+								new CustomTileSource(KnihovedaMapaConfig.osmURL))
 				),
 				
-				new View(new LongLat(15.335125, 49.741807, "EPSG:4326" ).transform(View.DEFAULT_PROJECTION), 7)))));
+				new View(new LongLat(15.335125, 49.741807, "EPSG:4326" ).transform(View.DEFAULT_PROJECTION), 8)))));
 		
 		add(mapaOverlays = new WebMarkupContainer("mapa-overlays"));
 		mapaOverlays.setOutputMarkupId(true);
@@ -81,30 +84,42 @@ public class MapaPanel extends Panel
 			// Pripravit dotaz
 			SolrQuery query = new SolrQuery();
 			SolrDAO.addQueryParameters(query, searchParams);
-			query.addFacetField("publishPlace");
-			query.setFacetMinCount(1);
-			query.setRows(0);
-			
-			System.out.println("Query for mapa: " + query);
+			query.addField("publishPlace");
+			query.addField("long_lat");
+			query.add("group", "true");
+			query.add("group.field", "publishPlace");
+			query.setRows(-1);
 			
 			// Ziskat odpoved
 			QueryResponse response = SolrDAO.getResponse(query);
-			FacetField publishPlaceFF = response.getFacetField("publishPlace");
+			List<Group> resGroups = response.getGroupResponse().getValues().get(0).getValues();
 			
 			// Zpracovat vysledky
-			overlaysList = new ArrayList<>(publishPlaceFF.getValueCount());
+			overlaysList = new ArrayList<>(resGroups.size());
 			overlayrsRV = new RepeatingView(rvId);
 			
-			for ( Count count : publishPlaceFF.getValues() )
+			// Najit maximalni hodnotu
+			long countMax = 0;
+			for ( Group group : resGroups )
 			{
-				String placeName = count.getName();
-				Point placePoint = PlaceLocationDAO.getPointForPlace(placeName);
-				
-				if ( placePoint != null )
+				long count = group.getResult().getNumFound();
+				if ( countMax < count )
+					countMax = count;
+			}
+			
+			// Zobrazit overlays
+			for ( Group group : resGroups )
+			{
+				if ( group.getGroupValue() != null )
 				{
+					long count = group.getResult().getNumFound();
+					
+					SolrDocument doc = group.getResult().get(0);
+					String placeName = (String) doc.getFieldValue("publishPlace");
+					Point placePoint = pointFromString((String) doc.getFieldValue("long_lat"));
+				
 					MistoOverlayPanel placeOverlay = new MistoOverlayPanel(overlayrsRV.newChildId(),
-							placeName,
-							Long.toString(count.getCount()).toString()); 
+							placeName, count, countMax);
 
 					overlayrsRV.add(placeOverlay);
 
@@ -125,6 +140,15 @@ public class MapaPanel extends Panel
 			return overlayrsRV;
 		}
 		
+	}
+	
+	private static Point pointFromString(String coordinates)
+	{
+		String[] parts = coordinates.split(",");
+		double lat = Double.parseDouble(parts[0]);
+		double lon = Double.parseDouble(parts[1]);
+		
+		return new Point(new Coordinate(lon, lat));
 	}
 	
 }

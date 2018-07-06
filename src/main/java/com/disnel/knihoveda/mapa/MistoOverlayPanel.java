@@ -2,6 +2,7 @@ package com.disnel.knihoveda.mapa;
 
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.event.Broadcast;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -14,19 +15,34 @@ public class MistoOverlayPanel extends Panel
 
 	private boolean isSelected = false;
 	
-	public MistoOverlayPanel(String id, String nazevMista, String pocetTisku)
+	public MistoOverlayPanel(String id, String nazevMista, long pocetTisku, long pocetTiskuMax)
 	{
 		super(id);
 		
 		setOutputMarkupId(true);
 		
-		WebMarkupContainer link;
-		add(link = new WebMarkupContainer("link"));
+		WebMarkupContainer symbol;
+		add(symbol = new WebMarkupContainer("symbol"));
+		double k = (double) pocetTisku / pocetTiskuMax;
+		k = Math.log10(1.0 + 9.0*k);
+		int dotSize = (int) Math.round(KnihovedaMapaConfig.MIN_DOT_SIZE
+				+ k * KnihovedaMapaConfig.DOT_SIZE_DIFF);
+		symbol.add(new AttributeAppender("style",
+				String.format("font-size: %dpx;", dotSize)));
 		
-		link.add(new Label("misto", nazevMista));
-		link.add(new Label("pocet", pocetTisku));
+		WebMarkupContainer detail;
+		add(detail = new WebMarkupContainer("detail"));
+		detail.setOutputMarkupId(true);
 		
-		link.add(new AjaxEventBehavior("click")
+		detail.add(new Label("misto", nazevMista));
+		detail.add(new Label("pocet", pocetTisku));
+		
+		symbol.add(new AttributeAppender("onmouseover",
+				String.format("$('#%s').show();", detail.getMarkupId())));
+		detail.add(new AttributeAppender("onmouseleave",
+				String.format("$('#%s').hide();", detail.getMarkupId())));
+		
+		detail.add(new AjaxEventBehavior("click")
 		{
 			@Override
 			protected void onEvent(AjaxRequestTarget target)

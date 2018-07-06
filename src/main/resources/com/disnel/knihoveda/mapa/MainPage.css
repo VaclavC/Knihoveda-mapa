@@ -66,58 +66,43 @@ body {
 /**********/
 /* Layout */
 
-#titul, #lcol, #mapa, #rcol { position: fixed; box-sizing: border-box; }
-#titul, #lcol {
-	width: 24em;
-}
+/* #titul, #lcol, #mapa, #rcol { position: fixed; box-sizing: border-box; } */
+/* #titul, #lcol { */
+/* 	width: 24em; */
+/* } */
 
-#titul {
-	top: 0; left: 0; height: 6em;
-	background: black; color: white;
-	padding: 1em 0.5em; text-align: right;
-	border-bottom-right-radius: 1em;
-}
-#titul>h1 { }
-#titul>h1>span:FIRST-CHILD { font-size: 300%; }
-#titul>h1>span:LAST-CHILD {
-	font-weight: bold;
-	position: relative; top: 1em; right: 4em;
-	color: red;
-}
+/* #titul { */
+/* 	top: 0; left: 0; height: 6em; */
+/* 	background: black; color: white; */
+/* 	padding: 1em 0.5em; text-align: right; */
+/* 	border-bottom-right-radius: 1em; */
+/* } */
+/* #titul>h1 { } */
+/* #titul>h1>span:FIRST-CHILD { font-size: 300%; } */
+/* #titul>h1>span:LAST-CHILD { */
+/* 	font-weight: bold; */
+/* 	position: relative; top: 1em; right: 4em; */
+/* 	color: red; */
+/* } */
 
-#lcol {
-	top: 0; left: 0; bottom: 0;
-	padding-top: 7em;
-	box-shadow: 0.5em 0 0.5em rgba(0, 0, 0, 0.3);
-}
+/* #rcol { */
+/* 	top: 0; bottom: 0; right: 0; width: 32em; */
+/* 	box-shadow: -0.5em 0 0.5em rgba(0, 0, 0, 0.3); */
+/* } */
 
-#mapa {
-	top: 0; bottom: 0; left: 24em; right: 32em;
-}
+/* #rcol .control { position: absolute; top: 0; left: 0; bottom: 0; width: 2em; } */
+/* #rcol .control span { */
+/* 	display: block; position: absolute; left: 100%; bottom: 2em; width: 24em; line-height: 2em; */
+/* 	transform: rotate(-90deg); transform-origin: 0% 100%; } */
+/* #rcol .content { margin-left: 2em; } */
 
-#mapa-content { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
+/* .content { */
+/* 	overflow-y: auto; height: 100%; */
+/* 	margin: 0 0.5em */
+/* } */
 
-
-#rcol {
-	top: 0; bottom: 0; right: 0; width: 32em;
-	box-shadow: -0.5em 0 0.5em rgba(0, 0, 0, 0.3);
-}
-
-#rcol .control { position: absolute; top: 0; left: 0; bottom: 0; width: 2em; }
-#rcol .control span {
-	display: block; position: absolute; left: 100%; bottom: 2em; width: 24em; line-height: 2em;
-	transform: rotate(-90deg); transform-origin: 0% 100%; }
-#rcol .content { margin-left: 2em; }
-
-/* .scroll-cont {  } */
-
-.content {
-	overflow-y: auto; height: 100%;
-	margin: 0 0.5em
-}
-
-.control { cursor: pointer; }
-.control:hover { background: #f0f0f0; }
+/* .control { cursor: pointer; } */
+/* .control:hover { background: #f0f0f0; } */
 
 /******************/
 /* Vyberovy panel */
@@ -158,15 +143,40 @@ body {
 /********/
 /* Mapa */
 
-.mistoOverlay {
-	display: block; position: relative; top: -50%; left: -50%;
-	cursor: pointer;
-	padding: 0.25em;
-	background: rgba(128, 128, 128, 0.5);
-	text-align: center;
-	border-radius: 4px;
+#mapa { position: fixed; box-sizing: border-box; top: 0; bottom: 8em; left: 0; right: 0; }
+#mapa-content { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
+
+.mistoOverlay { cursor: pointer; }
+.mistoOverlay .symbol { transform: translate(-50%, -50%); }
+
+.mistoOverlay .detail {
+	position: absolute; top:0; left: 0; transform: translate(-50%, -50%);
+	background: rgba(255, 255, 255, 0.8); color: black;
+	padding: 2em; border: solid 2px black; border-radius: 8px;
+	z-index: 9999;
+	display: none;
 }
-.mistoOverlay:hover, .mistoOverlay.active { background: black; color: white; }
-.mistoOverlay a>span { display: block; }
-.mistoOverlay a>span.misto { font-size: 85%; }
-.mistoOverlay a>span.pocet { font-weight: bolder; }
+.mistoOverlay .detail>span { display: block; text-align: center; }
+.mistoOverlay .detail>span.misto { font-weight: bolder; }
+.mistoOverlay .detail>span.pocet { font-size: 85%; }
+
+/***************/
+/* Casovy graf */
+
+#casovyGraf {
+	position: fixed; box-sizing: border-box; bottom: 0; left: 0; right: 0; height: 8em;
+	background: white; box-shadow: 0 -0.1em 0.1em rgba(0, 0, 0, 0.3);
+	cursor: crosshair;
+}
+
+#casovyGraf canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+/*******************/
+/* Vybery dle poli */
+
+#vyberyDlePoli { position: fixed; top: 0.5em; left: 8em; right: 0; width: 100%; }
+.vyberDlePole { width: 16em; }
+.vyberDlePole .titul { font-weight: bold; font-size: 110%; }
+.vyberDlePole select { font-size: 80%; }
+
+
