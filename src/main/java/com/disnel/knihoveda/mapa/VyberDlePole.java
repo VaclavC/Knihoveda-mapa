@@ -7,6 +7,8 @@ import org.apache.wicket.markup.html.panel.Panel;
 import com.disnel.knihoveda.wicket.model.SolrFieldValuesModel;
 import com.googlecode.wicket.kendo.ui.form.multiselect.MultiSelect;
 
+import de.agilecoders.wicket.core.markup.html.bootstrap.behavior.CssClassNameAppender;
+
 public class VyberDlePole extends Panel
 {
 
@@ -17,6 +19,8 @@ public class VyberDlePole extends Panel
 		super(id);
 		
 		this.poleId = poleId;
+		
+		add(new CssClassNameAppender(poleId));
 		
 		add(new Label("titul", poleId));
 		

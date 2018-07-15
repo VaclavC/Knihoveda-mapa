@@ -26,6 +26,7 @@ public class SolrFieldValuesModel extends LoadableDetachableModel<List<Count>>
 		SolrQuery query = new SolrQuery();
 		SolrDAO.addQueryEmptyParameters(query);
 		query.addFacetField(fieldName);
+		query.setFacetLimit(-1);
 		query.setRows(0);
 		
 		QueryResponse response = SolrDAO.getResponse(query);

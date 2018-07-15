@@ -150,9 +150,9 @@ body {
 .mistoOverlay .symbol { transform: translate(-50%, -50%); }
 
 .mistoOverlay .detail {
-	position: absolute; top:0; left: 0; transform: translate(-50%, -50%);
+	position: absolute; top: -8px; left: -8px;
 	background: rgba(255, 255, 255, 0.8); color: black;
-	padding: 2em; border: solid 2px black; border-radius: 8px;
+	padding: 1em; border: solid 2px black; border-radius: 8px;
 	z-index: 9999;
 	display: none;
 }
@@ -174,8 +174,11 @@ body {
 /*******************/
 /* Vybery dle poli */
 
-#vyberyDlePoli { position: fixed; top: 0.5em; left: 8em; right: 0; width: 100%; }
-.vyberDlePole { width: 16em; }
+#vyberyDlePoli { position: fixed; top: 0.5em; left: 8em; right: 0; display: flex; }
+#vyberyDlePoli>div { padding-right: 1em; }
+#vyberyDlePoli .masterPrinter_facet { flex-grow: 0.70; }
+#vyberyDlePoli .topic_facet { flex-grow: 0.15; }
+#vyberyDlePoli .genre_facet { flex-grow: 0.15; }
 .vyberDlePole .titul { font-weight: bold; font-size: 110%; }
 .vyberDlePole select { font-size: 80%; }
 

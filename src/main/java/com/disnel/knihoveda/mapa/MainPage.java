@@ -20,7 +20,7 @@ public class MainPage extends WebPage
 		
 		add(new MapaPanel("mapa"));
 	
-		add(new CasovyGraf("casovyGraf", 1500, 2000));
+		add(new CasovyGraf("casovyGraf", 1500, 1800));
 		
 //		add(new VyberPanel("lcol"));
 		
@@ -31,9 +31,9 @@ public class MainPage extends WebPage
 		RepeatingView vybery;
 		add(vybery = new RepeatingView("vyber"));
 		
-		vybery.add(new VyberDlePole(vybery.newChildId(), "masterPrinter"));
-		vybery.add(new VyberDlePole(vybery.newChildId(), "topic"));
-		vybery.add(new VyberDlePole(vybery.newChildId(), "genre"));
+		vybery.add(new VyberDlePole(vybery.newChildId(), "masterPrinter_facet"));
+		vybery.add(new VyberDlePole(vybery.newChildId(), "topic_facet"));
+		vybery.add(new VyberDlePole(vybery.newChildId(), "genre_facet"));
 	}
 
 	public PageParameters getCommonSearchParams()
