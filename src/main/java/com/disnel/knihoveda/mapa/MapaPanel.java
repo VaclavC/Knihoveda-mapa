@@ -58,12 +58,19 @@ public class MapaPanel extends Panel
 		RepeatingView rv;
 		cont.add(rv = new RepeatingView("overlaySet"));
 		
+		int zIndex = 100;
 		for ( DataSet dataSet : MapaSession.get().dataSets() )
 		{
+			int zIndexFinal = zIndex;
+			if ( dataSet == MapaSession.get().currentDataSet() )
+				zIndexFinal = zIndex + 100;
+			
 			MapaOverlaySetPanel mapaOSPanel;
-			rv.add(mapaOSPanel = new MapaOverlaySetPanel(rv.newChildId(), dataSet));
+			rv.add(mapaOSPanel = new MapaOverlaySetPanel(rv.newChildId(), dataSet, zIndexFinal));
 			
 			overlays.addAll(mapaOSPanel.getOverlaysList());
+			
+			zIndex++;
 		}
 		
 		return overlays;

@@ -16,7 +16,7 @@ public class MapaMistoOverlayPanel extends Panel
 
 	private boolean isSelected = false;
 	
-	public MapaMistoOverlayPanel(String id, String nazevMista, long pocetTisku, long pocetTiskuMax, Color color)
+	public MapaMistoOverlayPanel(String id, String nazevMista, long pocetTisku, long pocetTiskuMax, Color color, int zIndex)
 	{
 		super(id);
 		
@@ -29,7 +29,7 @@ public class MapaMistoOverlayPanel extends Panel
 		int dotSize = (int) Math.round(KnihovedaMapaConfig.MIN_DOT_SIZE
 				+ k * KnihovedaMapaConfig.DOT_SIZE_DIFF);
 		symbol.add(new AttributeAppender("style",
-				String.format("font-size: %dpx; color: %s", dotSize, color.toString())));
+				String.format("font-size: %dpx; color: %s; z-index: %d;", dotSize, color.toString(), zIndex)));
 		
 		WebMarkupContainer detail;
 		add(detail = new WebMarkupContainer("detail"));

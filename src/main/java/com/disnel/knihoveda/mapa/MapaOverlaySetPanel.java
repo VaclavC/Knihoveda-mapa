@@ -23,7 +23,7 @@ public class MapaOverlaySetPanel extends Panel
 	
 	private List<Overlay> overlaysList;
 	
-	public MapaOverlaySetPanel(String id, DataSet dataSet)
+	public MapaOverlaySetPanel(String id, DataSet dataSet, int zIndex)
 	{
 		super(id);
 		this.dataSet = dataSet;
@@ -48,7 +48,8 @@ public class MapaOverlaySetPanel extends Panel
 				Point placePoint = pointFromString((String) doc.getFieldValue("long_lat"));
 			
 				MapaMistoOverlayPanel placeOverlay = new MapaMistoOverlayPanel(rv.newChildId(),
-						placeName, count, MapaSession.get().maxCountInPlace(), dataSet.getColor());
+						placeName, count, MapaSession.get().maxCountInPlace(),
+						dataSet.getColor(), zIndex);
 
 				rv.add(placeOverlay);
 
