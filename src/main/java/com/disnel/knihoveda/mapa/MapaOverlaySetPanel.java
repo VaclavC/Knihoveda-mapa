@@ -3,9 +3,7 @@ package com.disnel.knihoveda.mapa;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.response.Group;
-import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
@@ -50,7 +48,7 @@ public class MapaOverlaySetPanel extends Panel
 				Point placePoint = pointFromString((String) doc.getFieldValue("long_lat"));
 			
 				MapaMistoOverlayPanel placeOverlay = new MapaMistoOverlayPanel(rv.newChildId(),
-						placeName, count, MapaSession.get().maxCountInPlace()/2);
+						placeName, count, MapaSession.get().maxCountInPlace(), dataSet.getColor());
 
 				rv.add(placeOverlay);
 

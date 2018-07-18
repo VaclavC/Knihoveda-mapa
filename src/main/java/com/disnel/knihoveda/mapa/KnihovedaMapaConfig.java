@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import org.apache.wicket.protocol.http.WebApplication;
+import org.wicketstuff.openlayers3.api.util.Color;
 
 public class KnihovedaMapaConfig
 {
@@ -26,6 +27,15 @@ public class KnihovedaMapaConfig
 	public static final float MIN_DOT_SIZE = 12.0f;
 	public static final float MAX_DOT_SIZE = 48.0f;
 	public static final float DOT_SIZE_DIFF = MAX_DOT_SIZE - MIN_DOT_SIZE;
+	
+	public static final Color[] DATA_SET_COLORS = new Color[]
+	{
+		new Color("#000000"),
+		new Color("#992929"),
+		new Color("#999929"),
+		new Color("#299929"),
+		new Color("#292999"),
+	};
 	
 	/**
 	 * Load configuration

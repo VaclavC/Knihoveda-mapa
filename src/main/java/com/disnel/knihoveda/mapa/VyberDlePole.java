@@ -16,6 +16,7 @@ import org.apache.wicket.model.Model;
 
 import com.disnel.knihoveda.mapa.data.DataSet;
 import com.disnel.knihoveda.mapa.data.FieldValues;
+import com.disnel.knihoveda.mapa.events.DataSetChangedEvent;
 import com.disnel.knihoveda.mapa.events.FieldValuesChangedEvent;
 import com.disnel.knihoveda.wicket.model.SolrFieldValuesModel;
 import com.googlecode.wicket.kendo.ui.form.multiselect.MultiSelect;
@@ -96,20 +97,29 @@ public class VyberDlePole extends Panel
 			
 			if ( !ev.getFieldName().equals(fieldName) )
 			{
-				AjaxRequestTarget target = ev.getTarget();
-
-				// Tohle nefunguje, nejak pak blbne ten Kendo select
-				//				fieldValuesModel.detach();
-				//				selectInst.updateModel();
-				//				
-				//				target.add(selectInst);
-				
-				// Takze to holt zatim bude takhle
-				VyberDlePole newPanel = new VyberDlePole(getId(), fieldName);
-				replaceWith(newPanel);
-				target.add(newPanel);
+				updateContent(ev.getTarget());
 			}
 		}
+		else if ( event.getPayload() instanceof DataSetChangedEvent )
+		{
+			DataSetChangedEvent ev = (DataSetChangedEvent) event.getPayload();
+			
+			updateContent(ev.getTarget());
+		}
+	}
+	
+	private void updateContent(AjaxRequestTarget target)
+	{
+		// Tohle nefunguje, nejak pak blbne ten Kendo select
+		//				fieldValuesModel.detach();
+		//				selectInst.updateModel();
+		//				
+		//				target.add(selectInst);
+		
+		// Takze to holt zatim bude takhle
+		VyberDlePole newPanel = new VyberDlePole(getId(), fieldName);
+		replaceWith(newPanel);
+		target.add(newPanel);
 	}
 	
 }

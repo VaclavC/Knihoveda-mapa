@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.solr.client.solrj.response.Group;
 import org.apache.wicket.protocol.http.WebSession;
 import org.apache.wicket.request.Request;
+import org.wicketstuff.openlayers3.api.util.Color;
 
 import com.disnel.knihoveda.dao.SolrDAO;
 import com.disnel.knihoveda.mapa.data.DataSet;
@@ -26,7 +27,7 @@ public class MapaSession extends WebSession
 		dataSets = new ArrayList<>();
 		
 		// Pridat vychozi dataset bez nazvu
-		dataSets.add(currentDataSet = new DataSet());
+		dataSets.add(currentDataSet = new DataSet(null, KnihovedaMapaConfig.DATA_SET_COLORS[0]));
 		
 		// Najit maximalni pocet vysledku v jednom miste
 		//  (pro vychozi dataset, ktery je bez parametru, tedy maximalni mozny)
@@ -64,6 +65,14 @@ public class MapaSession extends WebSession
 	public void currentDataSet(DataSet currentDataSet)
 	{
 		this.currentDataSet = currentDataSet;
+	}
+	
+	public Color newDataSetColor()
+	{
+		if ( dataSets.size() >= KnihovedaMapaConfig.DATA_SET_COLORS.length )
+			return null;
+		
+		return KnihovedaMapaConfig.DATA_SET_COLORS[dataSets.size()];
 	}
 	
 	public long maxCountInPlace()

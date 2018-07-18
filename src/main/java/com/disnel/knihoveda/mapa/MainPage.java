@@ -29,6 +29,8 @@ public class MainPage extends WebPage implements IAjaxIndicatorAware
 		vybery.add(new VyberDlePole(vybery.newChildId(), "masterPrinter"));
 		vybery.add(new VyberDlePole(vybery.newChildId(), "topic"));
 		vybery.add(new VyberDlePole(vybery.newChildId(), "genre"));
+		
+		add(new DataSetSwitcherPanel("dataSetSwitcher"));
 	}
 
 	public PageParameters getCommonSearchParams()

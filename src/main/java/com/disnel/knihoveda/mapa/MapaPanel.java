@@ -16,6 +16,7 @@ import org.wicketstuff.openlayers3.api.layer.Layer;
 import org.wicketstuff.openlayers3.api.layer.Tile;
 import org.wicketstuff.openlayers3.api.overlay.Overlay;
 import com.disnel.knihoveda.mapa.data.DataSet;
+import com.disnel.knihoveda.mapa.events.DataSetChangedEvent;
 import com.disnel.knihoveda.mapa.events.FieldValuesChangedEvent;
 import com.disnel.knihoveda.mapa.ol.CustomTileSource;
 import com.disnel.knihoveda.wicket.AjaxOLMap;
@@ -74,20 +75,30 @@ public class MapaPanel extends Panel
 		if ( event.getPayload() instanceof FieldValuesChangedEvent)
 		{
 			FieldValuesChangedEvent ev = (FieldValuesChangedEvent) event.getPayload();
-			AjaxRequestTarget target = ev.getTarget();
 			
-			mapaOverlays.replaceWith(mapaOverlays =
-					new WebMarkupContainer(mapaOverlays.getId()));
-			mapaOverlays.setOutputMarkupId(true);
-			
-			List<Overlay> overlays =
-					createOverlays(mapaOverlays);
-
-			mapa.setOverlays(overlays);
-			
-			target.add(mapaOverlays);
-			target.appendJavaScript(mapa.overlaysChangedJs());
+			updateOverlays(ev.getTarget());
 		}
+		else if ( event.getPayload() instanceof DataSetChangedEvent )
+		{
+			DataSetChangedEvent ev = (DataSetChangedEvent) event.getPayload();
+			
+			updateOverlays(ev.getTarget());
+		}
+	}
+	
+	private void updateOverlays(AjaxRequestTarget target)
+	{
+		mapaOverlays.replaceWith(mapaOverlays =
+				new WebMarkupContainer(mapaOverlays.getId()));
+		mapaOverlays.setOutputMarkupId(true);
+		
+		List<Overlay> overlays =
+				createOverlays(mapaOverlays);
+
+		mapa.setOverlays(overlays);
+		
+		target.add(mapaOverlays);
+		target.appendJavaScript(mapa.overlaysChangedJs());
 	}
 	
 }

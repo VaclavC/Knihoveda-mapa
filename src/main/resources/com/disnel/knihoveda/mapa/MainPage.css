@@ -183,6 +183,13 @@ body {
 .vyberDlePole select { font-size: 80%; }
 
 
+/*************************/
+/* Prepinac datovych sad */
+
+#dataSetSwitcher { position: fixed; top: 8em; left: 0; z-index: 999; }
+#dataSetSwitcher i { display: block; font-size: 24px; padding: 0.2em; padding-left: 1em; margin-bottom: 0.2em; cursor: pointer; }
+#dataSetSwitcher i.current { background: rgba(0, 0, 0, 0.35); }
+
 /******************/
 /* Ajax indicator */
 

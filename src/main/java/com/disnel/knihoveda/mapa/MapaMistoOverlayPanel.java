@@ -7,6 +7,7 @@ import org.apache.wicket.event.Broadcast;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.wicketstuff.openlayers3.api.util.Color;
 
 import com.disnel.knihoveda.mapa.events.MistoSelectEvent;
 
@@ -15,7 +16,7 @@ public class MapaMistoOverlayPanel extends Panel
 
 	private boolean isSelected = false;
 	
-	public MapaMistoOverlayPanel(String id, String nazevMista, long pocetTisku, long pocetTiskuMax)
+	public MapaMistoOverlayPanel(String id, String nazevMista, long pocetTisku, long pocetTiskuMax, Color color)
 	{
 		super(id);
 		
@@ -28,7 +29,7 @@ public class MapaMistoOverlayPanel extends Panel
 		int dotSize = (int) Math.round(KnihovedaMapaConfig.MIN_DOT_SIZE
 				+ k * KnihovedaMapaConfig.DOT_SIZE_DIFF);
 		symbol.add(new AttributeAppender("style",
-				String.format("font-size: %dpx;", dotSize)));
+				String.format("font-size: %dpx; color: %s", dotSize, color.toString())));
 		
 		WebMarkupContainer detail;
 		add(detail = new WebMarkupContainer("detail"));

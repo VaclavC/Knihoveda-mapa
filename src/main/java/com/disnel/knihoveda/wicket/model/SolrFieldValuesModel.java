@@ -6,7 +6,6 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.response.FacetField.Count;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.wicket.Session;
 import org.apache.wicket.model.LoadableDetachableModel;
 
 import com.disnel.knihoveda.dao.SolrDAO;
