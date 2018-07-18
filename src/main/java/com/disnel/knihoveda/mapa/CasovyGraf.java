@@ -56,7 +56,7 @@ public class CasovyGraf extends Panel
 	public String getJsArrayOfResults(PageParameters searchParams)
 	{
 		SolrQuery query = new SolrQuery();
-		SolrDAO.addQueryParameters(query, searchParams);
+		SolrDAO.addEmptyQueryParameters(query);
 		query.addFacetField("publishDate");
 //		query.addSort("publishDate", ORDER.asc);
 		query.setFacetMinCount(1);

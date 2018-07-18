@@ -1,5 +1,6 @@
 package com.disnel.knihoveda.mapa;
 
+import org.apache.wicket.ajax.IAjaxIndicatorAware;
 import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.WebPage;
@@ -9,7 +10,7 @@ import org.apache.wicket.request.resource.CssResourceReference;
 
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesomeCssReference;
 
-public class MainPage extends WebPage
+public class MainPage extends WebPage implements IAjaxIndicatorAware
 {
 
 	private PageParameters commonSearchParams;
@@ -22,18 +23,12 @@ public class MainPage extends WebPage
 	
 		add(new CasovyGraf("casovyGraf", 1500, 1800));
 		
-//		add(new VyberPanel("lcol"));
-		
-//		add(new VysledkyPanel("rcol"));
-		
-//		add(new MistaPanel("mistaPanel"));
-		
 		RepeatingView vybery;
 		add(vybery = new RepeatingView("vyber"));
 		
-		vybery.add(new VyberDlePole(vybery.newChildId(), "masterPrinter_facet"));
-		vybery.add(new VyberDlePole(vybery.newChildId(), "topic_facet"));
-		vybery.add(new VyberDlePole(vybery.newChildId(), "genre_facet"));
+		vybery.add(new VyberDlePole(vybery.newChildId(), "masterPrinter"));
+		vybery.add(new VyberDlePole(vybery.newChildId(), "topic"));
+		vybery.add(new VyberDlePole(vybery.newChildId(), "genre"));
 	}
 
 	public PageParameters getCommonSearchParams()
@@ -55,4 +50,9 @@ public class MainPage extends WebPage
 		response.render(CssHeaderItem.forReference(new CssResourceReference(MainPage.class, "MainPage.css")));
 	}
 
+	@Override
+	public String getAjaxIndicatorMarkupId()
+	{
+		return "ajaxIndicator";
+	}
 }

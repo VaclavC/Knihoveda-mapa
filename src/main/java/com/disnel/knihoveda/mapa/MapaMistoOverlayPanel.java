@@ -10,12 +10,12 @@ import org.apache.wicket.markup.html.panel.Panel;
 
 import com.disnel.knihoveda.mapa.events.MistoSelectEvent;
 
-public class MistoOverlayPanel extends Panel
+public class MapaMistoOverlayPanel extends Panel
 {
 
 	private boolean isSelected = false;
 	
-	public MistoOverlayPanel(String id, String nazevMista, long pocetTisku, long pocetTiskuMax)
+	public MapaMistoOverlayPanel(String id, String nazevMista, long pocetTisku, long pocetTiskuMax)
 	{
 		super(id);
 		
@@ -24,7 +24,7 @@ public class MistoOverlayPanel extends Panel
 		WebMarkupContainer symbol;
 		add(symbol = new WebMarkupContainer("symbol"));
 		double k = (double) pocetTisku / pocetTiskuMax;
-		k = Math.log10(1.0 + 9.0*k);
+		k = Math.max(Math.min(Math.log10(1.0 + 9.0*k), 1.0), 0.0);
 		int dotSize = (int) Math.round(KnihovedaMapaConfig.MIN_DOT_SIZE
 				+ k * KnihovedaMapaConfig.DOT_SIZE_DIFF);
 		symbol.add(new AttributeAppender("style",
@@ -53,7 +53,7 @@ public class MistoOverlayPanel extends Panel
 							new MistoSelectEvent(target, null));
 					
 					target.appendJavaScript(
-							"$('#" + MistoOverlayPanel.this.getMarkupId() + " .mistoOverlay').removeClass('active');");
+							"$('#" + MapaMistoOverlayPanel.this.getMarkupId() + " .mistoOverlay').removeClass('active');");
 					
 					isSelected = false;
 				}
@@ -63,7 +63,7 @@ public class MistoOverlayPanel extends Panel
 							new MistoSelectEvent(target, nazevMista));
 					
 					target.appendJavaScript("$('.mistoOverlay').removeClass('active');"
-							+ " $('#" + MistoOverlayPanel.this.getMarkupId() + " .mistoOverlay').addClass('active');");
+							+ " $('#" + MapaMistoOverlayPanel.this.getMarkupId() + " .mistoOverlay').addClass('active');");
 					
 					isSelected = true;
 				}

@@ -1,7 +1,10 @@
 package com.disnel.knihoveda.mapa;
 
 import org.apache.wicket.Page;
+import org.apache.wicket.Session;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.request.Request;
+import org.apache.wicket.request.Response;
 import org.apache.wicket.settings.ExceptionSettings.AjaxErrorStrategy;
 import com.disnel.knihoveda.dao.PlaceLocationDAO;
 import com.disnel.knihoveda.dao.SolrDAO;
@@ -47,6 +50,12 @@ public class KnihovedaMapaApplication extends WebApplication
 		// Nastavit ruzne veci
 		getMarkupSettings().setStripWicketTags(true);
 		getExceptionSettings().setAjaxErrorHandlingStrategy(AjaxErrorStrategy.REDIRECT_TO_ERROR_PAGE);
+	}
+	
+	@Override
+	public Session newSession(Request request, Response response)
+	{
+		return new MapaSession(request);
 	}
 	
 }

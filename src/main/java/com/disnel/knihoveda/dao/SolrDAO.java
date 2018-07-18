@@ -1,17 +1,17 @@
 package com.disnel.knihoveda.dao;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
+import org.apache.solr.client.solrj.response.Group;
 import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.wicket.request.mapper.parameter.INamedParameters.NamedPair;
-
 import com.disnel.knihoveda.mapa.KnihovedaMapaConfig;
-
-import org.apache.wicket.request.mapper.parameter.PageParameters;
+import com.disnel.knihoveda.mapa.data.DataSet;
+import com.disnel.knihoveda.mapa.data.FieldValues;
 
 public class SolrDAO
 {
@@ -61,33 +61,62 @@ public class SolrDAO
 		}
 	}
 	
-	public static void addQueryParameters(SolrQuery query, PageParameters params)
+	public static void addEmptyQueryParameters(SolrQuery query)
+	{
+		query.add("q", "geo:*");
+	}
+	
+	public static void addDataSetQueryParameters(SolrQuery query, DataSet dataSet)
 	{
 		StringBuilder qPars = new StringBuilder();
 		
 		qPars.append("geo:*");
 		
-		if ( params != null && !params.isEmpty() )
-		{
-			String delim = " AND ";
-			for ( NamedPair pair : params.getAllNamed() )
+		String qParsDelim = " AND (";
+		String qParsEnd = "";
+		for ( FieldValues fv : dataSet.getFieldsValues() )
+			if ( !fv.isEmpty() )
 			{
-				qPars.append(delim);
+				qPars.append(qParsDelim);
 				
-				qPars.append(pair.getKey());
-				qPars.append(":");
-				qPars.append('"');
-				qPars.append(pair.getValue());
-				qPars.append('"');
+				String fvDelim = "";
+				for ( String value : fv.getValues())
+				{
+					qPars.append(fvDelim);
+					qPars.append(fv.getName());
+					qPars.append(":");
+					qPars.append(value);
+					
+					fvDelim = " OR ";
+				}
+				
+				qParsDelim = ") AND (";
+				qParsEnd = ")";
 			}
-		}
-	
+		
+		qPars.append(qParsEnd);
+		
 		query.add("q", qPars.toString());
 	}
-		
-	public static void addQueryEmptyParameters(SolrQuery query)
+	
+	public static List<Group> getMapOverlays(DataSet dataSet)
 	{
-		addQueryParameters(query, null);
+		// Pripravit dotaz
+		SolrQuery query = new SolrQuery();
+		SolrDAO.addDataSetQueryParameters(query, dataSet);
+		query.addField("publishPlace");
+		query.addField("long_lat");
+		query.add("group", "true");
+		query.add("group.field", "publishPlace");
+		query.setRows(-1);
+		
+		
+		// Ziskat odpoved
+		QueryResponse response = SolrDAO.getResponse(query);
+		List<Group> resGroups = response.getGroupResponse().getValues().get(0).getValues();
+	
+		// Vratit vysledek
+		return resGroups;
 	}
 	
 }

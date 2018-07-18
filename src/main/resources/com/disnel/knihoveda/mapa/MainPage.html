@@ -10,13 +10,6 @@
 	<h1><span><wicket:message key="titul.knihoveda">Knihověda</wicket:message></span><span><wicket:message key="titul.mapa">mapa</wicket:message></span></h1>
 </div>
 
-<!-- 
-<div wicket:id="mistaPanel" style="
-	position: fixed; top: 0; left: 0; bottom: 0; width: auto; z-index: 9999999;
-	background: white; overflow-y: scroll;
-	"></div>
- -->
- 
 <div id="mapa" wicket:id="mapa"></div>
 
 <div id="casovyGraf" wicket:id="casovyGraf"></div>
@@ -24,6 +17,9 @@
 <div id="vyberyDlePoli">
 	<div wicket:id="vyber"></div>
 </div>
+
+<!-- Ajax indikator -->
+<div id="ajaxIndicator"><div><div><div><img src="/img/nacitani.gif" alt="loading" /></div></div></div></div>
 
 </body>
 </html>

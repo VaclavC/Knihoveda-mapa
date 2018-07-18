@@ -44,7 +44,7 @@ public class MistaPanel extends Panel
 	
 		// Nacist vsechna mista, ktera potrebujeme lokalizovat
 		SolrQuery query = new SolrQuery();
-		SolrDAO.addQueryEmptyParameters(query);
+		SolrDAO.addEmptyQueryParameters(query);
 		query.addFacetField("publishPlace");
 		query.setFacetMinCount(1);
 		query.setRows(0);

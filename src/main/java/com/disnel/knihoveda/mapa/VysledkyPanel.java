@@ -69,7 +69,7 @@ public class VysledkyPanel extends Panel
 	{
 		// Pripravit dotaz
 		SolrQuery query = new SolrQuery();
-		SolrDAO.addQueryParameters(query, searchParams);
+//		SolrDAO.addQueryParameters(query, searchParams);
 		query.setRows(NUM_RESULTS_PER_PART);
 		
 		System.out.println("Query for vysledky: " + query);
