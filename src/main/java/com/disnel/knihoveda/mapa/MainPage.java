@@ -21,7 +21,9 @@ public class MainPage extends WebPage implements IAjaxIndicatorAware
 		
 		add(new MapaPanel("mapa"));
 	
-		add(new CasovyGraf("casovyGraf", 1500, 1800));
+		add(new CasovyGraf("casovyGraf",
+			KnihovedaMapaConfig.CASOVY_GRAF_OD, KnihovedaMapaConfig.CASOVY_GRAF_DO,
+			MapaSession.get().maxCountInPlace()));
 		
 		RepeatingView vybery;
 		add(vybery = new RepeatingView("vyber"));

@@ -1,17 +1,24 @@
 package com.disnel.knihoveda.dao;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
+import org.apache.solr.client.solrj.response.FacetField.Count;
+import org.apache.solr.common.params.FacetParams;
+import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.Group;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import com.disnel.knihoveda.mapa.KnihovedaMapaConfig;
 import com.disnel.knihoveda.mapa.data.DataSet;
 import com.disnel.knihoveda.mapa.data.FieldValues;
+
+import de.adesso.wickedcharts.chartjs.chartoptions.valueType.PointValue;
 
 public class SolrDAO
 {
@@ -117,6 +124,41 @@ public class SolrDAO
 	
 		// Vratit vysledek
 		return resGroups;
+	}
+	
+	public static List<Count> getCountByYear(DataSet dataSet)
+	{
+		SolrQuery query = new SolrQuery();
+		SolrDAO.addDataSetQueryParameters(query, dataSet);
+		query.addFacetField("publishDate");
+		query.setFacetMinCount(1);
+		query.setFacetSort(FacetParams.FACET_SORT_INDEX);
+		query.setFacetLimit(-1);
+		query.setRows(0);
+		
+		QueryResponse response = SolrDAO.getResponse(query);
+		FacetField publishPlaceFF = response.getFacetField("publishDate");
+		
+		return publishPlaceFF.getValues();
+	}
+	
+	public static List<PointValue> getCountByYearAsPoints(DataSet dataSet)
+	{
+		List<Count> countList = getCountByYear(dataSet);
+		
+		List<PointValue> ret = new ArrayList<>(countList.size());
+		Iterator<Count> it = countList.iterator();
+		while ( it.hasNext() )
+		{
+			Count count = it.next();
+			
+			if ( count.getName() != null && !count.getName().isEmpty() )
+				ret.add(new PointValue(
+						new Integer(count.getName()),
+						new Integer((int) count.getCount())));
+		}
+		
+		return ret;
 	}
 	
 }

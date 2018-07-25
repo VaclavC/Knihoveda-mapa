@@ -1,19 +1,30 @@
 package com.disnel.knihoveda.mapa;
 
-import java.util.Iterator;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.response.FacetField;
-import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.client.solrj.response.FacetField.Count;
-import org.apache.wicket.markup.head.IHeaderResponse;
-import org.apache.wicket.markup.head.JavaScriptHeaderItem;
-import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
+import org.apache.wicket.event.IEvent;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.apache.wicket.request.resource.PackageResourceReference;
+import org.wicketstuff.openlayers3.api.util.Color;
 
 import com.disnel.knihoveda.dao.SolrDAO;
+import com.disnel.knihoveda.mapa.data.DataSet;
+import com.disnel.knihoveda.mapa.events.AjaxEvent;
+import com.disnel.knihoveda.mapa.events.DataSetChangedEvent;
+import com.disnel.knihoveda.mapa.events.FieldValuesChangedEvent;
+
+import de.adesso.wickedcharts.chartjs.ChartConfiguration;import de.adesso.wickedcharts.chartjs.chartoptions.Animation;
+import de.adesso.wickedcharts.chartjs.chartoptions.AxesScale;
+import de.adesso.wickedcharts.chartjs.chartoptions.ChartType;
+import de.adesso.wickedcharts.chartjs.chartoptions.Data;
+import de.adesso.wickedcharts.chartjs.chartoptions.Dataset;
+import de.adesso.wickedcharts.chartjs.chartoptions.Legend;
+import de.adesso.wickedcharts.chartjs.chartoptions.Options;
+import de.adesso.wickedcharts.chartjs.chartoptions.Position;
+import de.adesso.wickedcharts.chartjs.chartoptions.Scales;
+import de.adesso.wickedcharts.chartjs.chartoptions.colors.RgbaColor;
+import de.adesso.wickedcharts.wicket8.chartjs.Chart;
 
 public class CasovyGraf extends Panel
 {
@@ -22,73 +33,88 @@ public class CasovyGraf extends Panel
 	
 	private Long maxCount = 0L;
 	
-	public CasovyGraf(String id, Integer rokOd, Integer rokDo)
+	private Options chartOptions;
+	private ChartConfiguration chartConfiguration;
+	private Chart chart;
+	
+	public CasovyGraf(String id, Integer rokOd, Integer rokDo, Long maxCount)
 	{
 		super(id);
 		
 		this.rokOd = rokOd;
 		this.rokDo = rokDo;
+		this.maxCount = maxCount;
+
+		
+		chartOptions = new Options()
+				.setResponsive(true)
+				.setScales(new Scales()
+						.setYAxes(new AxesScale()
+								.setDisplay(false))
+						.setXAxes(new AxesScale()
+								.setDisplay(true)
+								.setType("linear")
+								.setPosition(Position.BOTTOM)))
+				.setLegend(new Legend()
+						.setDisplay(false))
+				.setAnimation(new Animation()
+						.setDuration(0));
+
+		chartConfiguration = new GrafConfig()
+				.setType(ChartType.LINE)
+				.setOptions(chartOptions)
+				.setData(createChartData());
+				
+		add(chart = new Chart("chart", chartConfiguration));
 	}
 
+	private Data createChartData()
+	{
+		List<Dataset> chartDatasets = new ArrayList<>();
+		
+		chartDatasets.add(createChartDataset(MapaSession.get().currentDataSet()));
+		
+		for ( DataSet dataSet : MapaSession.get().dataSets())
+			if ( dataSet != MapaSession.get().currentDataSet())
+				chartDatasets.add(createChartDataset(dataSet));
+		
+		return new Data()
+				.setDatasets(chartDatasets);
+	}
+	
+	private Dataset createChartDataset(DataSet dataSet)
+	{
+		Color dataSetColor = dataSet.getColor();
+		RgbaColor chartColor =
+				new RgbaColor(dataSetColor.red, dataSetColor.green, dataSetColor.blue, 255);
+		
+		return new Dataset()
+				.setBackgroundColor(chartColor)
+				.setBorderColor(chartColor)
+				.setBorderWidth(1)
+				.setPointBorderWidth(0)
+				.setPointRadius(2)
+				.setData(SolrDAO.getCountByYearAsPoints(dataSet))
+				.setFill(false);
+	}
+	
 	@Override
-	public void renderHead(IHeaderResponse response)
+	public void onEvent(IEvent<?> event)
 	{
-		super.renderHead(response);
-		
-		response.render(JavaScriptHeaderItem.forReference(new PackageResourceReference(getClass(), "CasovyGraf.js")));
-		
-		response.render(OnDomReadyHeaderItem.forScript(
-				String.format("CasovyGraf.init('%s', %d, %d);",
-						getMarkupId(), rokOd, rokDo)));
-		
-		PageParameters searchParams = ((MainPage) getPage()).getCommonSearchParams();
-		response.render(OnDomReadyHeaderItem.forScript(
-				String.format("CasovyGraf.addChart('main', %s);",
-						getJsArrayOfResults(searchParams))));
-
-		response.render(OnDomReadyHeaderItem.forScript(
-				String.format("CasovyGraf.setMaxCount(%d);", maxCount)));
-		
-		response.render(OnDomReadyHeaderItem.forScript("CasovyGraf.redraw();"));
-	}
-
-
-	public String getJsArrayOfResults(PageParameters searchParams)
-	{
-		SolrQuery query = new SolrQuery();
-		SolrDAO.addEmptyQueryParameters(query);
-		query.addFacetField("publishDate");
-//		query.addSort("publishDate", ORDER.asc);
-		query.setFacetMinCount(1);
-		query.setRows(0);
-		
-		QueryResponse response = SolrDAO.getResponse(query);
-		FacetField publishPlaceFF = response.getFacetField("publishDate");
-		
-		StringBuilder sb = new StringBuilder("{ ");
-		Iterator<Count> it = publishPlaceFF.getValues().iterator();
-		while ( it.hasNext() )
+		if ( event.getPayload() instanceof FieldValuesChangedEvent 
+				|| event.getPayload() instanceof DataSetChangedEvent )
 		{
-			Count count = it.next();
+			AjaxEvent ev = (AjaxEvent) event.getPayload();
 			
-			if ( count.getCount() > maxCount )
-				maxCount = count.getCount();
+			chartConfiguration.setData(createChartData());
 			
-			String name = count.getName();
-			if ( name.isEmpty() )
-				continue;
-			
-			sb.append(count.getName());
-			sb.append(':');
-			sb.append(count.getCount());
-			
-			if ( it.hasNext() )
-				sb.append(", ");
+			ev.getTarget().add(chart);
 		}
-		
-		sb.append(" }");
-		
-		return sb.toString();
+	}
+	
+	private class GrafConfig extends ChartConfiguration implements Serializable
+	{
+		// Only beacause ChartConfiguration isn't Serializable in current version
 	}
 	
 }

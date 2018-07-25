@@ -5,10 +5,12 @@ import org.apache.wicket.Session;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.Response;
+import org.apache.wicket.resource.JQueryResourceReference;
 import org.apache.wicket.settings.ExceptionSettings.AjaxErrorStrategy;
 import com.disnel.knihoveda.dao.PlaceLocationDAO;
 import com.disnel.knihoveda.dao.SolrDAO;
 
+import de.adesso.wickedcharts.wicket8.JavaScriptResourceRegistry;
 import de.agilecoders.wicket.webjars.WicketWebjars;
 
 public class KnihovedaMapaApplication extends WebApplication
@@ -50,6 +52,9 @@ public class KnihovedaMapaApplication extends WebApplication
 		// Nastavit ruzne veci
 		getMarkupSettings().setStripWicketTags(true);
 		getExceptionSettings().setAjaxErrorHandlingStrategy(AjaxErrorStrategy.REDIRECT_TO_ERROR_PAGE);
+		
+		getJavaScriptLibrarySettings().setJQueryReference(JQueryResourceReference.getV1());
+		JavaScriptResourceRegistry.getInstance().setJQueryReference(JQueryResourceReference.getV1());
 	}
 	
 	@Override
