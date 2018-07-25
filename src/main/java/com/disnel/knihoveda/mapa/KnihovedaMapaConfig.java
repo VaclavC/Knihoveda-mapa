@@ -34,7 +34,7 @@ public class KnihovedaMapaConfig
 		new Color("#992929"),
 		new Color("#999929"),
 		new Color("#299929"),
-		new Color("#292999"),
+		new Color("#292999")
 	};
 	
 	public static final int CASOVY_GRAF_OD = 1500, CASOVY_GRAF_DO = 1800;

@@ -48,9 +48,10 @@ public class CasovyGraf extends Panel
 		
 		chartOptions = new Options()
 				.setResponsive(true)
+				.setMaintainAspectRatio(false)
 				.setScales(new Scales()
 						.setYAxes(new AxesScale()
-								.setDisplay(false))
+								.setDisplay(true))
 						.setXAxes(new AxesScale()
 								.setDisplay(true)
 								.setType("linear")
@@ -95,7 +96,8 @@ public class CasovyGraf extends Panel
 				.setPointBorderWidth(0)
 				.setPointRadius(2)
 				.setData(SolrDAO.getCountByYearAsPoints(dataSet))
-				.setFill(false);
+				.setFill(false)
+				.setLineTension(0);
 	}
 	
 	@Override
