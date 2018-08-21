@@ -2,8 +2,12 @@ package com.disnel.knihoveda.dao;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -73,7 +77,7 @@ public class SolrDAO
 		query.add("q", "geo:*");
 	}
 	
-	public static void addDataSetQueryParameters(SolrQuery query, DataSet dataSet)
+	public static void addDataSetQueryParameters(SolrQuery query, Collection<FieldValues> fieldValues)
 	{
 		StringBuilder qPars = new StringBuilder();
 		
@@ -81,7 +85,7 @@ public class SolrDAO
 		
 		String qParsDelim = " AND (";
 		String qParsEnd = "";
-		for ( FieldValues fv : dataSet.getFieldsValues() )
+		for ( FieldValues fv : fieldValues )
 			if ( !fv.isEmpty() )
 			{
 				qPars.append(qParsDelim);
@@ -92,7 +96,9 @@ public class SolrDAO
 					qPars.append(fvDelim);
 					qPars.append(fv.getName());
 					qPars.append(":");
+					qPars.append('"');
 					qPars.append(value);
+					qPars.append('"');
 					
 					fvDelim = " OR ";
 				}
@@ -104,6 +110,11 @@ public class SolrDAO
 		qPars.append(qParsEnd);
 		
 		query.add("q", qPars.toString());
+	}
+	
+	public static void addDataSetQueryParameters(SolrQuery query, DataSet dataSet)
+	{
+		addDataSetQueryParameters(query, dataSet.getFieldsValues());
 	}
 	
 	public static List<Group> getMapOverlays(DataSet dataSet)
@@ -159,6 +170,52 @@ public class SolrDAO
 		}
 		
 		return ret;
+	}
+	
+	/**
+	 * Vrati nazev pole pro facetove vyhledavani
+	 * 
+	 * @param fieldName
+	 * @return
+	 */
+	public static String facetFieldName(String fieldName)
+	{
+		return fieldName + "_facet";
+	}
+	
+	/**
+	 * Vrati mozne hodnoty pole s ohledem na ostatni vybrana pole
+	 * 
+	 * @param fieldName
+	 * @param dataSet
+	 * @return
+	 */
+	public static List<Count> getFieldValues(String fieldName, DataSet dataSet)
+	{
+		SolrQuery query = new SolrQuery();
+		
+		// Budeme pracovat s verzi pole uzpusobenou pro facet
+		String facetFieldName = facetFieldName(fieldName);
+		
+		// Tadu potrebujeme vsechny krome toho, pro ktere pole to delame
+		Collection<FieldValues> dataSetFieldValues = dataSet.getFieldsValues();
+		List<FieldValues> fieldValuesList = new ArrayList<>(dataSetFieldValues.size());
+		for ( FieldValues fv : dataSetFieldValues )
+			if ( !fieldName.contains(fv.getName()) )
+				fieldValuesList.add(fv);
+		
+		SolrDAO.addDataSetQueryParameters(query, fieldValuesList);
+		
+		query.addFacetField(facetFieldName);
+		query.setFacetLimit(-1);
+		query.setFacetMinCount(1);
+		query.setRows(0);
+		
+		QueryResponse response = SolrDAO.getResponse(query);
+		
+		FacetField ff = response.getFacetField(facetFieldName);
+		
+		return ff.getValues();
 	}
 	
 }

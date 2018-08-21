@@ -176,9 +176,9 @@ body {
 
 #vyberyDlePoli { position: fixed; top: 0.5em; left: 8em; right: 0; display: flex; }
 #vyberyDlePoli>div { padding-right: 1em; }
-#vyberyDlePoli .masterPrinter { flex-grow: 0.70; }
-#vyberyDlePoli .topic { flex-grow: 0.15; }
-#vyberyDlePoli .genre { flex-grow: 0.15; }
+#vyberyDlePoli .masterPrinter { flex-grow: 0.60; }
+#vyberyDlePoli .topic { flex-grow: 0.20; }
+#vyberyDlePoli .genre { flex-grow: 0.20; }
 .vyberDlePole .titul { font-weight: bold; font-size: 110%; }
 .vyberDlePole select { font-size: 80%; }
 

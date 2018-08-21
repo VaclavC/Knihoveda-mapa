@@ -3,6 +3,7 @@ package com.disnel.knihoveda.mapa;
 import org.apache.wicket.ajax.IAjaxIndicatorAware;
 import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
@@ -19,18 +20,20 @@ public class MainPage extends WebPage implements IAjaxIndicatorAware
 	{
 		super(parameters);
 		
-		add(new MapaPanel("mapa"));
+//		add(new MapaPanel("mapa"));
+		add(new WebMarkupContainer("mapa"));
 	
-		add(new CasovyGraf("casovyGraf",
-			KnihovedaMapaConfig.CASOVY_GRAF_OD, KnihovedaMapaConfig.CASOVY_GRAF_DO,
-			MapaSession.get().maxCountInPlace()));
+//		add(new CasovyGraf("casovyGraf",
+//			KnihovedaMapaConfig.CASOVY_GRAF_OD, KnihovedaMapaConfig.CASOVY_GRAF_DO,
+//			MapaSession.get().maxCountInPlace()));
+		add(new WebMarkupContainer("casovyGraf"));
 		
 		RepeatingView vybery;
 		add(vybery = new RepeatingView("vyber"));
 		
 		vybery.add(new VyberDlePole(vybery.newChildId(), "masterPrinter"));
 		vybery.add(new VyberDlePole(vybery.newChildId(), "topic"));
-		vybery.add(new VyberDlePole(vybery.newChildId(), "genre"));
+//		vybery.add(new VyberDlePole(vybery.newChildId(), "genre"));
 		
 		add(new DataSetSwitcherPanel("dataSetSwitcher"));
 	}
