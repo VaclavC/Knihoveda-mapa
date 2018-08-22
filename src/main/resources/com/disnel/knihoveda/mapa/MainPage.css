@@ -187,8 +187,19 @@ body {
 /* Prepinac datovych sad */
 
 #dataSetSwitcher { position: fixed; top: 8em; left: 0; z-index: 999; }
-#dataSetSwitcher i { display: block; font-size: 24px; padding: 0.2em; padding-left: 1em; margin-bottom: 0.2em; cursor: pointer; }
-#dataSetSwitcher i.current { background: rgba(0, 0, 0, 0.35); }
+.dataSetItem {
+	padding: 0.4em 0.6em 0.4em 1em; margin-bottom: 0.5em; white-space: nowrap;
+	font-size: 18px; color: white;
+	border-radius: 0 4px 4px 0;
+	display: flex;
+}
+.dataSetItem .tools { flex-grow: 1; text-align: right; letter-spacing: 0.1em; margin-left: 0.6em; }
+.dataSetItem .tools a { font-size: 16px; }
+.dataSetItem.new i { font-size: 24px; }
+.dataSetItem a { cursor: pointer; }
+.dataSetItem a.button:hover { color: #FF9C00; }
+.dataSetItem a.button.hidden i { visibility: hidden; }
+.dataSetItem a.button.hidden:hover i { visibility: visible; }
 
 /******************/
 /* Ajax indicator */

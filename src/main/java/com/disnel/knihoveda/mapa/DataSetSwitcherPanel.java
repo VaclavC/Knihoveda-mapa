@@ -26,43 +26,65 @@ public class DataSetSwitcherPanel extends Panel
 		
 		setOutputMarkupId(true);
 		
-		add(new ListView<DataSet>("dataSets", MapaSession.get().dataSets())
+		add(new ListView<DataSet>("dataSet", MapaSession.get().dataSets())
 		{
 			@Override
 			protected void populateItem(ListItem<DataSet> item)
 			{
 				DataSet dataSet = item.getModelObject();
 				
-				Component symbol;
-				item.add(symbol = new WebMarkupContainer("dataSetSymbol", Model.of(dataSet)));
-				symbol.add(new AttributeAppender("style", "color: " + dataSet.getColor().toString(), ";"));
+				item.add(new AttributeAppender("style", "background-color: " + dataSet.getColor().toString(), ";"));
 				
-				symbol.add(new AjaxEventBehavior("click")
-				{
-					@Override
-					protected void onEvent(AjaxRequestTarget target)
-					{
-						DataSet dataSet = (DataSet) getComponent().getDefaultModelObject();
-						
-						setCurrentDataSet(target, dataSet);
-					}
-				});
+				Component isActive, setActive, delete;
+				item.add(isActive = new WebMarkupContainer("isActive"));
+				item.add(setActive = new WebMarkupContainer("setActive", item.getDefaultModel())
+						.add(new AjaxEventBehavior("click")
+						{
+							@Override
+							protected void onEvent(AjaxRequestTarget target)
+							{
+								DataSet dataSet = (DataSet) getComponent().getDefaultModelObject();
+								
+								setCurrentDataSet(target, dataSet);
+							}
+						}));
+				item.add(delete = new WebMarkupContainer("delete", item.getDefaultModel())
+						.add(new AjaxEventBehavior("click")
+						{
+							@Override
+							protected void onEvent(AjaxRequestTarget target)
+							{
+								DataSet dataSet = (DataSet) getComponent().getDefaultModelObject();
+								
+								DataSet mainDataSet = MapaSession.get().dataSets().get(0); 
+								
+								if ( dataSet == mainDataSet )
+									return;
+								
+								MapaSession.get().removeDataSet(dataSet);
+								MapaSession.get().freeDataSetColor(dataSet.getColor());
+								
+								setCurrentDataSet(target, mainDataSet);
+							}
+						}));
 				
 				if ( dataSet == MapaSession.get().currentDataSet() )
-					symbol.add(new CssClassNameAppender("current"));
+					setActive.setVisible(false);
+				else
+					isActive.setVisible(false);
+				
+				if ( dataSet == MapaSession.get().dataSets().get(0) )
+					delete.setVisible(false);
 			}
 		});
 		
 		Component dataSetNew;
 		add(dataSetNew = new WebMarkupContainer("dataSetNew"));
 		
-		Color dataSetNewColor = MapaSession.get().newDataSetColor();
-		if ( dataSetNewColor == null )
+		
+		if ( MapaSession.get().hasNewDataSetColor() )
 		{
-			dataSetNew.setVisible(false);
-		}
-		else
-		{
+			Color dataSetNewColor = MapaSession.get().newDataSetColor();
 			dataSetNew.add(new AttributeAppender("style", "color: " + dataSetNewColor.toString(), "; "));
 			dataSetNew.setDefaultModel(Model.of(dataSetNewColor));
 			
@@ -72,12 +94,17 @@ public class DataSetSwitcherPanel extends Panel
 				protected void onEvent(AjaxRequestTarget target)
 				{
 					Color dataSetNewColor = (Color) getComponent().getDefaultModelObject();
-					DataSet dataSet = new DataSet(null, dataSetNewColor);
+					DataSet dataSet = new DataSet(dataSetNewColor);
 					MapaSession.get().addDataSet(dataSet);
+					MapaSession.get().useDataSetColor(dataSetNewColor);
 					
 					setCurrentDataSet(target, dataSet);
 				}
 			});
+		}
+		else
+		{
+			dataSetNew.setVisible(false);
 		}
 	}
 	

@@ -4,11 +4,18 @@
 
 <wicket:panel>
 
-<wicket:container wicket:id="dataSets">
-	<i wicket:id="dataSetSymbol" class="symbol fa fa-circle" aria-hidden="true"></i>
-</wicket:container>
+<div wicket:id="dataSet" class="dataSetItem">
+	<span wicket:id="isActive" class="button"><i class="symbol fa fa-check" aria-hidden="true"></i></span>
+	<a wicket:id="setActive" class="button hidden"><i class="symbol fa fa-check" aria-hidden="true"></i></a>
+	<div class="tools">
+		<a wicket:id="delete" class="button"><i class="symbol fa fa-trash" aria-hidden="true"></i></a>
+		<a class="button"><i class="symbol fa fa-angle-double-right" aria-hidden="true"></i></a>
+	</div>
+</div>
 
-<i wicket:id="dataSetNew" class="symbol fa fa-circle-o" aria-hidden="true"></i>
+<div class="dataSetItem new">
+	<a wicket:id="dataSetNew" class="button"><i class="symbol fa fa-plus-square" aria-hidden="true"></i></a>
+</div>
 
 </wicket:panel>
 
