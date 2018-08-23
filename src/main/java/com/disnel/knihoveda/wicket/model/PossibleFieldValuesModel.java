@@ -7,7 +7,6 @@ import org.apache.wicket.model.LoadableDetachableModel;
 
 import com.disnel.knihoveda.dao.SolrDAO;
 import com.disnel.knihoveda.mapa.MapaSession;
-import com.disnel.knihoveda.mapa.data.FieldValues;
 
 public class PossibleFieldValuesModel extends LoadableDetachableModel<List<Count>>
 {

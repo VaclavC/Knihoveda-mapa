@@ -1,7 +1,6 @@
 package com.disnel.knihoveda.mapa;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import org.apache.solr.client.solrj.response.FacetField.Count;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -16,7 +15,6 @@ import com.disnel.knihoveda.mapa.events.DataSetChangedEvent;
 import com.disnel.knihoveda.mapa.events.FieldValuesChangedEvent;
 import com.disnel.knihoveda.wicket.VyberDlePoleMultiSelect;
 import com.disnel.knihoveda.wicket.model.PossibleFieldValuesModel;
-import com.disnel.knihoveda.wicket.model.SelectedFieldValuesModel;
 import com.googlecode.wicket.kendo.ui.form.multiselect.lazy.MultiSelect;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.behavior.CssClassNameAppender;

@@ -4,10 +4,17 @@
 
 <wicket:panel>
 
-<i wicket:id="symbol" class="symbol fa fa-circle" aria-hidden="true"></i>
+<div wicket:id="bottomDot" class="bottomDot">&nbsp;</div>
+<div class="graph">
+	<div wicket:id="result" class="bar">&nbsp;</div>
+</div>
+
 <div wicket:id="detail" class="detail">
-	<span wicket:id="misto" class="misto">MISTO</span>
-	<span wicket:id="pocet" class="pocet">POCET</span>
+	<div wicket:id="nazevMista" class="nazevMista">[NAZEV MISTA]</div>
+	<div wicket:id="vysledek" class="vysledek">
+		<span wicket:id="dataSetIndicator" class="dataSetIndicator">&nbsp;</span>
+		<span wicket:id="pocet" class="pocet">[POCET]</span>
+	</div>
 </div>
 
 </wicket:panel>

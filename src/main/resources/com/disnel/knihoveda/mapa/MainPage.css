@@ -147,18 +147,29 @@ body {
 #mapa-content { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
 
 .mistoOverlay { cursor: pointer; }
-.mistoOverlay .symbol { transform: translate(-50%, -50%); }
+.mistoOverlay .bottomDot {
+	position: absolute; width: 14px; height: 14px; left: -15px; top: -15px; margin: 8px;
+	border-radius: 50%;
+	background-image:
+		linear-gradient(180deg, transparent 50%, black 50%),
+		linear-gradient(  0deg, black 50%, transparent 50%);
+}
+.mistoOverlay .graph {
+	position: absolute; transform: translate(-50%, -100%); padding: 0 2px; min-width: 18px;
+	border-bottom: solid 2px black;
+	display: flex; justify-content: center;
+}
+.mistoOverlay .graph .bar { align-self: flex-end; margin: 0 1px; width: 8px; }
 
 .mistoOverlay .detail {
-	position: absolute; top: -8px; left: -8px;
-	background: rgba(255, 255, 255, 0.8); color: black;
-	padding: 1em; border: solid 2px black; border-radius: 8px;
-	z-index: 9999;
+	position: absolute; transform: translate(-50%, -50%);
+	background: white; border: solid 1px black; border-radius: 4px;
+	font-size: 14px;
 	display: none;
 }
-.mistoOverlay .detail>span { display: block; text-align: center; }
-.mistoOverlay .detail>span.misto { font-weight: bolder; }
-.mistoOverlay .detail>span.pocet { font-size: 85%; }
+.mistoOverlay .detail .nazevMista { background: black; color: white; font-weight: bold; padding: 0.5em; }
+.mistoOverlay .detail .vysledek { margin: 0.5em 0; padding: 0 0.5em; white-space: nowrap; }
+.mistoOverlay .detail .vysledek .dataSetIndicator { display: inline-block; width: 1em; height: 1em; }
 
 /***************/
 /* Casovy graf */

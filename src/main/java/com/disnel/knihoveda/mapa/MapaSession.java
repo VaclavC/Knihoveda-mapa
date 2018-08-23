@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.solr.client.solrj.response.Group;
 import org.apache.wicket.protocol.http.WebSession;
 import org.apache.wicket.request.Request;
 import org.wicketstuff.openlayers3.api.util.Color;
@@ -143,15 +142,7 @@ public class MapaSession extends WebSession
 	
 	private void initMaxCountInPlace()
 	{
-		List<Group> solrGroups = SolrDAO.getMapOverlays(currentDataSet);
-
-		maxCountInPlace = 0;
-		for (Group group : solrGroups)
-		{
-			long count = group.getResult().getNumFound();
-			if (maxCountInPlace < count)
-				maxCountInPlace = count;
-		}
+		maxCountInPlace = SolrDAO.findMaxCountInPlace(currentDataSet);
 	}
 	
 	public long maxCountInPlace()

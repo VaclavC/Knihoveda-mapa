@@ -15,8 +15,6 @@ import org.wicketstuff.openlayers3.api.util.Color;
 import com.disnel.knihoveda.mapa.data.DataSet;
 import com.disnel.knihoveda.mapa.events.DataSetChangedEvent;
 
-import de.agilecoders.wicket.core.markup.html.bootstrap.behavior.CssClassNameAppender;
-
 public class DataSetSwitcherPanel extends Panel
 {
 

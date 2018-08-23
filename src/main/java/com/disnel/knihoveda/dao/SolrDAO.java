@@ -2,25 +2,27 @@ package com.disnel.knihoveda.dao;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
-
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.FacetField.Count;
+import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.params.FacetParams;
+import org.wicketstuff.openlayers3.api.coordinate.Coordinate;
+import org.wicketstuff.openlayers3.api.geometry.Point;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.Group;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import com.disnel.knihoveda.mapa.KnihovedaMapaConfig;
+import com.disnel.knihoveda.mapa.MapaSession;
 import com.disnel.knihoveda.mapa.data.DataSet;
 import com.disnel.knihoveda.mapa.data.FieldValues;
+import com.disnel.knihoveda.mapa.data.ResultsInPlace;
 
 import de.adesso.wickedcharts.chartjs.chartoptions.valueType.PointValue;
 
@@ -117,26 +119,6 @@ public class SolrDAO
 		addDataSetQueryParameters(query, dataSet.getFieldsValues());
 	}
 	
-	public static List<Group> getMapOverlays(DataSet dataSet)
-	{
-		// Pripravit dotaz
-		SolrQuery query = new SolrQuery();
-		SolrDAO.addDataSetQueryParameters(query, dataSet);
-		query.addField("publishPlace");
-		query.addField("long_lat");
-		query.add("group", "true");
-		query.add("group.field", "publishPlace");
-		query.setRows(-1);
-		
-		
-		// Ziskat odpoved
-		QueryResponse response = SolrDAO.getResponse(query);
-		List<Group> resGroups = response.getGroupResponse().getValues().get(0).getValues();
-	
-		// Vratit vysledek
-		return resGroups;
-	}
-	
 	public static List<Count> getCountByYear(DataSet dataSet)
 	{
 		SolrQuery query = new SolrQuery();
@@ -217,5 +199,99 @@ public class SolrDAO
 		
 		return ff.getValues();
 	}
+
+	/**
+	 * Zjisti pocty zaznamu pro jednotliva geograficka mista pro danou datovou sadu
+	 * 
+	 * @param dataSet
+	 * @return
+	 */
+	private static List<Group> resultsInPlacesForDataSet(DataSet dataSet)
+	{
+		// Pripravit dotaz
+		SolrQuery query = new SolrQuery();
+		SolrDAO.addDataSetQueryParameters(query, dataSet);
+		query.addField("publishPlace");
+		query.addField("long_lat");
+		query.add("group", "true");
+		query.add("group.field", "publishPlace");
+		query.setRows(-1);
+		
+		
+		// Ziskat odpoved
+		QueryResponse response = SolrDAO.getResponse(query);
+		List<Group> resGroups = response.getGroupResponse().getValues().get(0).getValues();
 	
+		// Vratit vysledek
+		return resGroups;
+	}
+	
+	/**
+	 * Nacte pocty vysledku pro datove sady ve vsech mistech
+	 * 
+	 * @return
+	 */
+	public static List<ResultsInPlace> loadResultsInPlaces()
+	{
+		LinkedHashMap<String, ResultsInPlace> resultsInPlaces = new LinkedHashMap<>();
+		
+		for ( DataSet dataSet : MapaSession.get().dataSets() )
+		{
+			for ( Group group : resultsInPlacesForDataSet(dataSet) )
+			{
+				if ( group.getGroupValue() != null )
+				{
+					Long count = group.getResult().getNumFound();
+					
+					SolrDocument doc = group.getResult().get(0);
+					String placeName = (String) doc.getFieldValue("publishPlace");
+					Point placePoint = pointFromString((String) doc.getFieldValue("long_lat"));
+					
+					ResultsInPlace resultsInPlace = resultsInPlaces.get(placeName);
+					if ( resultsInPlace == null )
+					{
+						resultsInPlace = new ResultsInPlace(placeName, placePoint);
+						resultsInPlaces.put(placeName, resultsInPlace);
+					}
+					
+					resultsInPlace.setNumResultsForDataSet(dataSet, count);
+				}			
+			}
+		}
+
+		return new ArrayList<ResultsInPlace>(resultsInPlaces.values());
+	}
+
+	/**
+	 * Zjisti maximalni pocet zaznamu v jednom geografickem miste
+	 * 
+	 * @return
+	 */
+	public static long findMaxCountInPlace(DataSet dataSet)
+	{
+		long maxCountInPlace = 0;
+		for ( Group group : resultsInPlacesForDataSet(dataSet) )
+		{
+			long count = group.getResult().getNumFound();
+			if (maxCountInPlace < count)
+				maxCountInPlace = count;
+		}
+		
+		return maxCountInPlace;
+	}
+	
+	/**
+	 * Pomocna metoda
+	 * 
+	 * @param coordinates
+	 * @return
+	 */
+	private static Point pointFromString(String coordinates)
+	{
+		String[] parts = coordinates.split(",");
+		double lat = Double.parseDouble(parts[0]);
+		double lon = Double.parseDouble(parts[1]);
+
+		return new Point(new Coordinate(lon, lat));
+	}
 }
