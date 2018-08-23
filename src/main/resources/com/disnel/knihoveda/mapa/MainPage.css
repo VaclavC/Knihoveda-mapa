@@ -158,6 +158,7 @@ body {
 	position: absolute; transform: translate(-50%, -100%); padding: 0 2px; min-width: 18px;
 	border-bottom: solid 2px black;
 	display: flex; justify-content: center;
+	pointer-events: none;
 }
 .mistoOverlay .graph .bar { align-self: flex-end; margin: 0 1px; width: 8px; }
 
