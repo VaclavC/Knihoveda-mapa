@@ -38,7 +38,7 @@ public class VyberDlePole extends Panel
 		
 		add(new CssClassNameAppender(this.fieldName));
 		
-		add(new Label("titul", this.fieldName));
+		add(new Label("titul", getString("field." + this.fieldName)));
 		
 		Form<Void> form;
 		add(form = new Form<Void>("form"));

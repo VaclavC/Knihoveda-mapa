@@ -33,6 +33,7 @@ public class MainPage extends WebPage implements IAjaxIndicatorAware
 		vybery.add(new VyberDlePole(vybery.newChildId(), "masterPrinter"));
 		vybery.add(new VyberDlePole(vybery.newChildId(), "topic"));
 		vybery.add(new VyberDlePole(vybery.newChildId(), "genre"));
+		vybery.add(new VyberDlePole(vybery.newChildId(), "language"));
 		
 		add(new DataSetSwitcherPanel("dataSetSwitcher"));
 	}

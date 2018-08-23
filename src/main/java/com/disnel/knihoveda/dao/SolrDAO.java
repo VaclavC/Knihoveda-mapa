@@ -162,7 +162,10 @@ public class SolrDAO
 	 */
 	public static String facetFieldName(String fieldName)
 	{
-		return fieldName + "_facet";
+		if ( KnihovedaMapaConfig.FILEDS_WITH_SEPARATE_FACET.contains(fieldName) )
+			return fieldName + KnihovedaMapaConfig.FACET_FIELD_SUFFIX;
+		else
+			return fieldName;
 	}
 	
 	/**

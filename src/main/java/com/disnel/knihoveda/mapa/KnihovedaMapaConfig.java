@@ -3,7 +3,10 @@ package com.disnel.knihoveda.mapa;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.wicket.protocol.http.WebApplication;
 import org.wicketstuff.openlayers3.api.util.Color;
@@ -54,9 +57,12 @@ public class KnihovedaMapaConfig
 	
 	public static final int CASOVY_GRAF_OD = 1500, CASOVY_GRAF_DO = 1800;
 	
-	/**
-	 * Load configuration
-	 */
+	// Pole, ktera potrebuji pridavat _facet pro facetove vyhledavani
+	public static final Set<String> FILEDS_WITH_SEPARATE_FACET = 
+			new HashSet<>(Arrays.asList(
+					"author", "author2", "author_KVO", "avail", "sublocation", "era",
+					"format", "genre", "geographic", "masterPrinter",  "topic"));
+	public static final String FACET_FIELD_SUFFIX = "_facet";
 	public static void load()
 	{
 		String configFileName = System.getProperty(APP_CONFIG_PROPERTY);
