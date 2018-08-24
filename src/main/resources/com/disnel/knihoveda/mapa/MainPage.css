@@ -203,15 +203,30 @@ body {
 	padding: 0.4em 0.6em 0.4em 1em; margin-bottom: 0.5em; white-space: nowrap;
 	font-size: 18px; color: white;
 	border-radius: 0 4px 4px 0;
-	display: flex;
+	display: flex; position: relative;
 }
 .dataSetItem .tools { flex-grow: 1; text-align: right; letter-spacing: 0.1em; margin-left: 0.6em; }
 .dataSetItem .tools a { font-size: 16px; }
 .dataSetItem.new i { font-size: 24px; }
-.dataSetItem a { cursor: pointer; }
+.dataSetItem a { cursor: pointer; color: white; text-decoration: none; }
 .dataSetItem a.button:hover { color: #FF9C00; }
 .dataSetItem a.button.hidden i { visibility: hidden; }
 .dataSetItem a.button.hidden:hover i { visibility: visible; }
+
+.dataSetItem .detail {
+	position: absolute; top: 0; left: 100%; margin-left: 8px; border-radius: 4px; min-width: 25vw; font-size: 18px;
+	display: none;
+}
+.dataSetItem .detail .connection { position: absolute; top: 0; left: -12px; width: 12px; margin: 0.4em 0; background: inherit; }
+.dataSetItem .detail .heading { background-color: black; font-weight: bold; padding: 0.4em; }
+.dataSetItem .detail .heading:first-child { border-radius: 4px 4px 0 0; }
+.dataSetItem .detail .heading:last-child { border-radius: 0 0 4px 4px; }
+.dataSetItem .detail .line { padding: 0 0.5em; margin: 0.5em 0; }
+.dataSetItem .detail .line .fieldName { font-style: oblique; font-size: 90%; text-decoration: underline; }
+.dataSetItem .detail .line .fieldName:after { content: ":"; }
+.dataSetItem .detail .line .values { margin-top: 0.2em; padding: 0 2em; }
+.dataSetItem .detail .line .values .value {}
+.dataSetItem .detail .line .values .value:not(:first-child):before { content: ", "; }
 
 /******************/
 /* Ajax indicator */

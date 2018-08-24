@@ -1,11 +1,15 @@
 package com.disnel.knihoveda.mapa;
 
+import java.util.ArrayList;
+
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.event.Broadcast;
+import org.apache.wicket.event.IEvent;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -13,7 +17,10 @@ import org.apache.wicket.model.Model;
 import org.wicketstuff.openlayers3.api.util.Color;
 
 import com.disnel.knihoveda.mapa.data.DataSet;
+import com.disnel.knihoveda.mapa.data.FieldValues;
+import com.disnel.knihoveda.mapa.events.AjaxEvent;
 import com.disnel.knihoveda.mapa.events.DataSetChangedEvent;
+import com.disnel.knihoveda.mapa.events.FieldValuesChangedEvent;
 
 public class DataSetSwitcherPanel extends Panel
 {
@@ -31,9 +38,10 @@ public class DataSetSwitcherPanel extends Panel
 			{
 				DataSet dataSet = item.getModelObject();
 				
+				// Prime zobrazeni
 				item.add(new AttributeAppender("style", "background-color: " + dataSet.getColor().toString(), ";"));
 				
-				Component isActive, setActive, delete;
+				Component isActive, setActive, delete, openDetail;
 				item.add(isActive = new WebMarkupContainer("isActive"));
 				item.add(setActive = new WebMarkupContainer("setActive", item.getDefaultModel())
 						.add(new AjaxEventBehavior("click")
@@ -65,6 +73,7 @@ public class DataSetSwitcherPanel extends Panel
 								setCurrentDataSet(target, mainDataSet);
 							}
 						}));
+				item.add(openDetail = new WebMarkupContainer("openDetail"));
 				
 				if ( dataSet == MapaSession.get().currentDataSet() )
 					setActive.setVisible(false);
@@ -73,6 +82,49 @@ public class DataSetSwitcherPanel extends Panel
 				
 				if ( dataSet == MapaSession.get().dataSets().get(0) )
 					delete.setVisible(false);
+				
+				// Rozklikavaci detail
+				WebMarkupContainer detail;
+				item.add(detail = new WebMarkupContainer("detail"));
+				detail.add(new AttributeAppender("style",
+						String.format("background-color: %s;", dataSet.getColor().toString()),
+						";"));
+				detail.setOutputMarkupId(true);
+				
+				Component fieldValuesList;
+				detail.add(fieldValuesList = new ListView<FieldValues>("fieldValues", new ArrayList<FieldValues>(dataSet.getFieldsValues()))
+				{
+					@Override
+					protected void populateItem(ListItem<FieldValues> item)
+					{
+						FieldValues fieldValues = item.getModelObject();
+						
+						item.add(new Label("name", fieldValues.getName()));
+						
+						item.add(new ListView<String>("value", new ArrayList<String>(fieldValues.getValues()))
+						{
+							@Override
+							protected void populateItem(ListItem<String> item)
+							{
+								String value = item.getModelObject();
+								
+								item.add(new Label("content", value));
+							}
+						});
+					}
+				});
+				
+				Component empty;
+				detail.add(empty = new WebMarkupContainer("empty"));
+				
+				if ( dataSet.getFieldsValues().isEmpty() )
+					fieldValuesList.setVisible(false);
+				else
+					empty.setVisible(false);
+				
+				// Zobrazovani a mizeni detailu
+				openDetail.add(new AttributeAppender("onclick",
+						String.format("$('#%s').toggle();", detail.getMarkupId()), ";"));
 			}
 		});
 		
@@ -106,14 +158,30 @@ public class DataSetSwitcherPanel extends Panel
 		}
 	}
 	
+	private void redraw(AjaxRequestTarget target)
+	{
+		DataSetSwitcherPanel newPanel;
+		this.replaceWith(newPanel = new DataSetSwitcherPanel(getId()));
+		target.add(newPanel);
+	}
+	
 	private void setCurrentDataSet(AjaxRequestTarget target, DataSet dataSet)
 	{
 		MapaSession.get().currentDataSet(dataSet);
 		send(getPage(), Broadcast.BREADTH, new DataSetChangedEvent(target, dataSet));
 
-		Component newPanel = new DataSetSwitcherPanel(getId());
-		replaceWith(newPanel);
-		target.add(newPanel);
+		redraw(target);
+	}
+
+	@Override
+	public void onEvent(IEvent<?> event)
+	{
+		if ( event.getPayload() instanceof FieldValuesChangedEvent )
+		{
+			AjaxEvent ev = (AjaxEvent) event.getPayload();
+			
+			redraw(ev.getTarget());
+		}
 	}
 
 }
