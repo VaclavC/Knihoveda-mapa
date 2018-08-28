@@ -2,13 +2,13 @@ package com.disnel.knihoveda.wicket.model;
 
 import java.util.List;
 
-import org.apache.solr.client.solrj.response.FacetField.Count;
 import org.apache.wicket.model.LoadableDetachableModel;
 
 import com.disnel.knihoveda.dao.SolrDAO;
 import com.disnel.knihoveda.mapa.MapaSession;
+import com.disnel.knihoveda.mapa.data.FacetFieldCountWrapper;
 
-public class PossibleFieldValuesModel extends LoadableDetachableModel<List<Count>>
+public class PossibleFieldValuesModel extends LoadableDetachableModel<List<FacetFieldCountWrapper>>
 {
 	
 	private String fieldName;
@@ -19,7 +19,7 @@ public class PossibleFieldValuesModel extends LoadableDetachableModel<List<Count
 	}
 
 	@Override
-	protected List<Count> load()
+	protected List<FacetFieldCountWrapper> load()
 	{
 		return SolrDAO.getFieldValues(fieldName, MapaSession.get().currentDataSet());
 	}

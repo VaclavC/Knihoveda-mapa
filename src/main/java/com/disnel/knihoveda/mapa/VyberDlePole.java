@@ -2,7 +2,6 @@ package com.disnel.knihoveda.mapa;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.solr.client.solrj.response.FacetField.Count;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.event.Broadcast;
 import org.apache.wicket.event.IEvent;
@@ -10,6 +9,9 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.ResourceModel;
+
+import com.disnel.knihoveda.mapa.data.FacetFieldCountWrapper;
 import com.disnel.knihoveda.mapa.events.AjaxEvent;
 import com.disnel.knihoveda.mapa.events.DataSetChangedEvent;
 import com.disnel.knihoveda.mapa.events.FieldValuesChangedEvent;
@@ -24,9 +26,9 @@ public class VyberDlePole extends Panel
 
 	private String fieldName;
 	
-	private IModel<List<Count>> possibleValuesModel;
+	private IModel<List<FacetFieldCountWrapper>> possibleValuesModel;
 	
-	private MultiSelect<Count> selectInst;
+	private MultiSelect<FacetFieldCountWrapper> selectInst;
 	
 	public VyberDlePole(String id, String fieldName)
 	{
@@ -38,7 +40,7 @@ public class VyberDlePole extends Panel
 		
 		add(new CssClassNameAppender(this.fieldName));
 		
-		add(new Label("titul", getString("field." + this.fieldName)));
+		add(new Label("titul", new ResourceModel("field." + this.fieldName)));
 		
 		Form<Void> form;
 		add(form = new Form<Void>("form"));
@@ -64,11 +66,11 @@ public class VyberDlePole extends Panel
 				// A na ziskani List<Count> uz by to ten Vyber mel vratit sam, ne to resit tady
 				
 				@SuppressWarnings("unchecked")
-				List<Count> selected = (List<Count>) getDefaultModelObject();
+				List<FacetFieldCountWrapper> selected = (List<FacetFieldCountWrapper>) getDefaultModelObject();
 				
 				List<String> values = new ArrayList<>();
-				for ( Count count : selected )
-					values.add(count.getName());
+				for ( FacetFieldCountWrapper count : selected )
+					values.add(count.getValue());
 				
 				MapaSession.get().currentDataSet().setFieldValues(fieldName, values);
 				

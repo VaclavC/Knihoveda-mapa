@@ -21,6 +21,7 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import com.disnel.knihoveda.mapa.KnihovedaMapaConfig;
 import com.disnel.knihoveda.mapa.MapaSession;
 import com.disnel.knihoveda.mapa.data.DataSet;
+import com.disnel.knihoveda.mapa.data.FacetFieldCountWrapper;
 import com.disnel.knihoveda.mapa.data.FieldValues;
 import com.disnel.knihoveda.mapa.data.ResultsInPlace;
 
@@ -175,7 +176,7 @@ public class SolrDAO
 	 * @param dataSet
 	 * @return
 	 */
-	public static List<Count> getFieldValues(String fieldName, DataSet dataSet)
+	public static List<FacetFieldCountWrapper> getFieldValues(String fieldName, DataSet dataSet)
 	{
 		SolrQuery query = new SolrQuery();
 		
@@ -199,8 +200,15 @@ public class SolrDAO
 		QueryResponse response = SolrDAO.getResponse(query);
 		
 		FacetField ff = response.getFacetField(facetFieldName);
+		List<Count> res = ff.getValues();
 		
-		return ff.getValues();
+		List<FacetFieldCountWrapper> ret = new ArrayList<>(res.size());
+		Iterator<Count> it = res.iterator();
+		while (it.hasNext())
+			ret.add(new FacetFieldCountWrapper(it.next()));
+				
+		
+		return ret;
 	}
 
 	/**
