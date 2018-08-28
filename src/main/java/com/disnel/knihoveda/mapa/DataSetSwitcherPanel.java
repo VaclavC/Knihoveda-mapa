@@ -99,7 +99,7 @@ public class DataSetSwitcherPanel extends Panel
 					{
 						FieldValues fieldValues = item.getModelObject();
 						
-						item.add(new Label("name", fieldValues.getName()));
+						item.add(new Label("name", VyberDlePole.getFieldNameModel(fieldValues.getName())));
 						
 						item.add(new ListView<String>("value", new ArrayList<String>(fieldValues.getValues()))
 						{

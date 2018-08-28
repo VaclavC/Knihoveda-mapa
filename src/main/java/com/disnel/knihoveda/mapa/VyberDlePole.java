@@ -40,20 +40,12 @@ public class VyberDlePole extends Panel
 		
 		add(new CssClassNameAppender(this.fieldName));
 		
-		add(new Label("titul", new ResourceModel("field." + this.fieldName)));
+		add(new Label("titul", getFieldNameModel(this.fieldName)));
 		
 		Form<Void> form;
 		add(form = new Form<Void>("form"));
 
 		possibleValuesModel = new PossibleFieldValuesModel(fieldName);
-		
-//		List<Count> selected = new ArrayList<>();
-//		DataSet dataSet = MapaSession.get().currentDataSet();
-//		FieldValues fieldValues = dataSet.getFieldValues(this.fieldName);
-//		if ( fieldValues != null )
-//			for ( Count count : fieldValuesModel.getObject() )
-//				if ( fieldValues.getValues().contains(count.getName()) )
-//					selected.add(count);
 		
 		form.add(selectInst = new VyberDlePoleMultiSelect("select", fieldName, possibleValuesModel)
 		{
@@ -90,6 +82,11 @@ public class VyberDlePole extends Panel
 			
 			selectInst.refresh(ev.getTarget());
 		}
+	}
+	
+	public static ResourceModel getFieldNameModel(String fieldName)
+	{
+		return new ResourceModel("field." + fieldName);
 	}
 	
 }
