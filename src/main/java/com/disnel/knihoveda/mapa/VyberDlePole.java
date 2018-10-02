@@ -10,6 +10,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
+import org.wicketstuff.openlayers3.api.util.Color;
 
 import com.disnel.knihoveda.mapa.data.FacetFieldCountWrapper;
 import com.disnel.knihoveda.mapa.events.AjaxEvent;
@@ -81,6 +82,19 @@ public class VyberDlePole extends Panel
 			AjaxEvent ev = (AjaxEvent) event.getPayload();
 			
 			selectInst.refresh(ev.getTarget());
+			
+			if ( ev instanceof DataSetChangedEvent )
+			{
+				DataSetChangedEvent myEv = (DataSetChangedEvent) ev;
+				Color color = myEv.getDataSet().getColor();
+	
+				String js = String.format(
+						"$('.vyberDlePole .k-multiselect-wrap').css('background-color', '%s');",
+						String.format("#%02x%02x%02x",
+								color.red, color.green, color.blue)); 
+				
+				ev.getTarget().appendJavaScript(js);
+			}
 		}
 	}
 	
