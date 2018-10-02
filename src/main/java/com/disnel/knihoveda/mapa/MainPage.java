@@ -3,6 +3,7 @@ package com.disnel.knihoveda.mapa;
 import org.apache.wicket.ajax.IAjaxIndicatorAware;
 import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
@@ -51,8 +52,13 @@ public class MainPage extends WebPage implements IAjaxIndicatorAware
 	{
 		super.renderHead(response);
 		
+		// CSS
 		response.render(CssHeaderItem.forReference(FontAwesomeCssReference.instance()));
 		response.render(CssHeaderItem.forReference(new CssResourceReference(MainPage.class, "MainPage.css")));
+		
+		// Prebarvit selecty
+		response.render(OnDomReadyHeaderItem.forScript(
+				VyberDlePole.getJSSetSelectColor(MapaSession.get().currentDataSet().getColor())));
 	}
 
 	@Override

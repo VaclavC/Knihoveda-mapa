@@ -83,19 +83,23 @@ public class VyberDlePole extends Panel
 			
 			selectInst.refresh(ev.getTarget());
 			
-			if ( ev instanceof DataSetChangedEvent )
+			if ( ev instanceof DataSetChangedEvent && !ev.isProcessedBy(getClass()) )
 			{
 				DataSetChangedEvent myEv = (DataSetChangedEvent) ev;
 				Color color = myEv.getDataSet().getColor();
 	
-				String js = String.format(
-						"$('.vyberDlePole .k-multiselect-wrap').css('background-color', '%s');",
-						String.format("#%02x%02x%02x",
-								color.red, color.green, color.blue)); 
-				
-				ev.getTarget().appendJavaScript(js);
+				ev.getTarget().appendJavaScript(getJSSetSelectColor(color));
+				ev.setProcessedBy(getClass());
 			}
 		}
+	}
+	
+	public static String getJSSetSelectColor(Color color)
+	{
+		return String.format(
+				"$('.vyberDlePole .k-multiselect-wrap').css('background-color', '%s');",
+				String.format("#%02x%02x%02x",
+						color.red, color.green, color.blue));
 	}
 	
 	public static ResourceModel getFieldNameModel(String fieldName)
