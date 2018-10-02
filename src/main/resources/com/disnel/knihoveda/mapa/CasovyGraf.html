@@ -4,13 +4,15 @@
 
 <wicket:panel>
 
-<canvas wicket:id="chart">[CHART]</canvas>
+	<canvas wicket:id="timeline">[TIMELINE]</canvas>
 
-<script>
-$(document).ready(function() {
-	
-});
-</script>
+	<div id="timelineRecordInfo" class="detail" style="position: absolute; display: block; pointer-events: none; display: none;">
+		<div class="head">[HEAD]</div>
+		<div class="vysledek">
+			<span class="dataSetIndicator">&nbsp;</span>
+			<span class="pocet">[POCET]</span>
+		</div>
+	</div>
 
 </wicket:panel>
 

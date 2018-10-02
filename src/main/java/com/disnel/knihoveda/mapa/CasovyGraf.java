@@ -1,122 +1,69 @@
 package com.disnel.knihoveda.mapa;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.solr.client.solrj.response.FacetField.Count;
 import org.apache.wicket.event.IEvent;
-import org.apache.wicket.markup.head.IHeaderResponse;
-import org.apache.wicket.markup.head.JavaScriptReferenceHeaderItem;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.request.Url;
-import org.apache.wicket.request.resource.UrlResourceReference;
-import org.wicketstuff.openlayers3.api.util.Color;
-
 import com.disnel.knihoveda.dao.SolrDAO;
 import com.disnel.knihoveda.mapa.data.DataSet;
 import com.disnel.knihoveda.mapa.events.AjaxEvent;
 import com.disnel.knihoveda.mapa.events.DataSetChangedEvent;
 import com.disnel.knihoveda.mapa.events.FieldValuesChangedEvent;
-
-import de.adesso.wickedcharts.chartjs.ChartConfiguration;import de.adesso.wickedcharts.chartjs.chartoptions.Animation;
-import de.adesso.wickedcharts.chartjs.chartoptions.AxesScale;
-import de.adesso.wickedcharts.chartjs.chartoptions.ChartType;
-import de.adesso.wickedcharts.chartjs.chartoptions.Data;
-import de.adesso.wickedcharts.chartjs.chartoptions.Dataset;
-import de.adesso.wickedcharts.chartjs.chartoptions.Legend;
-import de.adesso.wickedcharts.chartjs.chartoptions.Options;
-import de.adesso.wickedcharts.chartjs.chartoptions.Position;
-import de.adesso.wickedcharts.chartjs.chartoptions.Scales;
-import de.adesso.wickedcharts.chartjs.chartoptions.TooltipMode;
-import de.adesso.wickedcharts.chartjs.chartoptions.Tooltips;
-import de.adesso.wickedcharts.chartjs.chartoptions.colors.RgbaColor;
-import de.adesso.wickedcharts.wicket8.chartjs.Chart;
+import com.disnel.knihoveda.mapa.timeline.Timeline;
+import com.disnel.knihoveda.mapa.timeline.TimelineConf;
+import com.disnel.knihoveda.mapa.timeline.TimelineDataset;
 
 public class CasovyGraf extends Panel
 {
 
-	private Integer rokOd, rokDo;
+	private Timeline timeline;
 	
-	private Long maxCount = 0L;
-	
-	private Options chartOptions;
-	private ChartConfiguration chartConfiguration;
-	private Chart chart;
-	
-	public CasovyGraf(String id, Integer rokOd, Integer rokDo, Long maxCount)
+	public CasovyGraf(String id)
 	{
 		super(id);
 		
-		this.rokOd = rokOd;
-		this.rokDo = rokDo;
-		this.maxCount = maxCount;
-
+		TimelineConf conf = new TimelineConf();
+		conf.setDetailPanelId("timelineRecordInfo");
 		
-		chartOptions = new Options()
-//				.setAnnotation(new Annotation()
-//						.setAnnotations(new AnnotationInst[] {
-//								new LineAnnotation()
-//									.setMode(LineAnnotationMode.VERTICAL)
-//									.setScaleID("osaX")
-//									.setValue(1700)
-//									.setId("vline")
-//						}))
-				.setResponsive(true)
-				.setMaintainAspectRatio(false)
-				.setScales(new Scales()
-						.setYAxes(new AxesScale()
-								.setDisplay(true)
-								.setType("linear"))
-						.setXAxes(new AxesScale()
-								.setDisplay(true)
-								.setType("linear")
-								.setPosition(Position.TOP)
-								.setId("osaX")))
-				.setLegend(new Legend()
-						.setDisplay(false))
-				.setAnimation(new Animation()
-						.setDuration(0))
-				.setTooltips(new Tooltips()
-						.setMode(TooltipMode.INDEX)
-						.setIntersect(false));
-
-		chartConfiguration = new GrafConfig()
-				.setType(ChartType.LINE)
-				.setOptions(chartOptions)
-				.setData(createChartData());
-				
-		add(chart = new Chart("chart", chartConfiguration));
+		add(timeline = new Timeline("timeline", conf));
+		timeline.setData(createTimelineData());
 	}
 
-	private Data createChartData()
+	private TimelineDataset createTimelineDataSet(DataSet dataSet)
 	{
-		List<Dataset> chartDatasets = new ArrayList<>();
+		TimelineDataset tlDataset =
+				new TimelineDataset(dataSet.getColor());
+
+		for ( Count count : SolrDAO.getCountByYear(dataSet) )
+		{
+			String countName = count.getName();
+
+			if ( !countName.isEmpty() )
+			{
+				Integer year = Integer.parseInt(count.getName());
+				Long countVal = count.getCount();
+
+				tlDataset.addCount(year, countVal);
+			}
+		}
 		
-		chartDatasets.add(createChartDataset(MapaSession.get().currentDataSet()));
-		
-		for ( DataSet dataSet : MapaSession.get().dataSets())
-			if ( dataSet != MapaSession.get().currentDataSet())
-				chartDatasets.add(createChartDataset(dataSet));
-		
-		return new Data()
-				.setDatasets(chartDatasets);
+		return tlDataset;
 	}
 	
-	private Dataset createChartDataset(DataSet dataSet)
+	private List<TimelineDataset> createTimelineData()
 	{
-		Color dataSetColor = dataSet.getColor();
-		RgbaColor chartColor =
-				new RgbaColor(dataSetColor.red, dataSetColor.green, dataSetColor.blue, 255);
+		List<TimelineDataset> datasetList =
+				new ArrayList<>(MapaSession.get().dataSets().size());
 		
-		return new Dataset()
-				.setBackgroundColor(chartColor)
-				.setBorderColor(chartColor)
-				.setBorderWidth(1)
-				.setPointBorderWidth(0)
-				.setPointRadius(2)
-				.setData(SolrDAO.getCountByYearAsPoints(dataSet))
-				.setFill(false)
-				.setLineTension(0);
+		for ( DataSet dataSet : MapaSession.get().dataSets() )
+			if ( dataSet != MapaSession.get().currentDataSet() )
+				datasetList.add(createTimelineDataSet(dataSet));
+		
+		datasetList.add(createTimelineDataSet(MapaSession.get().currentDataSet()));
+		
+		return datasetList;
 	}
 	
 	@Override
@@ -127,21 +74,11 @@ public class CasovyGraf extends Panel
 		{
 			AjaxEvent ev = (AjaxEvent) event.getPayload();
 			
-			chartConfiguration.setData(createChartData());
+			timeline.setData(createTimelineData());
 			
-			ev.getTarget().add(chart);
+			ev.getTarget().appendJavaScript(timeline.getJSSetData());
+			ev.getTarget().appendJavaScript(timeline.getJSDraw());
 		}
 	}
 	
-	private class GrafConfig extends ChartConfiguration implements Serializable
-	{
-		// Only beacause ChartConfiguration isn't Serializable in current version
-	}
-	
-	@Override
-	public void renderHead(IHeaderResponse response)
-	{
-		response.render(JavaScriptReferenceHeaderItem.forReference(
-				new UrlResourceReference(Url.parse("/js/chartjs-plugin-annotation.min.js"))));
-	}
 }

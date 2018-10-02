@@ -10,7 +10,6 @@ import org.apache.wicket.settings.ExceptionSettings.AjaxErrorStrategy;
 import com.disnel.knihoveda.dao.PlaceLocationDAO;
 import com.disnel.knihoveda.dao.SolrDAO;
 
-import de.adesso.wickedcharts.wicket8.JavaScriptResourceRegistry;
 import de.agilecoders.wicket.webjars.WicketWebjars;
 
 public class KnihovedaMapaApplication extends WebApplication
@@ -54,7 +53,6 @@ public class KnihovedaMapaApplication extends WebApplication
 		getExceptionSettings().setAjaxErrorHandlingStrategy(AjaxErrorStrategy.REDIRECT_TO_ERROR_PAGE);
 		
 		getJavaScriptLibrarySettings().setJQueryReference(JQueryResourceReference.getV1());
-		JavaScriptResourceRegistry.getInstance().setJQueryReference(JQueryResourceReference.getV1());
 	}
 	
 	@Override

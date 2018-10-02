@@ -55,8 +55,6 @@ public class KnihovedaMapaConfig
 //		new Color("#4B229F"),
 	};
 	
-	public static final int CASOVY_GRAF_OD = 1500, CASOVY_GRAF_DO = 1800;
-	
 	// Pole, ktera potrebuji pridavat _facet pro facetove vyhledavani
 	public static final Set<String> FILEDS_WITH_SEPARATE_FACET = 
 			new HashSet<>(Arrays.asList(
