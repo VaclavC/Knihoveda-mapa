@@ -63,47 +63,6 @@ body {
 	font-family: "Computer Modern", serif;
 }
 
-/**********/
-/* Layout */
-
-/* #titul, #lcol, #mapa, #rcol { position: fixed; box-sizing: border-box; } */
-/* #titul, #lcol { */
-/* 	width: 24em; */
-/* } */
-
-/* #titul { */
-/* 	top: 0; left: 0; height: 6em; */
-/* 	background: black; color: white; */
-/* 	padding: 1em 0.5em; text-align: right; */
-/* 	border-bottom-right-radius: 1em; */
-/* } */
-/* #titul>h1 { } */
-/* #titul>h1>span:FIRST-CHILD { font-size: 300%; } */
-/* #titul>h1>span:LAST-CHILD { */
-/* 	font-weight: bold; */
-/* 	position: relative; top: 1em; right: 4em; */
-/* 	color: red; */
-/* } */
-
-/* #rcol { */
-/* 	top: 0; bottom: 0; right: 0; width: 32em; */
-/* 	box-shadow: -0.5em 0 0.5em rgba(0, 0, 0, 0.3); */
-/* } */
-
-/* #rcol .control { position: absolute; top: 0; left: 0; bottom: 0; width: 2em; } */
-/* #rcol .control span { */
-/* 	display: block; position: absolute; left: 100%; bottom: 2em; width: 24em; line-height: 2em; */
-/* 	transform: rotate(-90deg); transform-origin: 0% 100%; } */
-/* #rcol .content { margin-left: 2em; } */
-
-/* .content { */
-/* 	overflow-y: auto; height: 100%; */
-/* 	margin: 0 0.5em */
-/* } */
-
-/* .control { cursor: pointer; } */
-/* .control:hover { background: #f0f0f0; } */
-
 /******************/
 /* Vyberovy panel */
 
