@@ -198,6 +198,7 @@ body {
 #vyberyDlePoli .language { flex-grow: 0.10; }
 .vyberDlePole .titul { font-weight: bold; font-size: 110%; }
 .vyberDlePole select { font-size: 80%; }
+.vyberDlePole .k-multiselect-wrap input { color: white; }
 
 
 /*************************/
