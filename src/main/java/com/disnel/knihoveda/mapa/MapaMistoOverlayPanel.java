@@ -1,5 +1,9 @@
 package com.disnel.knihoveda.mapa;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.wicket.Component;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -14,8 +18,6 @@ import com.disnel.knihoveda.mapa.data.ResultsInPlace;
 public class MapaMistoOverlayPanel extends Panel
 {
 
-	private boolean isSelected = false;
-	
 	public MapaMistoOverlayPanel(String id, ResultsInPlace resultsInPlace)
 	{
 		super(id);
@@ -23,12 +25,19 @@ public class MapaMistoOverlayPanel extends Panel
 		// Tecka v miste obce
 		Component bottomDot;
 		add(bottomDot = new WebMarkupContainer("bottomDot"));
+
+		// Vyhodit sady s nulovymi vysledky
+		List<DataSet> dataSetsToDisplay = new ArrayList<>(MapaSession.get().dataSets());
+		Iterator<DataSet> it = dataSetsToDisplay.iterator();
+		while ( it.hasNext() )
+			if ( resultsInPlace.getNumResultsForDataSet(it.next()) == 0)
+				it.remove();
 		
 		// Graf s vysledky a jeho sloupce
 		RepeatingView bars;
 		add(bars = new RepeatingView("result"));
 		
-		for ( DataSet dataSet : MapaSession.get().dataSets() )
+		for ( DataSet dataSet : dataSetsToDisplay )
 		{
 			Component bar;
 			bars.add(bar = new WebMarkupContainer(bars.newChildId()));
@@ -46,7 +55,7 @@ public class MapaMistoOverlayPanel extends Panel
 		
 		detail.add(new Label("nazevMista", resultsInPlace.getPlaceName()));
 		
-		detail.add(new ListView<DataSet>("vysledek", MapaSession.get().dataSets())
+		detail.add(new ListView<DataSet>("vysledek", dataSetsToDisplay)
 		{
 			@Override
 			protected void populateItem(ListItem<DataSet> item)
