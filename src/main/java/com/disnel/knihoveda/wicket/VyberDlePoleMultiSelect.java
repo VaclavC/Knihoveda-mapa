@@ -12,6 +12,7 @@ import com.disnel.knihoveda.mapa.MapaSession;
 import com.disnel.knihoveda.mapa.data.DataSet;
 import com.disnel.knihoveda.mapa.data.FacetFieldCountWrapper;
 import com.disnel.knihoveda.mapa.data.FieldValues;
+import com.googlecode.wicket.jquery.core.JQueryBehavior;
 import com.googlecode.wicket.kendo.ui.form.multiselect.lazy.AjaxMultiSelect;
 import com.googlecode.wicket.kendo.ui.renderer.ChoiceRenderer;
 
@@ -100,6 +101,14 @@ public abstract class VyberDlePoleMultiSelect extends AjaxMultiSelect<FacetField
 	{
 		super.onDetach();
 		possibleValuesModel.detach();
+	}
+	
+	@Override
+	public void onConfigure(JQueryBehavior behavior)
+	{
+		super.onConfigure(behavior);
+
+		behavior.setOption("filter", "'contains'");
 	}
 	
 }
