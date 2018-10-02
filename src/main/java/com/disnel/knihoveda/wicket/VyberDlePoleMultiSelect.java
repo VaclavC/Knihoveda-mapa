@@ -92,8 +92,6 @@ public abstract class VyberDlePoleMultiSelect extends AjaxMultiSelect<FacetField
 		}
 		setValuesJS.append(" ]); } ");
 		target.appendJavaScript(setValuesJS);
-		
-		System.out.println("setValuesJS: " + setValuesJS);
 	}
 
 	@Override
