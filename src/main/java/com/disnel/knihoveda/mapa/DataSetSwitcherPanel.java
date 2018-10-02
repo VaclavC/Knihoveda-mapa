@@ -2,6 +2,7 @@ package com.disnel.knihoveda.mapa;
 
 import java.util.ArrayList;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -123,8 +124,7 @@ public class DataSetSwitcherPanel extends Panel
 					empty.setVisible(false);
 				
 				// Zobrazovani a mizeni detailu
-				openDetail.add(new AttributeAppender("onclick",
-						String.format("$('#%s').toggle();", detail.getMarkupId()), ";"));
+				openDetail.add(new AttributeModifier("data-detail-id", detail.getMarkupId()));
 			}
 		});
 		

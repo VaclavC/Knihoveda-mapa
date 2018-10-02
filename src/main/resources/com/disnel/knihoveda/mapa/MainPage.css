@@ -177,6 +177,8 @@ body {
 .dataSetItem a.button:hover { color: #FF9C00; }
 .dataSetItem a.button.hidden i { visibility: hidden; }
 .dataSetItem a.button.hidden:hover i { visibility: visible; }
+.dataSetItem a.button.semihidden i { color: rgba(255, 255, 255, 0.10); }
+.dataSetItem a.button.semihidden:hover i { color: white; }
 
 .dataSetItem .detail {
 	position: absolute; top: 0; left: 100%; margin-left: 8px; border-radius: 4px; min-width: 25vw; font-size: 16px;

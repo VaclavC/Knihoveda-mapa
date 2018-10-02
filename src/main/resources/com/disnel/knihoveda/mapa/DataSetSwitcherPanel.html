@@ -4,12 +4,12 @@
 
 <wicket:panel>
 
-<div wicket:id="dataSet" class="dataSetItem">
+<div wicket:id="dataSet" class="dataSetItem" onmouseleave="DataSetSwitcher.hideActiveDetailPanel();">
 	<span wicket:id="isActive" class="button"><i class="symbol fa fa-check" aria-hidden="true"></i></span>
-	<a wicket:id="setActive" class="button hidden"><i class="symbol fa fa-check" aria-hidden="true"></i></a>
+	<a wicket:id="setActive" class="button semihidden"><i class="symbol fa fa-check" aria-hidden="true"></i></a>
 	<div class="tools">
 		<a wicket:id="delete" class="button"><i class="symbol fa fa-trash" aria-hidden="true"></i></a>
-		<a wicket:id="openDetail" class="button"><i class="symbol fa fa-angle-double-right" aria-hidden="true"></i></a>
+		<a wicket:id="openDetail" class="button" onmouseover="DataSetSwitcher.mouseover(this);"><i class="symbol fa fa-angle-double-right" aria-hidden="true"></i></a>
 	</div>
 	<div wicket:id="detail" class="detail">
 		<div class="connection">&nbsp;</div>
@@ -30,6 +30,28 @@
 <div class="dataSetItem new">
 	<a wicket:id="dataSetNew" class="button"><i class="symbol fa fa-plus-square" aria-hidden="true"></i></a>
 </div>
+
+<script>
+var DataSetSwitcher =
+{
+	activePanelID: null,
+	
+	mouseover: function(element)
+	{
+		var detailPanelID = $(element).data("detail-id");
+		
+		$('#' + detailPanelID).show();
+		
+		DataSetSwitcher.activePanelID = detailPanelID;
+	},
+	
+	hideActiveDetailPanel: function()
+	{
+		if ( DataSetSwitcher.activePanelID !== null )
+			$('#' + DataSetSwitcher.activePanelID).hide();
+	},
+};
+</script>
 
 </wicket:panel>
 
