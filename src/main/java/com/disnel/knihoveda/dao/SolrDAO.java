@@ -134,25 +134,6 @@ public class SolrDAO
 		return publishPlaceFF.getValues();
 	}
 	
-//	public static List<PointValue> getCountByYearAsPoints(DataSet dataSet)
-//	{
-//		List<Count> countList = getCountByYear(dataSet);
-//		
-//		List<PointValue> ret = new ArrayList<>(countList.size());
-//		Iterator<Count> it = countList.iterator();
-//		while ( it.hasNext() )
-//		{
-//			Count count = it.next();
-//			
-//			if ( count.getName() != null && !count.getName().isEmpty() )
-//				ret.add(new PointValue(
-//						new Integer(count.getName()),
-//						new Integer((int) count.getCount())));
-//		}
-//		
-//		return ret;
-//	}
-	
 	/**
 	 * Vrati nazev pole pro facetove vyhledavani
 	 * 
