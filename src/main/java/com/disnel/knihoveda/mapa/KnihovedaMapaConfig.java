@@ -31,6 +31,9 @@ public class KnihovedaMapaConfig
 	public static final float MAX_PLACE_SIZE = 48.0f;
 	public static final float PLACE_SIZE_DIFF = MAX_PLACE_SIZE - MIN_PLACE_SIZE;
 	
+	public static final String FIELDS[] = new String[] { "masterPrinter", "topic", "genre", "language" };
+	public static final String FIELD_TIME = "publishDate";
+	
 	public static final Color[] DATA_SET_COLORS = new Color[]
 	{
 		new Color("#333333"),

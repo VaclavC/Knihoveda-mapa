@@ -2,7 +2,7 @@ package com.disnel.knihoveda.mapa.events;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 
-public class MistoSelectEvent extends AjaxEvent
+public class MistoSelectEvent extends UserSelectionChangedEvent
 {
 
 	private String nazevMista;

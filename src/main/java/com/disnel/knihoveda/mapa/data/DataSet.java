@@ -21,6 +21,8 @@ public class DataSet implements Serializable
 	
 	private Map<String, FieldValues> fieldsValues;
 	
+	private Integer yearFrom, yearTo;
+	
 	public DataSet(Color color)
 	{
 		this.fieldsValues = new HashMap<>();
@@ -73,6 +75,30 @@ public class DataSet implements Serializable
 		}
 	}
 	
+	public Integer getYearFrom()
+	{
+		return yearFrom;
+	}
+
+	public DataSet setYearFrom(Integer yearFrom)
+	{
+		this.yearFrom = yearFrom;
+		
+		return this;
+	}
+	
+	public Integer getYearTo()
+	{
+		return yearTo;
+	}
+
+	public DataSet setYearTo(Integer yearTo)
+	{
+		this.yearTo = yearTo;
+		
+		return this;
+	}
+
 	@Override
 	public String toString()
 	{
@@ -86,10 +112,21 @@ public class DataSet implements Serializable
 			sb.append(fieldsValues.get(key).toString());
 			sb.append('\n');
 		}
+
+		if ( yearFrom != null || yearTo != null )
+		{
+			sb.append("\tTime interval [");
+			if ( yearFrom != null )
+				sb.append(yearFrom);
+			sb.append(" - ");
+			if ( yearTo != null )
+				sb.append(yearTo);
+			sb.append("]\n");
+		}
 		
 		sb.append("}\n");
 		
 		return sb.toString();
 	}
-	
+
 }

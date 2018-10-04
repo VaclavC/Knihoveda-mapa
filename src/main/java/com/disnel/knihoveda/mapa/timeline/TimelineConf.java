@@ -19,8 +19,13 @@ public class TimelineConf implements Serializable
 	private Integer timeAxisTextY = 14;
 	private String countAxisStyle = "d0d0d0";
 	private String countAxisFont = "10px Arial";
-	private Float cursorLineWidth = 1.0f;
-	private String cursorStrokeStyle = "#000000";
-	private String cursorFillStyle = "#000000";
+	private Float cursorLineWidth1 = 1.0f;
+	private Float cursorLineWidth2 = 2.0f;
+	private String cursorStyle1 = "#FF9C00";
+	private String cursorStyle2 = "#000000";
 	private String detailPanelId = null;
+	private String selectStyle = "#e0e0e0";
+	private String selectFont = "14px Arial Black";
+	private String selectFontStyle = "#ffffff";
+	private Integer selectTextDist = 19;
 }

@@ -2,27 +2,87 @@ package com.disnel.knihoveda.mapa.timeline;
 
 import java.util.List;
 
+import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.event.Broadcast;
+import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.JavaScriptReferenceHeaderItem;
 import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.json.JSONException;
 
 import com.disnel.knihoveda.dao.JSON;
+import com.disnel.knihoveda.mapa.MapaSession;
+import com.disnel.knihoveda.mapa.data.DataSet;
+import com.disnel.knihoveda.mapa.events.TimeSelectEvent;
 
 public class Timeline extends WebMarkupContainer
 {
 
+	public static final String AJAX_CALLBACK_DATA_NAME = "callback";
+	
 	private TimelineConf conf;
 	
 	private List<TimelineDataset> data;
+	
+	private Integer yearFrom, yearTo;
 	
 	public Timeline(String id, TimelineConf conf)
 	{
 		super(id);
 		this.conf = conf;
+		
 		setOutputMarkupId(true);
+		
+		add(new AbstractDefaultAjaxBehavior()
+		{
+			@Override
+		    protected void onComponentTag(ComponentTag tag) {
+		        tag.put("data-" + AJAX_CALLBACK_DATA_NAME,
+		        		getCallbackUrl().toString());
+			}
+			
+			@Override
+			protected void respond(AjaxRequestTarget target)
+			{
+				RequestCycle requestCycle = RequestCycle.get();
+				String data = requestCycle.getRequest().getRequestParameters()
+						.getParameterValue("data").toString();
+				
+				DataSet currentDataSet = MapaSession.get().currentDataSet(); 
+				
+				// Tady predpokladame vstup ve formatu [SC]yyyy-yyyy
+				switch ( data.charAt(0) )
+				{
+				case 'S':
+					yearFrom = Integer.parseInt(data.substring(1, 5));
+					yearTo = Integer.parseInt(data.substring(6, 10));
+					
+					currentDataSet
+						.setYearFrom(yearFrom)
+						.setYearTo(yearTo);
+					
+					break;
+					
+				case 'C':
+					currentDataSet
+						.setYearFrom(null)
+						.setYearTo(null);
+					
+					break;
+					
+				default:
+					return;
+				}
+				
+				send(getPage(), Broadcast.BREADTH,
+						new TimeSelectEvent(target,
+								currentDataSet.getYearFrom(), currentDataSet.getYearTo()));
+			}
+		});
 	}
 	
 	public Timeline setConf(TimelineConf conf)
@@ -39,6 +99,20 @@ public class Timeline extends WebMarkupContainer
 		return this;
 	}
 
+	public Timeline setYearFrom(Integer yearFrom)
+	{
+		this.yearFrom = yearFrom;
+		
+		return this;
+	}
+
+	public Timeline setYearTo(Integer yearTo)
+	{
+		this.yearTo = yearTo;
+		
+		return this;
+	}
+	
 	public String getJSVarName()
 	{
 		return this.getMarkupId() + "Var";
@@ -76,10 +150,20 @@ public class Timeline extends WebMarkupContainer
 		return sb.toString();
 	}
 
+	private String yearToString(Integer year)
+	{
+		if ( year != null )
+			return year.toString();
+		
+		else
+			return "null";
+	}
+	
 	public String getJSSetData()
 	{
 		StringBuilder sb = new StringBuilder();
 		
+		// Nastavit data
 		sb.append(getJSVarName());
 		sb.append(".setData([");
 
@@ -99,6 +183,18 @@ public class Timeline extends WebMarkupContainer
 		
 		sb.append("]);");
 		
+		// Nastavit pripadne casove rozmezi
+		sb.append(getJSVarName());
+		sb.append(".yearSelectFrom = ");
+		sb.append(yearToString(yearFrom));
+		sb.append(';');
+		
+		sb.append(getJSVarName());
+		sb.append(".yearSelectTo = ");
+		sb.append(yearToString(yearTo));
+		sb.append(';');
+		
+		// Vratit vysledek
 		return sb.toString();
 	}
 	
@@ -121,5 +217,5 @@ public class Timeline extends WebMarkupContainer
 		response.render(OnDomReadyHeaderItem.forScript(getJSSetData()));
 		response.render(OnDomReadyHeaderItem.forScript(getJSDraw()));
 	}
-	
+
 }

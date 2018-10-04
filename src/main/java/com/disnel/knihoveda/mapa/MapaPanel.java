@@ -18,8 +18,7 @@ import org.wicketstuff.openlayers3.api.layer.Tile;
 import org.wicketstuff.openlayers3.api.overlay.Overlay;
 import com.disnel.knihoveda.mapa.data.ResultsInPlace;
 import com.disnel.knihoveda.mapa.events.AjaxEvent;
-import com.disnel.knihoveda.mapa.events.DataSetChangedEvent;
-import com.disnel.knihoveda.mapa.events.FieldValuesChangedEvent;
+import com.disnel.knihoveda.mapa.events.UserSelectionChangedEvent;
 import com.disnel.knihoveda.mapa.ol.CustomTileSource;
 import com.disnel.knihoveda.wicket.AjaxOLMap;
 import com.disnel.knihoveda.wicket.model.ResultsInPlacesModel;
@@ -57,8 +56,7 @@ public class MapaPanel extends Panel
 	@Override
 	public void onEvent(IEvent<?> event)
 	{
-		if ( event.getPayload() instanceof FieldValuesChangedEvent
-				|| event.getPayload() instanceof DataSetChangedEvent )
+		if ( event.getPayload() instanceof UserSelectionChangedEvent )
 		{
 			AjaxEvent ev = (AjaxEvent) event.getPayload();
 			

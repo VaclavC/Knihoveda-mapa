@@ -9,8 +9,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import com.disnel.knihoveda.dao.SolrDAO;
 import com.disnel.knihoveda.mapa.data.DataSet;
 import com.disnel.knihoveda.mapa.events.AjaxEvent;
-import com.disnel.knihoveda.mapa.events.DataSetChangedEvent;
-import com.disnel.knihoveda.mapa.events.FieldValuesChangedEvent;
+import com.disnel.knihoveda.mapa.events.UserSelectionChangedEvent;
 import com.disnel.knihoveda.mapa.timeline.Timeline;
 import com.disnel.knihoveda.mapa.timeline.TimelineConf;
 import com.disnel.knihoveda.mapa.timeline.TimelineDataset;
@@ -69,12 +68,15 @@ public class CasovyGraf extends Panel
 	@Override
 	public void onEvent(IEvent<?> event)
 	{
-		if ( event.getPayload() instanceof FieldValuesChangedEvent 
-				|| event.getPayload() instanceof DataSetChangedEvent )
+		if ( event.getPayload() instanceof UserSelectionChangedEvent )
 		{
 			AjaxEvent ev = (AjaxEvent) event.getPayload();
 			
 			timeline.setData(createTimelineData());
+			
+			DataSet currentDataSet = MapaSession.get().currentDataSet();
+			timeline.setYearFrom(currentDataSet.getYearFrom());
+			timeline.setYearTo(currentDataSet.getYearTo());
 			
 			ev.getTarget().appendJavaScript(timeline.getJSSetData());
 			ev.getTarget().appendJavaScript(timeline.getJSDraw());

@@ -1,11 +1,16 @@
 package com.disnel.knihoveda.mapa;
 
+
+
+import java.util.Arrays;
+
 import org.apache.wicket.ajax.IAjaxIndicatorAware;
 import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
 import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.markup.repeater.RepeatingView;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.request.resource.CssResourceReference;
 
@@ -21,18 +26,19 @@ public class MainPage extends WebPage implements IAjaxIndicatorAware
 		super(parameters);
 		
 		add(new MapaPanel("mapa"));
-//		add(new WebMarkupContainer("mapa"));
 	
 		add(new CasovyGraf("casovyGraf"));
-//		add(new WebMarkupContainer("casovyGraf"));
 		
-		RepeatingView vybery;
-		add(vybery = new RepeatingView("vyber"));
-		
-		vybery.add(new VyberDlePole(vybery.newChildId(), "masterPrinter"));
-		vybery.add(new VyberDlePole(vybery.newChildId(), "topic"));
-		vybery.add(new VyberDlePole(vybery.newChildId(), "genre"));
-		vybery.add(new VyberDlePole(vybery.newChildId(), "language"));
+		add(new ListView<String>("vyberyDlePoli", Arrays.asList(KnihovedaMapaConfig.FIELDS))
+		{
+			@Override
+			protected void populateItem(ListItem<String> item)
+			{
+				String fieldName = item.getModelObject();
+				
+				item.add(new VyberDlePole("vyber", fieldName));
+			}
+		});
 		
 		add(new DataSetSwitcherPanel("dataSetSwitcher"));
 	}

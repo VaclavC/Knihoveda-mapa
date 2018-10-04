@@ -4,7 +4,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 
 import com.disnel.knihoveda.mapa.data.DataSet;
 
-public class DataSetChangedEvent extends AjaxEvent
+public class DataSetChangedEvent extends UserSelectionChangedEvent
 {
 
 	private DataSet dataSet;

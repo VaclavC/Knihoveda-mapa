@@ -16,6 +16,7 @@ import com.disnel.knihoveda.mapa.data.FacetFieldCountWrapper;
 import com.disnel.knihoveda.mapa.events.AjaxEvent;
 import com.disnel.knihoveda.mapa.events.DataSetChangedEvent;
 import com.disnel.knihoveda.mapa.events.FieldValuesChangedEvent;
+import com.disnel.knihoveda.mapa.events.UserSelectionChangedEvent;
 import com.disnel.knihoveda.wicket.VyberDlePoleMultiSelect;
 import com.disnel.knihoveda.wicket.model.PossibleFieldValuesModel;
 import com.googlecode.wicket.kendo.ui.form.multiselect.lazy.MultiSelect;
@@ -76,8 +77,7 @@ public class VyberDlePole extends Panel
 	@Override
 	public void onEvent(IEvent<?> event)
 	{
-		if ( event.getPayload() instanceof FieldValuesChangedEvent 
-				|| event.getPayload() instanceof DataSetChangedEvent )
+		if ( event.getPayload() instanceof UserSelectionChangedEvent )
 		{
 			AjaxEvent ev = (AjaxEvent) event.getPayload();
 			

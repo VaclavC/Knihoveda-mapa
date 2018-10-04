@@ -8,7 +8,11 @@ class Timeline {
 		this.config = config;
 		this.tagSel = "#" + tagID;
 		this.detailPanelSel = "#" + config.detailPanelId;
-		
+		this.ajaxCallback = $(this.tagSel).data("callback");
+
+		this.yearSelectFrom = null;
+		this.yearSelectTo = null;
+
 		// Dalsi hladiny pro vykreslovani
 		$(this.tagSel).parent().prepend('<canvas id="' + this.tagID + '-bottom" style="z-index: -1; pointer-events: none"></canvas>' );
 		$(this.tagSel).css("z-index", 0);
@@ -18,6 +22,9 @@ class Timeline {
 		$(window).on('resize', () => { this.draw(); });
 		$(this.tagSel).on('mousemove', (ev) => { this.mouseMove(ev); });
 		$(this.tagSel).on('mouseleave', (ev) => { this.mouseLeave(ev); });
+		$(this.tagSel).on('mousedown', (ev) => { this.mouseDown(ev); });
+		$(this.tagSel).on('mouseup', (ev) => { this.mouseUp(ev); });
+		$(this.tagSel).on('dblclick', (ev) => { this.dblclick(ev); });
 	}
 
 	setData(dataSets)
@@ -33,6 +40,7 @@ class Timeline {
 		this.dataSets.forEach(function(dataset) {
 			this.drawDataset(dataset);
 		}, this);
+		this.drawSelection(this.yearSelectFrom, this.yearSelectTo);
 	}
 	
 	/************************************
@@ -140,7 +148,7 @@ class Timeline {
 		this.ctx.stroke();
 		
 		// Osa poctu vysledku
-		var countStep = (this.countMax > 100) ? 100 : ( (this.countMax > 10) ? 10: 1 );
+		var countStep = (this.countMax > 100) ? 100 : ( (this.countMax > 10) ? 10 : 2 );
 		
 		this.ctx.lineWidth = 1;
 		this.ctx.strokeStyle = this.config.countAxisStyle;
@@ -191,6 +199,43 @@ class Timeline {
 		}
 	}
 	
+	/*******************************
+	/* Nakresli vyber na casove ose 
+	 */
+	drawSelection(yearFrom, yearTo)
+	{
+		if ( yearFrom === null || yearTo === null )
+			return;
+		
+		let x1 = this.xFromYear(yearFrom);
+		let x2 = this.xFromYear(yearTo);
+		
+		// Podbarveni
+		this.ctxBottom.fillStyle = this.config.selectStyle;
+		this.ctxBottom.fillRect(x1, 0, x2 - x1, this.canvas.height);
+		
+		// Letopocty na zacatku a konci
+		this.ctxBottom.fillStyle = this.config.selectFontStyle;
+		this.ctxBottom.textAlign = "center";
+		this.ctxBottom.font = this.config.selectFont;
+		let k = (x2 > x1) ? 1 : -1;
+		let textY = this.canvas.height/2;
+		
+		this.ctxBottom.save();
+		this.ctxBottom.translate(x1, textY);
+		this.ctxBottom.rotate(-k*Math.PI/2);
+		this.ctxBottom.fillText(this.yearSelectFrom.toString(),
+				0, this.config.selectTextDist);
+		this.ctxBottom.restore();
+
+		this.ctxBottom.save();
+		this.ctxBottom.translate(x2, textY);
+		this.ctxBottom.rotate(k*Math.PI/2);
+		this.ctxBottom.fillText(yearTo.toString(),
+				0, this.config.selectTextDist);
+		this.ctxBottom.restore();
+	}
+	
 	/****************
 	 * Interaktivita
 	 */
@@ -198,30 +243,43 @@ class Timeline {
 	mouseMove(ev)
 	{
 		this.ctxTop.clearRect(0, 0, this.canvas.width, this.canvas.height);
-	
-		var parentOffset = $(this.canvas).offset();
-		var relX = ev.clientX - parentOffset.left;
-		var relY = ev.clientY - parentOffset.top;
+
+		// Ziskat pozici mysi v grafu
+		var inChart, relX, relY;
+		[ inChart, relX, relY ] = this.mousePosInChart(ev);
 		
-		// Kdyz jsme mimo, nic neresime
-		if ( relX < this.config.paddingLeft || relY > this.canvas.width - this.config.paddingRight )
+		if ( !inChart )
 			return;
 		
 		// Najit rok se zaznamem nejblizsi kurzoru
-		var yearSelected = this.yearFromX(relX);
-		var yearWithData = this.closestYearTo(yearSelected);
+		var yearSelect = this.yearFromX(relX);
+		var yearWithData = this.closestYearTo(yearSelect);
 
-		// Namalovat vertikalni caru
-		var x = this.xFromYear(yearWithData);
+		// Namalovat vertikalni cary
+		var xSelected = this.xFromYear(yearSelect);
+		var xWithData = this.xFromYear(yearWithData);
 
-		this.ctxTop.lineWidth = this.config.cursorLineWidth;
-		this.ctxTop.strokeStyle = this.config.cursorStrokeStyle;
-		this.ctxTop.fillStyle = this.config.cursorFillStyle;
-		
+		this.ctxTop.lineWidth = this.config.cursorLineWidth2;
+		this.ctxTop.strokeStyle = this.config.cursorStyle2;
+		this.ctxTop.fillStyle = this.config.cursorStyle2;
 		this.ctxTop.beginPath();
-		this.ctxTop.moveTo(x, 0);
-		this.ctxTop.lineTo(x, this.canvas.height);
+		this.ctxTop.moveTo(xWithData, 0);
+		this.ctxTop.lineTo(xWithData, this.canvas.height);
 		this.ctxTop.stroke();
+		
+		this.ctxTop.lineWidth = this.config.cursorLineWidth1;
+		this.ctxTop.strokeStyle = this.config.cursorStyle1;
+		this.ctxTop.fillStyle = this.config.cursorStyle1;
+		this.ctxTop.beginPath();
+		this.ctxTop.moveTo(xSelected, 0);
+		this.ctxTop.lineTo(xSelected, this.canvas.height);
+		this.ctxTop.stroke();
+		
+		// Aktualni vybrany rok
+		this.ctxTop.fillStyle = this.config.cursorStyle1;
+		this.ctxTop.font = this.config.timeAxisFont;
+		this.ctxTop.textAlign = "right";
+		this.ctxTop.fillText(yearSelect.toString() + " ", xSelected, this.config.timeAxisTextY);
 		
 		// Zobrazit panel s vysledky
 		$(this.detailPanelSel).show();
@@ -240,7 +298,7 @@ class Timeline {
 			}
 		}, this);
 		
-		let xPos = ev.clientX;
+		let xPos = xWithData;
 		if ( relX > 4*this.canvas.width/5)
 			xPos -= $(this.detailPanelSel).width();
 		
@@ -249,6 +307,16 @@ class Timeline {
 			yPos -= panelHeight;
 		
 		$(this.detailPanelSel).offset({ top: yPos.toString(), left: xPos.toString()});
+		
+		// Vyber casoveho intervalu
+		if ( this.yearSelectFrom !== null )
+		{
+			this.ctxBottom.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+			let yearTo = ( this.yearSelectTo !== null ) ? this.yearSelectTo : yearSelect;
+			
+			this.drawSelection(this.yearSelectFrom, yearTo);
+		}
 	}
 	
 	mouseLeave(ev)
@@ -257,6 +325,61 @@ class Timeline {
 		$(this.detailPanelSel).hide();
 	}
 	
+	mouseDown(ev)
+	{
+		this.lastMouseDownTime = new Date().getTime();
+		
+		var inChart, relX, relY;
+		[ inChart, relX, relY ] = this.mousePosInChart(ev);
+		
+		if ( !inChart )
+			return;
+		
+		var yearSelect = this.yearFromX(relX);
+		
+		this.yearSelectFrom = yearSelect;
+		this.yearSelectTo = null;
+	}
+	
+	mouseUp(ev)
+	{
+		if ( this.yearSelectFrom == null )
+			return;
+		
+		var inChart, relX, relY;
+		[ inChart, relX, relY ] = this.mousePosInChart(ev);
+		
+		if ( !inChart ||
+				new Date().getTime() - this.lastMouseDownTime < 200 )
+		{
+			this.yearSelectFrom = null;
+			return;
+		}
+		
+		var yearSelect = this.yearFromX(relX);
+		
+		if ( yearSelect < this.yearSelectFrom )
+		{
+			this.yearSelectTo = this.yearSelectFrom;
+			this.yearSelectFrom = yearSelect;
+		}
+		else
+		{
+			this.yearSelectTo = yearSelect;
+		}
+		
+		this.ajaxCall("S" + this.yearSelectFrom + "-" + this.yearSelectTo);
+	}
+	
+	dblclick(ev)
+	{
+		this.ctxBottom.clearRect(0, 0, this.canvas.width, this.canvas.height);
+		
+		this.yearSelectFrom = null;
+		this.yearSelectTo = null;
+
+		this.ajaxCall("C");
+	}
 	
 	/*****************
 	 * Pomocne metody
@@ -329,6 +452,29 @@ class Timeline {
 		}
 		
 		return [lower, upper];
+	}
+	
+	mousePosInChart(ev)
+	{
+		var parentOffset = $(this.canvas).offset();
+		var relX = ev.clientX - parentOffset.left;
+		var relY = ev.clientY - parentOffset.top;
+		
+		// Kdyz jsme mimo, nic neresime
+		if ( relX < this.config.paddingLeft || relY > this.canvas.width - this.config.paddingRight )
+			return [false, relX, relY];
+		
+		return [true, relX, relY];
+	}
+	
+	ajaxCall(data)
+	{
+		Wicket.Ajax.post({
+			"u": this.ajaxCallback,
+			"ep": {
+				"data" : data,
+			},
+		});
 	}
 	
 }

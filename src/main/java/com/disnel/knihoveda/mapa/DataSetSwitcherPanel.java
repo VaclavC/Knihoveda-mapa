@@ -14,14 +14,16 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.ResourceModel;
 import org.wicketstuff.openlayers3.api.util.Color;
 
 import com.disnel.knihoveda.mapa.data.DataSet;
 import com.disnel.knihoveda.mapa.data.FieldValues;
 import com.disnel.knihoveda.mapa.events.AjaxEvent;
 import com.disnel.knihoveda.mapa.events.DataSetChangedEvent;
-import com.disnel.knihoveda.mapa.events.FieldValuesChangedEvent;
+import com.disnel.knihoveda.mapa.events.UserSelectionChangedEvent;
 
 public class DataSetSwitcherPanel extends Panel
 {
@@ -92,34 +94,62 @@ public class DataSetSwitcherPanel extends Panel
 						";"));
 				detail.setOutputMarkupId(true);
 				
-				Component fieldValuesList;
-				detail.add(fieldValuesList = new ListView<FieldValues>("fieldValues", new ArrayList<FieldValues>(dataSet.getFieldsValues()))
+				boolean hasContent = false;
+				
+				RepeatingView valuesRV;
+				detail.add(valuesRV = new RepeatingView("fieldValues"));
+				
+				for ( FieldValues fv : dataSet.getFieldsValues() )
 				{
-					@Override
-					protected void populateItem(ListItem<FieldValues> item)
+					WebMarkupContainer cont;
+					valuesRV.add(cont = new WebMarkupContainer(valuesRV.newChildId()));
+					
+					cont.add(new Label("name", VyberDlePole.getFieldNameModel(fv.getName())));
+
+					cont.add(new ListView<String>("value", new ArrayList<String>(fv.getValues()))
 					{
-						FieldValues fieldValues = item.getModelObject();
-						
-						item.add(new Label("name", VyberDlePole.getFieldNameModel(fieldValues.getName())));
-						
-						item.add(new ListView<String>("value", new ArrayList<String>(fieldValues.getValues()))
+						@Override
+						protected void populateItem(ListItem<String> item)
 						{
-							@Override
-							protected void populateItem(ListItem<String> item)
-							{
-								String value = item.getModelObject();
-								
-								item.add(new Label("content", value));
-							}
-						});
-					}
-				});
+							String value = item.getModelObject();
+							
+							item.add(new Label("content", value));
+						}
+					});
+					
+					hasContent = true;
+				}
+				
+				Integer yearFrom = dataSet.getYearFrom(),
+						yearTo = dataSet.getYearTo();
+				if ( yearFrom != null || yearTo != null )
+				{
+					WebMarkupContainer cont;
+					valuesRV.add(cont = new WebMarkupContainer(valuesRV.newChildId()));
+					
+					cont.add(new Label("name", new ResourceModel("field.casoveRozmezi")));
+
+					StringBuilder sb = new StringBuilder();
+					if ( yearFrom != null )
+						sb.append(yearFrom);
+					sb.append(" - ");
+					if ( yearTo != null )
+						sb.append(yearTo);
+					
+					WebMarkupContainer  value;
+					cont.add(value = new WebMarkupContainer("value"));
+					
+					value.add(new Label("content", sb.toString()));
+					
+					hasContent = true;
+				}
+				
 				
 				Component empty;
 				detail.add(empty = new WebMarkupContainer("empty"));
 				
-				if ( dataSet.getFieldsValues().isEmpty() )
-					fieldValuesList.setVisible(false);
+				if ( !hasContent )
+					valuesRV.setVisible(false);
 				else
 					empty.setVisible(false);
 				
@@ -176,7 +206,8 @@ public class DataSetSwitcherPanel extends Panel
 	@Override
 	public void onEvent(IEvent<?> event)
 	{
-		if ( event.getPayload() instanceof FieldValuesChangedEvent )
+		if ( event.getPayload() instanceof UserSelectionChangedEvent 
+				&& !(event.getPayload() instanceof DataSetChangedEvent) )
 		{
 			AjaxEvent ev = (AjaxEvent) event.getPayload();
 			

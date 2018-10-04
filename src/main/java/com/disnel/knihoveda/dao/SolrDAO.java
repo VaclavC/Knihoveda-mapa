@@ -72,23 +72,31 @@ public class SolrDAO
 			throw new IllegalStateException(msg.toString());
 		}
 	}
-	
+
+	@Deprecated
 	public static void addEmptyQueryParameters(SolrQuery query)
 	{
 		query.add("q", "geo:*");
 	}
 	
-	public static void addDataSetQueryParameters(SolrQuery query, Collection<FieldValues> fieldValues)
+	private static String emptyQueryParams()
+	{
+		return "geo:*";
+	}
+	
+	private static String fieldValuesQueryParams(
+			Collection<FieldValues> fieldValues, String exceptField)
 	{
 		StringBuilder qPars = new StringBuilder();
-		
-		qPars.append("geo:*");
 		
 		String qParsDelim = " AND (";
 		String qParsEnd = "";
 		for ( FieldValues fv : fieldValues )
-			if ( !fv.isEmpty() )
+			if ( !fv.isEmpty())
 			{
+				if ( exceptField != null && exceptField.contains(fv.getName()) )
+					continue;
+				
 				qPars.append(qParsDelim);
 				
 				String fvDelim = "";
@@ -109,20 +117,45 @@ public class SolrDAO
 			}
 		
 		qPars.append(qParsEnd);
-		
-		query.add("q", qPars.toString());
+
+		return qPars.toString();
 	}
 	
-	public static void addDataSetQueryParameters(SolrQuery query, DataSet dataSet)
+	private static String timeRangeQueryParams(
+			Integer yearFrom, Integer yearTo)
 	{
-		addDataSetQueryParameters(query, dataSet.getFieldsValues());
+		StringBuilder qPars = new StringBuilder();
+		
+		qPars.append(" AND ");
+		qPars.append(KnihovedaMapaConfig.FIELD_TIME);
+		qPars.append(":[");
+		
+		if ( yearFrom != null )
+			qPars.append(yearFrom);
+		else
+			qPars.append('*');
+		
+		qPars.append(" TO ");
+		
+		if ( yearTo != null )
+			qPars.append(yearTo);
+		else
+			qPars.append('*');
+		
+		qPars.append("]");
+		
+		return qPars.toString();
 	}
 	
 	public static List<Count> getCountByYear(DataSet dataSet)
 	{
 		SolrQuery query = new SolrQuery();
-		SolrDAO.addDataSetQueryParameters(query, dataSet);
-		query.addFacetField("publishDate");
+		
+		String qParams = emptyQueryParams()
+				+ fieldValuesQueryParams(dataSet.getFieldsValues(), null);
+		query.add("q", qParams);
+		
+		query.addFacetField(KnihovedaMapaConfig.FIELD_TIME);
 		query.setFacetMinCount(1);
 		query.setFacetSort(FacetParams.FACET_SORT_INDEX);
 		query.setFacetLimit(-1);
@@ -140,7 +173,7 @@ public class SolrDAO
 	 * @param fieldName
 	 * @return
 	 */
-	public static String facetFieldName(String fieldName)
+	private static String facetFieldName(String fieldName)
 	{
 		if ( KnihovedaMapaConfig.FILEDS_WITH_SEPARATE_FACET.contains(fieldName) )
 			return fieldName + KnihovedaMapaConfig.FACET_FIELD_SUFFIX;
@@ -163,13 +196,10 @@ public class SolrDAO
 		String facetFieldName = facetFieldName(fieldName);
 		
 		// Tadu potrebujeme vsechny krome toho, pro ktere pole to delame
-		Collection<FieldValues> dataSetFieldValues = dataSet.getFieldsValues();
-		List<FieldValues> fieldValuesList = new ArrayList<>(dataSetFieldValues.size());
-		for ( FieldValues fv : dataSetFieldValues )
-			if ( !fieldName.contains(fv.getName()) )
-				fieldValuesList.add(fv);
-		
-		SolrDAO.addDataSetQueryParameters(query, fieldValuesList);
+		String qParams = emptyQueryParams()
+				+ fieldValuesQueryParams(dataSet.getFieldsValues(), fieldName)
+				+ timeRangeQueryParams(dataSet.getYearFrom(), dataSet.getYearTo());
+		query.add("q", qParams);
 		
 		query.addFacetField(facetFieldName);
 		query.setFacetLimit(-1);
@@ -200,7 +230,12 @@ public class SolrDAO
 	{
 		// Pripravit dotaz
 		SolrQuery query = new SolrQuery();
-		SolrDAO.addDataSetQueryParameters(query, dataSet);
+
+		String qParams = emptyQueryParams()
+				+ fieldValuesQueryParams(dataSet.getFieldsValues(), null)
+				+ timeRangeQueryParams(dataSet.getYearFrom(), dataSet.getYearTo());
+		query.add("q", qParams);
+		
 		query.addField("publishPlace");
 		query.addField("long_lat");
 		query.add("group", "true");
