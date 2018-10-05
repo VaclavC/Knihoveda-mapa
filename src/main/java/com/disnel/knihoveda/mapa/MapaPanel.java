@@ -1,16 +1,27 @@
 package com.disnel.knihoveda.mapa;
 
 import java.util.Arrays;
+
+import org.apache.wicket.ajax.AjaxEventBehavior;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.event.Broadcast;
 import org.apache.wicket.event.IEvent;
+import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.head.JavaScriptReferenceHeaderItem;
+import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.request.resource.PackageResourceReference;
 import org.wicketstuff.openlayers3.DefaultOpenLayersMap;
+import org.wicketstuff.openlayers3.api.JavascriptObject;
 import org.wicketstuff.openlayers3.api.View;
 import org.wicketstuff.openlayers3.api.coordinate.LongLat;
 import org.wicketstuff.openlayers3.api.layer.Layer;
 import org.wicketstuff.openlayers3.api.layer.Tile;
 import com.disnel.knihoveda.mapa.events.AjaxEvent;
+import com.disnel.knihoveda.mapa.events.MistoSelectEvent;
 import com.disnel.knihoveda.mapa.events.UserSelectionChangedEvent;
+import com.disnel.knihoveda.mapa.mapa.MapaMistoOverlay;
 import com.disnel.knihoveda.mapa.mapa.MapaOverlays;
 import com.disnel.knihoveda.mapa.ol.CustomTileSource;
 import com.disnel.knihoveda.wicket.AjaxOLMap;
@@ -44,6 +55,21 @@ public class MapaPanel extends Panel
 		mapaOverlays.setOutputMarkupId(true);
 		
 		mapa.setOverlays(mapaOverlays.getOverlays());
+		
+		// Na dvojklik zrusit jakykoliv vyber mista
+		add(new AjaxEventBehavior("dblclick")
+		{
+			@Override
+			protected void onEvent(AjaxRequestTarget target)
+			{
+				MapaSession.get().currentDataSet().clearSelectedPlaces();
+				
+				target.appendJavaScript("$('.mistoOverlay').removeClass('selected');");
+				
+				send(getPage(), Broadcast.BREADTH,
+						new MistoSelectEvent(target, null));
+			}
+		});
 	}
 
 	@Override
@@ -71,6 +97,23 @@ public class MapaPanel extends Panel
 		resultsInPlacesModel.detach();
 		
 		super.onDetach();
+	}
+	
+	@Override
+	public void renderHead(IHeaderResponse response)
+	{
+		// Zakazat zoom na doubleclick (potrebujeme ho na ruseni vyberu)
+		String removeInteraction = "var dblClickInteraction;\n" +
+				JavascriptObject.JS_GLOBAL + "['map_" + getMarkupId() + "-content']" +
+				".getInteractions().getArray().forEach(function(interaction) {\n" + 
+				"  if (interaction instanceof ol.interaction.DoubleClickZoom) {\n" + 
+				"    dblClickInteraction = interaction;\n" + 
+				"  }\n" + 
+				"});\n" +
+				JavascriptObject.JS_GLOBAL + "['map_" + getMarkupId() + "-content']" +
+				".removeInteraction(dblClickInteraction);";
+		
+		response.render(OnDomReadyHeaderItem.forScript(removeInteraction));
 	}
 	
 }

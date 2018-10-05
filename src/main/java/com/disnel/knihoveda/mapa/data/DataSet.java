@@ -69,6 +69,11 @@ public class DataSet implements Serializable
 		}
 	}
 	
+	public void clearSelectedPlaces()
+	{
+		selectedPlaces.clear();
+	}
+	
 	public Collection<FieldValues> getFieldsValues()
 	{
 		return fieldsValues.values();
