@@ -73,12 +73,6 @@ public class SolrDAO
 		}
 	}
 
-	@Deprecated
-	public static void addEmptyQueryParameters(SolrQuery query)
-	{
-		query.add("q", "geo:*");
-	}
-	
 	private static String emptyQueryParams()
 	{
 		return "geo:*";
