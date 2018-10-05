@@ -1,24 +1,17 @@
 package com.disnel.knihoveda.mapa;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-
-import org.apache.wicket.Component;
 import org.apache.wicket.event.IEvent;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.repeater.RepeatingView;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.wicketstuff.openlayers3.DefaultOpenLayersMap;
 import org.wicketstuff.openlayers3.api.View;
 import org.wicketstuff.openlayers3.api.coordinate.LongLat;
 import org.wicketstuff.openlayers3.api.layer.Layer;
 import org.wicketstuff.openlayers3.api.layer.Tile;
-import org.wicketstuff.openlayers3.api.overlay.Overlay;
-import com.disnel.knihoveda.mapa.data.ResultsInPlace;
 import com.disnel.knihoveda.mapa.events.AjaxEvent;
 import com.disnel.knihoveda.mapa.events.UserSelectionChangedEvent;
+import com.disnel.knihoveda.mapa.mapa.MapaOverlays;
 import com.disnel.knihoveda.mapa.ol.CustomTileSource;
 import com.disnel.knihoveda.wicket.AjaxOLMap;
 import com.disnel.knihoveda.wicket.model.ResultsInPlacesModel;
@@ -28,7 +21,7 @@ public class MapaPanel extends Panel
 
 	private AjaxOLMap mapa;
 
-	private OverlaysPanel mapaOverlays;
+	private MapaOverlays mapaOverlays;
 	
 	private ResultsInPlacesModel resultsInPlacesModel;
 	
@@ -46,7 +39,7 @@ public class MapaPanel extends Panel
 				
 				new View(new LongLat(15.335125, 49.741807, "EPSG:4326" ).transform(View.DEFAULT_PROJECTION), 8)))));
 
-		add(mapaOverlays = new OverlaysPanel("overlays",
+		add(mapaOverlays = new MapaOverlays("overlays",
 				resultsInPlacesModel = new ResultsInPlacesModel()));
 		mapaOverlays.setOutputMarkupId(true);
 		
@@ -61,7 +54,8 @@ public class MapaPanel extends Panel
 			AjaxEvent ev = (AjaxEvent) event.getPayload();
 			
 			resultsInPlacesModel.detach();
-			mapaOverlays.replaceWith(mapaOverlays = new OverlaysPanel(mapaOverlays.getId(), resultsInPlacesModel));
+			mapaOverlays.replaceWith(mapaOverlays =
+					new MapaOverlays(mapaOverlays.getId(), resultsInPlacesModel));
 			mapaOverlays.setOutputMarkupId(true);
 			
 			mapa.setOverlays(mapaOverlays.getOverlays());
@@ -77,40 +71,6 @@ public class MapaPanel extends Panel
 		resultsInPlacesModel.detach();
 		
 		super.onDetach();
-	}
-	
-	private class OverlaysPanel extends Panel
-	{
-
-		private List<Overlay> overlays;
-		
-		public OverlaysPanel(String id, IModel<List<ResultsInPlace>> model)
-		{
-			super(id, model);
-			
-			List<ResultsInPlace> resultsInPlaces = model.getObject();
-			
-			overlays = new ArrayList<>(resultsInPlaces.size());
-			
-			RepeatingView overlaysRV;
-			add(overlaysRV = new RepeatingView("overlay"));
-			
-			for ( ResultsInPlace resultsInPlace : resultsInPlaces )
-			{
-				Component overlay;
-				overlaysRV.add(overlay = new MapaMistoOverlayPanel(overlaysRV.newChildId(), resultsInPlace));
-				
-				overlays.add(new Overlay(
-						overlay,
-						new LongLat(resultsInPlace.getPlacePoint().getCoordinate(), "EPSG:4326" ).transform(View.DEFAULT_PROJECTION)
-						));
-			}
-		}
-		
-		public List<Overlay> getOverlays()
-		{
-			return overlays;
-		}
 	}
 	
 }

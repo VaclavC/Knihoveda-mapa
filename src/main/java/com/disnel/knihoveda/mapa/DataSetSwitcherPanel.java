@@ -1,6 +1,7 @@
 package com.disnel.knihoveda.mapa;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
@@ -99,6 +100,30 @@ public class DataSetSwitcherPanel extends Panel
 				RepeatingView valuesRV;
 				detail.add(valuesRV = new RepeatingView("fieldValues"));
 				
+				// Vybrana mista
+				Set<String> selectedPlaces = MapaSession.get().currentDataSet().getSelectedPlaces();
+				if ( !selectedPlaces.isEmpty() )
+				{
+					WebMarkupContainer cont;
+					valuesRV.add(cont = new WebMarkupContainer(valuesRV.newChildId()));
+					
+					cont.add(new Label("name", new ResourceModel("field.place")));
+
+					cont.add(new ListView<String>("value", new ArrayList<String>(selectedPlaces))
+					{
+						@Override
+						protected void populateItem(ListItem<String> item)
+						{
+							String value = item.getModelObject();
+							
+							item.add(new Label("content", value));
+						}
+					});
+					
+					hasContent = true;
+				}
+				
+				// Detaily z hornich poli
 				for ( FieldValues fv : dataSet.getFieldsValues() )
 				{
 					WebMarkupContainer cont;
@@ -120,6 +145,7 @@ public class DataSetSwitcherPanel extends Panel
 					hasContent = true;
 				}
 				
+				// Casove rozmezi
 				Integer yearFrom = dataSet.getYearFrom(),
 						yearTo = dataSet.getYearTo();
 				if ( yearFrom != null || yearTo != null )

@@ -78,6 +78,33 @@ public class SolrDAO
 		return "geo:*";
 	}
 	
+	private static String placeSelectionQueryParams(Collection<String> placeNames)
+	{
+		if ( placeNames.isEmpty() )
+			return "";
+		
+		StringBuilder qPars = new StringBuilder();
+
+		qPars.append(" AND (");
+		
+		String fvDelim = "";
+		for (String placeName : placeNames)
+		{
+			qPars.append(fvDelim);
+			qPars.append(KnihovedaMapaConfig.FIELD_PLACE_NAME);
+			qPars.append(":");
+			qPars.append('"');
+			qPars.append(placeName);
+			qPars.append('"');
+			
+			fvDelim = " OR ";
+		}
+		
+		qPars.append(")");
+
+		return qPars.toString();
+	}
+	
 	private static String fieldValuesQueryParams(
 			Collection<FieldValues> fieldValues, String exceptField)
 	{
@@ -146,6 +173,7 @@ public class SolrDAO
 		SolrQuery query = new SolrQuery();
 		
 		String qParams = emptyQueryParams()
+				+ placeSelectionQueryParams(dataSet.getSelectedPlaces())
 				+ fieldValuesQueryParams(dataSet.getFieldsValues(), null);
 		query.add("q", qParams);
 		
@@ -191,6 +219,7 @@ public class SolrDAO
 		
 		// Tadu potrebujeme vsechny krome toho, pro ktere pole to delame
 		String qParams = emptyQueryParams()
+				+ placeSelectionQueryParams(dataSet.getSelectedPlaces())
 				+ fieldValuesQueryParams(dataSet.getFieldsValues(), fieldName)
 				+ timeRangeQueryParams(dataSet.getYearFrom(), dataSet.getYearTo());
 		query.add("q", qParams);
@@ -230,10 +259,10 @@ public class SolrDAO
 				+ timeRangeQueryParams(dataSet.getYearFrom(), dataSet.getYearTo());
 		query.add("q", qParams);
 		
-		query.addField("publishPlace");
-		query.addField("long_lat");
+		query.addField(KnihovedaMapaConfig.FIELD_PLACE_NAME);
+		query.addField(KnihovedaMapaConfig.FIELD_GEOLOC);
 		query.add("group", "true");
-		query.add("group.field", "publishPlace");
+		query.add("group.field", KnihovedaMapaConfig.FIELD_PLACE_NAME);
 		query.setRows(-1);
 		
 		

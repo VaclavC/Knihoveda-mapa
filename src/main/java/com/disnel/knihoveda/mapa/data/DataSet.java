@@ -3,7 +3,10 @@ package com.disnel.knihoveda.mapa.data;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+
 import org.wicketstuff.openlayers3.api.util.Color;
 
 /**
@@ -18,6 +21,8 @@ public class DataSet implements Serializable
 {
 
 	private Color color;
+	
+	private Set<String> selectedPlaces = new HashSet<>();
 	
 	private Map<String, FieldValues> fieldsValues;
 	
@@ -34,6 +39,36 @@ public class DataSet implements Serializable
 		return color;
 	}
 
+	public Set<String> getSelectedPlaces()
+	{
+		return selectedPlaces;
+	}
+	
+	public boolean isPlaceSelected(String placeName )
+	{
+		return selectedPlaces.contains(placeName);
+	}
+	
+	/**
+	 * Vrati zda je po operaci misto vybrano nebo ne
+	 * 
+	 * @param placeName
+	 * @return
+	 */
+	public boolean toggleSelectedPlace(String placeName)
+	{
+		if ( selectedPlaces.contains(placeName) )
+		{
+			selectedPlaces.remove(placeName);
+			return false;
+		}
+		else
+		{
+			selectedPlaces.add(placeName);
+			return true;
+		}
+	}
+	
 	public Collection<FieldValues> getFieldsValues()
 	{
 		return fieldsValues.values();

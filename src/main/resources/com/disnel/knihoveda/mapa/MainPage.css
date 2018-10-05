@@ -135,6 +135,17 @@ body {
 
 .mistoOverlay .detail { transform: translate(-50%, -50%); z-index: 99999; display: none; }
 
+.mistoOverlay.selected .bottomDot {
+	background-image:
+		linear-gradient(180deg, transparent 50%, #FF9C00 50%),
+		linear-gradient(  0deg, #FF9C00 50%, transparent 50%);
+}
+.mistoOverlay.selected .graph {
+	border-bottom: solid 2px #FF9C00;
+}
+.mistoOverlay.selected .detail { border: solid 1px #FF9C00; }
+.mistoOverlay.selected .detail .head { background: #FF9C00; }
+
 /***************/
 /* Casovy graf */
 

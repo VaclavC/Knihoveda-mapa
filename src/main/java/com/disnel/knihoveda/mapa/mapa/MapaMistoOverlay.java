@@ -1,26 +1,38 @@
-package com.disnel.knihoveda.mapa;
+package com.disnel.knihoveda.mapa.mapa;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxEventBehavior;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.AttributeAppender;
+import org.apache.wicket.event.Broadcast;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
+import org.apache.wicket.model.Model;
+
+import com.disnel.knihoveda.mapa.KnihovedaMapaConfig;
+import com.disnel.knihoveda.mapa.MapaSession;
 import com.disnel.knihoveda.mapa.data.DataSet;
 import com.disnel.knihoveda.mapa.data.ResultsInPlace;
+import com.disnel.knihoveda.mapa.events.MistoSelectEvent;
 
-public class MapaMistoOverlayPanel extends Panel
+public class MapaMistoOverlay extends Panel
 {
 
-	public MapaMistoOverlayPanel(String id, ResultsInPlace resultsInPlace)
+	boolean selected;
+	
+	public MapaMistoOverlay(String id, ResultsInPlace resultsInPlace)
 	{
 		super(id);
+		
+		setOutputMarkupId(true);
 		
 		// Tecka v miste obce
 		Component bottomDot;
@@ -50,7 +62,7 @@ public class MapaMistoOverlayPanel extends Panel
 
 		// Detail vysledku
 		WebMarkupContainer detail;
-		add(detail = new WebMarkupContainer("detail"));
+		add(detail = new WebMarkupContainer("detail", Model.of(resultsInPlace.getPlaceName())));
 		detail.setOutputMarkupId(true);
 		
 		detail.add(new Label("nazevMista", resultsInPlace.getPlaceName()));
@@ -71,39 +83,37 @@ public class MapaMistoOverlayPanel extends Panel
 			}
 		});
 		
+		detail.add(new AjaxEventBehavior("click")
+		{
+			@Override
+			protected void onEvent(AjaxRequestTarget target)
+			{
+				String placeName = (String) getComponent().getDefaultModelObject();
+				
+				boolean selected = MapaSession.get().currentDataSet()
+						.toggleSelectedPlace(placeName);
+				
+				if ( selected )
+					target.appendJavaScript(String.format(
+							"$('#%s').addClass('selected')", MapaMistoOverlay.this.getMarkupId()));
+				else
+					target.appendJavaScript(String.format(
+							"$('#%s').removeClass('selected')", MapaMistoOverlay.this.getMarkupId()));
+				
+				send(getPage(), Broadcast.BREADTH,
+						new MistoSelectEvent(target, placeName));
+			}
+		});
+		
 		// Nejaky ten JS pro zobrazovani detailu
 		bottomDot.add(new AttributeAppender("onmouseover",
 				String.format("$('#%s').show();", detail.getMarkupId())));
 		detail.add(new AttributeAppender("onmouseleave",
 				String.format("$('#%s').hide();", detail.getMarkupId())));
 		
-//		detail.add(new AjaxEventBehavior("click")
-//		{
-//			@Override
-//			protected void onEvent(AjaxRequestTarget target)
-//			{
-//				if ( isSelected )
-//				{
-//					send(getPage(), Broadcast.BREADTH,
-//							new MistoSelectEvent(target, null));
-//					
-//					target.appendJavaScript(
-//							"$('#" + MapaMistoOverlayPanel.this.getMarkupId() + " .mistoOverlay').removeClass('active');");
-//					
-//					isSelected = false;
-//				}
-//				else
-//				{
-//					send(getPage(), Broadcast.BREADTH,
-//							new MistoSelectEvent(target, resultsInPlace.getPlaceName()));
-//					
-//					target.appendJavaScript("$('.mistoOverlay').removeClass('active');"
-//							+ " $('#" + MapaMistoOverlayPanel.this.getMarkupId() + " .mistoOverlay').addClass('active');");
-//					
-//					isSelected = true;
-//				}
-//			}
-//		});
+		// Nastavit jako vybrane kdyz to tak je
+		if ( MapaSession.get().currentDataSet().isPlaceSelected(resultsInPlace.getPlaceName()))
+			add(new AttributeAppender("class", "selected", " "));
 	}
 	
 	private int sizeFromPocet(long pocet)

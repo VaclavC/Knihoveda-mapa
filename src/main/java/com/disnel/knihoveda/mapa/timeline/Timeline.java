@@ -35,8 +35,6 @@ public class Timeline extends WebMarkupContainer
 		super(id);
 		this.conf = conf;
 		
-		setOutputMarkupId(true);
-		
 		add(new AbstractDefaultAjaxBehavior()
 		{
 			@Override
