@@ -1,4 +1,5 @@
 
+
 class Timeline {
 	
 	constructor(tagID, config)
@@ -179,10 +180,14 @@ class Timeline {
 		this.ctx.fillStyle = dataset.color;
 		
 		this.ctx.beginPath();
-		for (var year in dataset.data)
+		for ( year = this.yearMin; year <= this.yearMax; year++ )
 		{
 			var actX = this.xFromYear(year);
-			var actY = this.yFromCount(dataset.data[year]);
+			var actY;
+			if ( year in dataset.data )
+				actY = this.yFromCount(dataset.data[year]);
+			else
+				actY = this.yFromCount(0);
 			
 			this.ctx.lineTo(actX, actY);
 		}
