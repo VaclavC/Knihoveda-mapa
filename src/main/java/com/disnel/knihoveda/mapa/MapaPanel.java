@@ -13,6 +13,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.wicketstuff.openlayers3.DefaultOpenLayersMap;
+import org.wicketstuff.openlayers3.api.Extent;
 import org.wicketstuff.openlayers3.api.JavascriptObject;
 import org.wicketstuff.openlayers3.api.View;
 import org.wicketstuff.openlayers3.api.coordinate.LongLat;
@@ -48,7 +49,11 @@ public class MapaPanel extends Panel
 								new CustomTileSource(KnihovedaMapaConfig.osmURL))
 				),
 				
-				new View(new LongLat(15.335125, 49.741807, "EPSG:4326" ).transform(View.DEFAULT_PROJECTION), 8)))));
+				new View(new LongLat(15.335125, 49.741807, "EPSG:4326" )
+						.transform(View.DEFAULT_PROJECTION), 8)
+						.minZoom(8)
+						.maxZoom(11)
+						))));
 
 		add(mapaOverlays = new MapaOverlays("overlays",
 				resultsInPlacesModel = new ResultsInPlacesModel()));
