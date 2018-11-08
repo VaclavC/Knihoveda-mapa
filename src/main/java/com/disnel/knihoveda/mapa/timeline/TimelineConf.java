@@ -16,6 +16,7 @@ public class TimelineConf implements Serializable
 	private Integer paddingBottom = 8;
 	private String timeAxisStyle = "#b0b0b0";
 	private String timeAxisFont = "13px Arial";
+	private String timeAxisFontStyle = "#000000";
 	private Integer timeAxisTextY = 14;
 	private String countAxisStyle = "d0d0d0";
 	private String countAxisFont = "10px Arial";

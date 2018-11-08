@@ -128,7 +128,7 @@ class Timeline {
 		
 		this.ctx.lineWidth = 1;
 		this.ctx.strokeStyle = this.config.timeAxisStyle;
-		this.ctx.fillStyle = this.config.timeAxisStyle;
+		this.ctx.fillStyle = this.config.timeAxisFontStyle;
 		this.ctx.font = this.config.timeAxisFont;
 		
 		this.ctx.beginPath();
