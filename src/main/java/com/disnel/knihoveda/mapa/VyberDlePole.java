@@ -97,7 +97,7 @@ public class VyberDlePole extends Panel
 	public static String getJSSetSelectColor(Color color)
 	{
 		return String.format(
-				"$('.vyberDlePole .k-multiselect-wrap').css('background-color', '%s');",
+				"$('.vyberDlePole .k-multiselect-wrap').css('border', 'solid 3px %s');",
 				String.format("#%02x%02x%02x",
 						color.red, color.green, color.blue));
 	}
