@@ -56,14 +56,23 @@ class Timeline {
 			
 		this.dataSets.forEach(function(dataset)
 		{
+			var dsYearMin = Number.MAX_SAFE_INTEGER,
+			    dsYearMax = Number.MIN_SAFE_INTEGER;
+			
 			for (const [year, count] of Object.entries(dataset.data))
 			{
-				yearMin = Math.min(yearMin, year);
-				yearMax = Math.max(yearMax, year);
+				dsYearMin = Math.min(dsYearMin, year);
+				dsYearMax = Math.max(dsYearMax, year);
 				
 				countMin = Math.min(countMin, count);
 				countMax = Math.max(countMax, count);
 			}
+			
+			dataset.yearMin = dsYearMin;
+			dataset.yearMax = dsYearMax;
+			
+			yearMin = Math.min(yearMin, dsYearMin);
+			yearMax = Math.max(yearMax, dsYearMax);
 		});
 		
 		if ( yearMax - yearMin < 50)
@@ -180,7 +189,7 @@ class Timeline {
 		this.ctx.fillStyle = dataset.color;
 		
 		this.ctx.beginPath();
-		for ( year = this.yearMin; year <= this.yearMax; year++ )
+		for ( year = dataset.yearMin; year <= dataset.yearMax; year++ )
 		{
 			var actX = this.xFromYear(year);
 			var actY;
