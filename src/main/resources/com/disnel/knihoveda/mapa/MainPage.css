@@ -146,6 +146,8 @@ body {
 .mistoOverlay.selected .detail { border: solid 1px #FF9C00; }
 .mistoOverlay.selected .detail .head { background: #FF9C00; }
 
+.mistoOverlay.shaded { opacity: 0.4; }
+
 /***************/
 /* Casovy graf */
 

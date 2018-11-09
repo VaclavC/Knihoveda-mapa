@@ -39,14 +39,35 @@ public class DataSet implements Serializable
 		return color;
 	}
 
+	/**
+	 * Vrati mnozinu vsech vybranych mist
+	 * 
+	 * @return
+	 */
 	public Set<String> getSelectedPlaces()
 	{
 		return selectedPlaces;
 	}
 	
+	/**
+	 * Vrati zda je misto se zadanym nazvem vybrano
+	 * 
+	 * @param placeName
+	 * @return
+	 */
 	public boolean isPlaceSelected(String placeName )
 	{
 		return selectedPlaces.contains(placeName);
+	}
+	
+	/**
+	 * Vrati zda je nejake misto vybrano
+	 * 
+	 * @return
+	 */
+	public boolean isAnyPlaceSelected()
+	{
+		return !selectedPlaces.isEmpty();
 	}
 	
 	/**

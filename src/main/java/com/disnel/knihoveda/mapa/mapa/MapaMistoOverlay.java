@@ -17,6 +17,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.Model;
 
+import com.disnel.knihoveda.mapa.KnihovedaMapaApplication;
 import com.disnel.knihoveda.mapa.KnihovedaMapaConfig;
 import com.disnel.knihoveda.mapa.MapaSession;
 import com.disnel.knihoveda.mapa.data.DataSet;
@@ -26,13 +27,28 @@ import com.disnel.knihoveda.mapa.events.MistoSelectEvent;
 public class MapaMistoOverlay extends Panel
 {
 
-	boolean selected;
+	private enum DisplayState { NORMAL, SELECTED, SHADED };
 	
 	public MapaMistoOverlay(String id, ResultsInPlace resultsInPlace)
 	{
 		super(id);
 		
 		setOutputMarkupId(true);
+		
+		// Zjistit, jestli jak se ma zobrazit vhledem k moznemu vyberu
+		DisplayState dState;
+		DataSet currentDataSet = MapaSession.get().currentDataSet();
+		if ( !currentDataSet.isAnyPlaceSelected() )
+		{
+			dState = DisplayState.NORMAL;
+		}
+		else
+		{
+			if ( currentDataSet.isPlaceSelected(resultsInPlace.getPlaceName()))
+				dState = DisplayState.SELECTED;
+			else
+				dState = DisplayState.SHADED;
+		}
 		
 		// Tecka v miste obce
 		Component bottomDot;
@@ -49,16 +65,17 @@ public class MapaMistoOverlay extends Panel
 		RepeatingView bars;
 		add(bars = new RepeatingView("result"));
 		
-		for ( DataSet dataSet : dataSetsToDisplay )
-		{
-			Component bar;
-			bars.add(bar = new WebMarkupContainer(bars.newChildId()));
-			bar.add(new AttributeAppender("style",
-					String.format("height: %dpx; background-color: %s;",
-							sizeFromPocet(resultsInPlace.getNumResultsForDataSet(dataSet)),
-							dataSet.getColor().toString()),
-					";"));
-		}
+		if ( dState != DisplayState.SHADED )
+			for ( DataSet dataSet : dataSetsToDisplay )
+			{
+				Component bar;
+				bars.add(bar = new WebMarkupContainer(bars.newChildId()));
+				bar.add(new AttributeAppender("style",
+						String.format("height: %dpx; background-color: %s;",
+								sizeFromPocet(resultsInPlace.getNumResultsForDataSet(dataSet)),
+								dataSet.getColor().toString()),
+						";"));
+			}
 
 		// Detail vysledku
 		WebMarkupContainer detail;
@@ -111,9 +128,8 @@ public class MapaMistoOverlay extends Panel
 		detail.add(new AttributeAppender("onmouseleave",
 				String.format("$('#%s').hide();", detail.getMarkupId())));
 		
-		// Nastavit jako vybrane kdyz to tak je
-		if ( MapaSession.get().currentDataSet().isPlaceSelected(resultsInPlace.getPlaceName()))
-			add(new AttributeAppender("class", "selected", " "));
+		// Nastavit, jak se ma zobrazovat
+		add(new AttributeAppender("class", dState.name().toLowerCase(), " "));
 	}
 	
 	private int sizeFromPocet(long pocet)
