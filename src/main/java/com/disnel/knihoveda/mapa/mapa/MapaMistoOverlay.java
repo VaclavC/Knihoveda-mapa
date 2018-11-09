@@ -17,7 +17,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.Model;
 
-import com.disnel.knihoveda.mapa.KnihovedaMapaApplication;
 import com.disnel.knihoveda.mapa.KnihovedaMapaConfig;
 import com.disnel.knihoveda.mapa.MapaSession;
 import com.disnel.knihoveda.mapa.data.DataSet;
