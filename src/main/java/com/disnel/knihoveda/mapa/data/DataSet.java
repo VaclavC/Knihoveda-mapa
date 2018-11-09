@@ -185,6 +185,22 @@ public class DataSet implements Serializable
 			sb.append("]\n");
 		}
 		
+		if ( !selectedPlaces.isEmpty() )
+		{
+			sb.append("\tSelected places [");
+			
+			String delim = "";
+			for ( String place : selectedPlaces )
+			{
+				sb.append(delim);
+				sb.append(place);
+				
+				delim = ", ";
+			}
+			
+			sb.append("]\n");
+		}
+		
 		sb.append("}\n");
 		
 		return sb.toString();
