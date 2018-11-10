@@ -16,12 +16,12 @@ public class TimeSelectEvent extends UserSelectionChangedEvent
 		this.yearTo = yearTo;
 	}
 
-	public Integer getYearFrom()
+	public Integer yearFrom()
 	{
 		return yearFrom;
 	}
 
-	public Integer getYearTo()
+	public Integer yearTo()
 	{
 		return yearTo;
 	}

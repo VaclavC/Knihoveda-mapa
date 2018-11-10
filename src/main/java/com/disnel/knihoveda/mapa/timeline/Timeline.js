@@ -213,6 +213,14 @@ class Timeline {
 		}
 	}
 	
+	/****************
+	 * Vymaze vyber
+	 */
+	clearSelection()
+	{
+		this.ctxBottom.clearRect(0, 0, this.canvas.width, this.canvas.height);
+	}
+	
 	/*******************************
 	/* Nakresli vyber na casove ose 
 	 */
@@ -223,7 +231,10 @@ class Timeline {
 		
 		let x1 = this.xFromYear(yearFrom);
 		let x2 = this.xFromYear(yearTo);
-		
+
+		// Vymazat
+		this.clearSelection();
+
 		// Podbarveni
 		this.ctxBottom.fillStyle = this.config.selectStyle;
 		this.ctxBottom.fillRect(x1, 0, x2 - x1, this.canvas.height);
@@ -238,7 +249,7 @@ class Timeline {
 		this.ctxBottom.save();
 		this.ctxBottom.translate(x1, textY);
 		this.ctxBottom.rotate(-k*Math.PI/2);
-		this.ctxBottom.fillText(this.yearSelectFrom.toString(),
+		this.ctxBottom.fillText(yearFrom.toString(),
 				0, this.config.selectTextDist);
 		this.ctxBottom.restore();
 
@@ -325,8 +336,6 @@ class Timeline {
 		// Vyber casoveho intervalu
 		if ( this.yearSelectFrom !== null )
 		{
-			this.ctxBottom.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
 			let yearTo = ( this.yearSelectTo !== null ) ? this.yearSelectTo : yearSelect;
 			
 			this.drawSelection(this.yearSelectFrom, yearTo);

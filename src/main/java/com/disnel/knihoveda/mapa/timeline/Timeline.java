@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.event.Broadcast;
+import org.apache.wicket.event.IEvent;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.JavaScriptReferenceHeaderItem;
@@ -201,14 +202,19 @@ public class Timeline extends WebMarkupContainer
 		return String.format("%s.draw()", getJSVarName());
 	}
 	
+	public String getJSDrawSelection(Integer yearFrom, Integer yearTo)
+	{
+		return String.format("%s.drawSelection(%d, %d)", getJSVarName(), yearFrom, yearTo);
+	}
+			
 	@Override
 	public void renderHead(IHeaderResponse response)
 	{
 		// Dependencies
 		response.render(JavaScriptReferenceHeaderItem.forReference(
-				new PackageResourceReference(getClass(), "TimelineDataset.js")));
+				new PackageResourceReference(Timeline.class, "TimelineDataset.js")));
 		response.render(JavaScriptReferenceHeaderItem.forReference(
-				new PackageResourceReference(getClass(), "Timeline.js")));
+				new PackageResourceReference(Timeline.class, "Timeline.js")));
 		
 		// Initialization
 		response.render(OnDomReadyHeaderItem.forScript(getJSInit()));
@@ -216,4 +222,14 @@ public class Timeline extends WebMarkupContainer
 		response.render(OnDomReadyHeaderItem.forScript(getJSDraw()));
 	}
 
+	@Override
+	public void onEvent(IEvent<?> event)
+	{
+		if ( event.getPayload() instanceof TimeSelectEvent )
+		{
+			TimeSelectEvent ev = (TimeSelectEvent) event.getPayload();
+			
+			ev.getTarget().appendJavaScript(getJSDrawSelection(ev.yearFrom(), ev.yearTo()));
+		}
+	}
 }

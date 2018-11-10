@@ -4,13 +4,29 @@
 
 <wicket:panel>
 
-	<canvas wicket:id="timeline">[TIMELINE]</canvas>
 
-	<div id="timelineRecordInfo" class="detail" style="position: absolute; display: block; pointer-events: none; display: none;">
-		<div class="head">[HEAD]</div>
-		<div class="vysledek">
-			<span class="dataSetIndicator">&nbsp;</span>
-			<span class="pocet">[POCET]</span>
+	<form id="timelinePanel" wicket:id="form">
+		<div class="head"><wicket:message key="field.casoveRozmezi" /></div>
+		<div>
+			<label wicket:for="inputOd"><wicket:message key="field.casoveRozmezi.od" /></label>
+			<input type="number" wicket:id="inputOd"/>
+		</div>
+		<div>
+			<label wicket:for="inputDo"><wicket:message key="field.casoveRozmezi.do" /></label>
+			<input type="number" wicket:id="inputDo"/>
+		</div>
+		<div><button wicket:id="butClear"><wicket:message key="field.casoveRozmezi.smazat" /></button></div>
+	</form>
+
+	<div id="timelineCont">
+		<canvas wicket:id="timeline">[TIMELINE]</canvas>
+	
+		<div id="timelineRecordInfo" class="detail" style="position: absolute; display: block; pointer-events: none; display: none;">
+			<div class="head">[HEAD]</div>
+			<div class="vysledek">
+				<span class="dataSetIndicator">&nbsp;</span>
+				<span class="pocet">[POCET]</span>
+			</div>
 		</div>
 	</div>
 
