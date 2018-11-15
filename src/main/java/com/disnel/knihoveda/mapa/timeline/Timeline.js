@@ -328,15 +328,16 @@ class Timeline {
 			}
 		}, this);
 		
-		let xPos = xWithData;
-		if ( relX > 4*this.canvas.width/5)
+		let xPos = xWithData - this.wrapLeft;
+		if ( xPos > 4*this.contWidth/5)
 			xPos -= $(this.detailPanelSel).width();
 		
-		let yPos = ev.clientY, panelHeight = $(this.detailPanelSel).height(); 
+		let yPos = relY;
+		let panelHeight = $(this.detailPanelSel).height(); 
 		if ( relY + panelHeight > this.canvas.height )
 			yPos -= panelHeight;
 		
-		$(this.detailPanelSel).offset({ top: yPos.toString(), left: xPos.toString()});
+		$(this.detailPanelSel).css({ top: yPos, left: xPos})
 		
 		// Vyber casoveho intervalu
 		if ( this.mouseMoveButton == 1 )
