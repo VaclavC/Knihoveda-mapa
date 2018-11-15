@@ -10,22 +10,25 @@ class Timeline {
 		this.tagSel = "#" + tagID;
 		this.detailPanelSel = "#" + config.detailPanelId;
 		this.ajaxCallback = $(this.tagSel).data("callback");
-
+		this.wrapSel = this.tagSel + "-wrap";
+		
 		this.yearSelectFrom = null;
 		this.yearSelectTo = null;
 
 		// Dalsi hladiny pro vykreslovani
+		$(this.tagSel).wrap('<div id="' + this.tagID + '-wrap" style="position: absolute; width: 100%; height: 100%; left: 0; top: 0;"></div>');
 		$(this.tagSel).parent().prepend('<canvas id="' + this.tagID + '-bottom" style="z-index: -1; pointer-events: none"></canvas>' );
 		$(this.tagSel).css("z-index", 0);
 		$(this.tagSel).parent().append('<canvas id="' + this.tagID + '-top" style="z-index: 1; pointer-events: none"></canvas>' );
 		
 		// Callbacky
 		$(window).on('resize', () => { this.draw(); });
-		$(this.tagSel).on('mousemove', (ev) => { this.mouseMove(ev); });
 		$(this.tagSel).on('mouseleave', (ev) => { this.mouseLeave(ev); });
 		$(this.tagSel).on('mousedown', (ev) => { this.mouseDown(ev); });
-		$(this.tagSel).on('mouseup', (ev) => { this.mouseUp(ev); });
+		$("body").on('mouseup', (ev) => { this.mouseUp(ev); });
+		$(this.tagSel).on('mousemove', (ev) => { this.mouseMove(ev); });
 		$(this.tagSel).on('dblclick', (ev) => { this.dblclick(ev); });
+		$(this.tagSel).on('wheel', (ev) => { this.wheel(ev); });
 	}
 
 	setData(dataSets)
@@ -113,6 +116,10 @@ class Timeline {
 		this.canvasBottom.width = this.tag.width();
 		this.canvasBottom.height = this.tag.height();
 		
+		this.contWidth = $(this.wrapSel).parent().width();
+		this.wrapWidth = $(this.wrapSel).width();
+		this.wrapLeft = -$(this.wrapSel).position().left;
+		
 		// Nastavit limity pro graf
 		this.x1 = this.config.paddingLeft;
 		this.x2 = this.canvas.width - this.config.paddingRight;
@@ -128,8 +135,8 @@ class Timeline {
 		// Spolecne nastaveni
 		
 		// Casova osa
-		var timeLen = this.yearMax - this.yearMin;
-		var timeStep = (timeLen > 100) ? 50 : ( (timeLen > 10) ? 5: 1 );
+		var timeLen = (this.yearMax - this.yearMin) * this.contWidth / this.wrapWidth;
+		var timeStep = (timeLen > 100) ? 50 : ( (timeLen > 20) ? 5 : 1 );
 		var time1 = timeStep * Math.floor(this.yearMin / timeStep);
 		var time2 = timeStep * Math.floor(this.yearMax / timeStep + 1);
 		
@@ -267,14 +274,12 @@ class Timeline {
 	
 	mouseMove(ev)
 	{
+		// Vymazat canvas
 		this.ctxTop.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
 		// Ziskat pozici mysi v grafu
 		var inChart, relX, relY;
 		[ inChart, relX, relY ] = this.mousePosInChart(ev);
-		
-		if ( !inChart )
-			return;
 		
 		// Najit rok se zaznamem nejblizsi kurzoru
 		var yearSelect = this.yearFromX(relX);
@@ -334,14 +339,31 @@ class Timeline {
 		$(this.detailPanelSel).offset({ top: yPos.toString(), left: xPos.toString()});
 		
 		// Vyber casoveho intervalu
-		if ( this.yearSelectFrom !== null )
+		if ( this.mouseMoveButton == 1 )
 		{
 			let yearTo = ( this.yearSelectTo !== null ) ? this.yearSelectTo : yearSelect;
-			
 			this.drawSelection(this.yearSelectFrom, yearTo);
 		}
+		
+		// Posun grafu
+		if ( this.mouseMoveButton == 2 )
+		{
+			let deltaX = ev.pageX - this.lastMouseX;
+			this.lastMouseX = ev.pageX;
+			
+			let newLeft = this.wrapLeft - deltaX;
+			
+			if ( newLeft < 0 )
+				return;
+			
+			if ( this.wrapWidth - newLeft <  this.contWidth )
+				return;
+			
+			$(this.wrapSel).css({left: -newLeft});
+			this.draw();
+		}
 	}
-	
+
 	mouseLeave(ev)
 	{
 		this.ctxTop.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -350,48 +372,65 @@ class Timeline {
 	
 	mouseDown(ev)
 	{
-		this.lastMouseDownTime = new Date().getTime();
+		if ( ev.originalEvent.button == 0 )
+		{
+			this.lastMouseDownTime = new Date().getTime();
+			
+			var inChart, relX, relY;
+			[ inChart, relX, relY ] = this.mousePosInChart(ev);
+			
+			if ( !inChart )
+				return;
+			
+			var yearSelect = this.yearFromX(relX);
+			
+			this.yearSelectFrom = yearSelect;
+			this.yearSelectTo = null;
+			
+			this.mouseMoveButton = 1;
+		}
 		
-		var inChart, relX, relY;
-		[ inChart, relX, relY ] = this.mousePosInChart(ev);
-		
-		if ( !inChart )
-			return;
-		
-		var yearSelect = this.yearFromX(relX);
-		
-		this.yearSelectFrom = yearSelect;
-		this.yearSelectTo = null;
+		if ( ev.originalEvent.button == 1 )
+		{
+			this.lastMouseX = ev.pageX;
+			
+			this.mouseMoveButton = 2;
+		}
 	}
 	
 	mouseUp(ev)
 	{
-		if ( this.yearSelectFrom == null )
-			return;
-		
-		var inChart, relX, relY;
-		[ inChart, relX, relY ] = this.mousePosInChart(ev);
-		
-		if ( !inChart ||
-				new Date().getTime() - this.lastMouseDownTime < 200 )
+		if ( ev.originalEvent.button == 0 )
 		{
-			this.yearSelectFrom = null;
-			return;
+			if ( this.yearSelectFrom == null )
+				return;
+			
+			var inChart, relX, relY;
+			[ inChart, relX, relY ] = this.mousePosInChart(ev);
+			
+			if ( !inChart ||
+					new Date().getTime() - this.lastMouseDownTime < 200 )
+			{
+				this.yearSelectFrom = null;
+				return;
+			}
+			
+			var yearSelect = this.yearFromX(relX);
+			
+			if ( yearSelect < this.yearSelectFrom )
+			{
+				this.yearSelectTo = this.yearSelectFrom;
+				this.yearSelectFrom = yearSelect;
+			}
+			else
+			{
+				this.yearSelectTo = yearSelect;
+			}
+			
+			this.ajaxCall("S" + this.yearSelectFrom + "-" + this.yearSelectTo);
 		}
-		
-		var yearSelect = this.yearFromX(relX);
-		
-		if ( yearSelect < this.yearSelectFrom )
-		{
-			this.yearSelectTo = this.yearSelectFrom;
-			this.yearSelectFrom = yearSelect;
-		}
-		else
-		{
-			this.yearSelectTo = yearSelect;
-		}
-		
-		this.ajaxCall("S" + this.yearSelectFrom + "-" + this.yearSelectTo);
+	
+		this.mouseMoveButton = 0;
 	}
 	
 	dblclick(ev)
@@ -402,6 +441,36 @@ class Timeline {
 		this.yearSelectTo = null;
 
 		this.ajaxCall("C");
+	}
+	
+	wheel(ev)
+	{
+		var whEv = ev.originalEvent;
+		var mouseX = whEv.clientX - $(this.wrapSel).parent().offset().left;
+		
+		// Nova sirka
+		var newWrapW;
+		if ( whEv.deltaY > 0 )
+			newWrapW = this.wrapWidth / this.config.wheelScaleK;
+		else
+			newWrapW = this.wrapWidth * this.config.wheelScaleK;
+		
+		if ( newWrapW < this.contWidth )
+			newWrapW = this.contWidth;
+		
+		if ( newWrapW > 32000 )
+			newWrapW = 32000;
+		
+		// Nova pozice X
+		var k = newWrapW / this.wrapWidth;  // Tady musime vzit jak se to skutecne zmenilo, ne co bylo podle kolecka
+		var newLeft = k * ( mouseX + this.wrapLeft ) - mouseX;
+		
+		if ( newLeft < 0 )
+			newLeft = 0;
+		
+		$(this.wrapSel).width(newWrapW);
+		$(this.wrapSel).css({left: -newLeft});
+		this.draw();
 	}
 	
 	/*****************
@@ -480,8 +549,8 @@ class Timeline {
 	mousePosInChart(ev)
 	{
 		var parentOffset = $(this.canvas).offset();
-		var relX = ev.clientX - parentOffset.left;
-		var relY = ev.clientY - parentOffset.top;
+		var relX = ev.pageX - parentOffset.left;
+		var relY = ev.pageY - parentOffset.top;
 		
 		// Kdyz jsme mimo, nic neresime
 		if ( relX < this.config.paddingLeft || relY > this.canvas.width - this.config.paddingRight )

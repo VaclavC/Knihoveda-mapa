@@ -158,7 +158,7 @@ body {
 	display: flex;
 }
 
-#timelinePanel { background: #b0b0b0; font-size: 80%; text-align: right; padding: 0.5em 1em; }
+#timelinePanel { background: #b0b0b0; font-size: 80%; text-align: right; padding: 0.5em 1em; z-index: 9999; }
 #timelinePanel .head { font-size: 105%; font-weight: bold; margin-bottom: 0.5em; }
 #timelinePanel .k-widget.k-numerictextbox, #timelinePanel input[type=number] { width: 8em; text-align: right; }
 

@@ -29,4 +29,5 @@ public class TimelineConf implements Serializable
 	private String selectFont = "14px Arial Black";
 	private String selectFontStyle = "#ffffff";
 	private Integer selectTextDist = 19;
+	private Float wheelScaleK = 1.1f;
 }
