@@ -469,6 +469,9 @@ class Timeline {
 		if ( newLeft < 0 )
 			newLeft = 0;
 		
+		if ( newWrapW - newLeft < this.contWidth )
+			newLeft = newWrapW - this.contWidth;
+		
 		$(this.wrapSel).width(newWrapW);
 		$(this.wrapSel).css({left: -newLeft});
 		this.draw();
