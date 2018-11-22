@@ -78,13 +78,6 @@ class Timeline {
 			yearMax = Math.max(yearMax, dsYearMax);
 		});
 		
-		if ( yearMax - yearMin < 50)
-		{
-			var mid = Math.floor((yearMin + yearMax) / 2);
-			yearMin = mid - 25;
-			yearMax = mid + 25;
-		}
-		
 		if ( countMax < 10 )
 			countMax = 10;
 		
