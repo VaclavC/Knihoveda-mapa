@@ -293,7 +293,7 @@ public class SolrDAO
 					Long count = group.getResult().getNumFound();
 					
 					SolrDocument doc = group.getResult().get(0);
-					String placeName = ((List<String>) doc.getFieldValue(KnihovedaMapaConfig.FIELD_PLACE_NAME)).get(0);
+					String placeName = (String) doc.getFieldValue(KnihovedaMapaConfig.FIELD_PLACE_NAME);
 					String placePointS = ((List<String>)doc.getFieldValue(KnihovedaMapaConfig.FIELD_GEOLOC)).get(0);
 					Point placePoint = pointFromString(placePointS);
 					
