@@ -279,6 +279,7 @@ public class SolrDAO
 	 * 
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public static List<ResultsInPlace> loadResultsInPlaces()
 	{
 		LinkedHashMap<String, ResultsInPlace> resultsInPlaces = new LinkedHashMap<>();
@@ -292,8 +293,9 @@ public class SolrDAO
 					Long count = group.getResult().getNumFound();
 					
 					SolrDocument doc = group.getResult().get(0);
-					String placeName = (String) doc.getFieldValue("publishPlace");
-					Point placePoint = pointFromString((String) doc.getFieldValue("long_lat"));
+					String placeName = ((List<String>) doc.getFieldValue(KnihovedaMapaConfig.FIELD_PLACE_NAME)).get(0);
+					String placePointS = ((List<String>)doc.getFieldValue(KnihovedaMapaConfig.FIELD_GEOLOC)).get(0);
+					Point placePoint = pointFromString(placePointS);
 					
 					ResultsInPlace resultsInPlace = resultsInPlaces.get(placeName);
 					if ( resultsInPlace == null )
