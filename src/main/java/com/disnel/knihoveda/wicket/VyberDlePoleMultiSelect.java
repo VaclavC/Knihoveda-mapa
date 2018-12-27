@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
+import com.disnel.knihoveda.dao.ResourceDAO;
 import com.disnel.knihoveda.mapa.MapaSession;
 import com.disnel.knihoveda.mapa.data.DataSet;
 import com.disnel.knihoveda.mapa.data.FacetFieldCountWrapper;
@@ -36,7 +38,7 @@ public abstract class VyberDlePoleMultiSelect extends AjaxMultiSelect<FacetField
 		
 		this.selectedValues = new ArrayList<>();
 		lookForSelectedValues();
-		setModel(Model.of(this.selectedValues));
+		setModel(Model.of(this.selectedValues));		
 	}
 
 	public void suppressNextRefresh(boolean value)
@@ -107,6 +109,7 @@ public abstract class VyberDlePoleMultiSelect extends AjaxMultiSelect<FacetField
 		super.onConfigure(behavior);
 
 		behavior.setOption("filter", "'contains'");
+		behavior.setOption("placeholder", ResourceDAO.jsResourceString("field.empty", "..."));
 	}
 	
 }
