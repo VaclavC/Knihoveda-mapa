@@ -12,7 +12,19 @@
 
 <div id="mapa" wicket:id="mapa"></div>
 
-<div id="casovyGraf" wicket:id="casovyGraf"></div>
+<div id="casovyGrafCont">
+	<div class="ui-resizable-handle ui-resizable-n"><hr/></div>
+	<div id="casovyGraf" wicket:id="casovyGraf"></div>
+</div>
+<script>
+$( function() {
+	$("#casovyGrafCont").resizable({
+		handles: { "n": "#casovyGrafCont .ui-resizable-handle.ui-resizable-n" },
+		minHeight: $("#casovyGrafCont").height(),
+		maxHeight: $(window).height()/2,
+	});
+} );
+</script>
 
 <div id="vyberyDlePoli">
 	<wicket:container wicket:id="vyberyDlePoli">

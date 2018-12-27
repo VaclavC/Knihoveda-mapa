@@ -151,12 +151,18 @@ body {
 /***************/
 /* Casovy graf */
 
-#casovyGraf {
+#casovyGrafCont {
 	position: fixed; box-sizing: border-box; bottom: 0; left: 0; right: 0; height: 8em;
+}
+#casovyGrafCont #casovyGraf {
+	position: absolute; top: 0; left: 0; width: 100%; height: 100%;
 	background: white; box-shadow: 0 -0.1em 0.1em rgba(0, 0, 0, 0.3);
 	cursor: crosshair;
 	display: flex;
 }
+#casovyGrafCont .ui-resizable-handle { position: absolute; background: #b0b0b0; z-index: 99999; cursor: pointer; }
+#casovyGrafCont .ui-resizable-handle.ui-resizable-n { width: 96px; height: 12px; top: -12px; margin-left: 50%; }
+#casovyGrafCont .ui-resizable-handle hr { margin: 5px 4px 0 4px; border-top: solid 1px black; border-bottom: solid 1px #e0e0e0; }
 
 #timelinePanel { background: #b0b0b0; font-size: 80%; text-align: right; padding: 0.5em 1em; z-index: 9999; }
 #timelinePanel .head { font-size: 105%; font-weight: bold; margin-bottom: 0.5em; }

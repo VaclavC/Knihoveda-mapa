@@ -7,6 +7,7 @@ import java.util.Arrays;
 import org.apache.wicket.ajax.IAjaxIndicatorAware;
 import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.head.JavaScriptHeaderItem;
 import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -14,7 +15,12 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.request.resource.CssResourceReference;
 
+import com.googlecode.wicket.jquery.core.resource.JavaScriptPackageHeaderItem;
+import com.googlecode.wicket.jquery.core.settings.JQueryLibrarySettings;
+import com.googlecode.wicket.jquery.ui.settings.JQueryUILibrarySettings;
+
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesomeCssReference;
+import de.agilecoders.wicket.extensions.markup.html.bootstrap.jqueryui.JQueryUIAllJavaScriptReference;
 
 public class MainPage extends WebPage implements IAjaxIndicatorAware
 {
@@ -58,13 +64,18 @@ public class MainPage extends WebPage implements IAjaxIndicatorAware
 	{
 		super.renderHead(response);
 		
+		// JS knihovny
+		response.render(JavaScriptHeaderItem.forReference(JQueryUILibrarySettings.get().getJavaScriptReference()));
+
 		// CSS
 		response.render(CssHeaderItem.forReference(FontAwesomeCssReference.instance()));
+		response.render(CssHeaderItem.forReference(JQueryUILibrarySettings.get().getStyleSheetReference()));
 		response.render(CssHeaderItem.forReference(new CssResourceReference(MainPage.class, "MainPage.css")));
 		
 		// Prebarvit selecty
 		response.render(OnDomReadyHeaderItem.forScript(
 				VyberDlePole.getJSSetSelectColor(MapaSession.get().currentDataSet().getColor())));
+		
 	}
 
 	@Override
