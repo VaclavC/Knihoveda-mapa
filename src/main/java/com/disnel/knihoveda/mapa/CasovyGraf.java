@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.solr.client.solrj.response.FacetField.Count;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
 import org.apache.wicket.event.Broadcast;
@@ -35,6 +36,8 @@ public class CasovyGraf extends Panel
 	private Integer yearFrom, yearTo;
 	
 	private YearInput inputYearFrom, inputYearTo;
+
+	private Form<Void> form;
 	
 	public CasovyGraf(String id)
 	{
@@ -48,9 +51,9 @@ public class CasovyGraf extends Panel
 		timeline.setData(createTimelineData());
 		
 		// Ovladaci panel vlevo
-		Form<Void> form;
 		add(form = new Form<Void>("form"));
 		form.setOutputMarkupId(true);
+		form.add(new AttributeModifier("style", getCssBorderColorProperty()));
 		
 		form.add(new AjaxFormSubmitBehavior("change")
 		{
@@ -140,6 +143,7 @@ public class CasovyGraf extends Panel
 		if ( event.getPayload() instanceof UserSelectionChangedEvent )
 		{
 			AjaxEvent ev = (AjaxEvent) event.getPayload();
+			AjaxRequestTarget target = ev.getTarget();
 			
 			timeline.setData(createTimelineData());
 			
@@ -147,9 +151,12 @@ public class CasovyGraf extends Panel
 			timeline.setYearFrom(yearFrom = currentDataSet.getYearFrom());
 			timeline.setYearTo(yearTo = currentDataSet.getYearTo());
 			
-			ev.getTarget().appendJavaScript(timeline.getJSSetData());
-			ev.getTarget().appendJavaScript(timeline.getJSDraw());
-			updateInputs(ev.getTarget());
+			target.appendJavaScript(timeline.getJSSetData());
+			target.appendJavaScript(timeline.getJSDraw());
+			updateInputs(target);
+			target.appendJavaScript(getJSChangeBorderColor());
+			
+			System.out.println(getJSChangeBorderColor());
 		}
 	}
 	
@@ -183,6 +190,18 @@ public class CasovyGraf extends Panel
 //			options.set("min", minYear);
 //			options.set("max", maxYear);
 		}
+	}
+	
+	private String getCssBorderColorProperty()
+	{
+		return "border-color: " + MapaSession.get().currentDataSet().getColor().toString() + ";";
+	}
+
+	private String getJSChangeBorderColor()
+	{
+		return String.format("$('#%s').css('border-color', '%s');",
+				form.getMarkupId(),
+				MapaSession.get().currentDataSet().getColor().toString());
 	}
 	
 }

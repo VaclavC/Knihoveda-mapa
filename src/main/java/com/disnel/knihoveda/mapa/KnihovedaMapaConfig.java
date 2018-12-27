@@ -39,7 +39,6 @@ public class KnihovedaMapaConfig
 	public static final Color[] DATA_SET_COLORS = new Color[]
 	{
 		new Color("#333333"),
-//		new Color("#F3D449"),
 		new Color("#E86329"),
 		new Color("#D92D28"),
 		new Color("#752722"),
