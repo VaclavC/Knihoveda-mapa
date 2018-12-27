@@ -17,9 +17,9 @@ class Timeline {
 
 		// Dalsi hladiny pro vykreslovani
 		$(this.tagSel).wrap('<div id="' + this.tagID + '-wrap" style="position: absolute; width: 100%; height: 100%; left: 0; top: 0;"></div>');
-		$(this.tagSel).parent().prepend('<canvas id="' + this.tagID + '-bottom" style="z-index: -1; pointer-events: none"></canvas>' );
-		$(this.tagSel).css("z-index", 0);
-		$(this.tagSel).parent().append('<canvas id="' + this.tagID + '-top" style="z-index: 1; pointer-events: none"></canvas>' );
+		$(this.tagSel).parent().prepend('<canvas id="' + this.tagID + '-bottom" style="z-index: 0; pointer-events: none"></canvas>' );
+		$(this.tagSel).css("z-index", 1);
+		$(this.tagSel).parent().append('<canvas id="' + this.tagID + '-top" style="z-index: 2; pointer-events: none"></canvas>' );
 		
 		// Callbacky
 		$(window).on('resize', () => { this.draw(); });
