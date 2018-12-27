@@ -12,14 +12,15 @@ public class TimelineConf implements Serializable
 	private Float dotSize = 5.0f;
 	private Integer paddingLeft = 32;
 	private Integer paddingRight = 8;
-	private Integer paddingTop = 8;
+	private Integer paddingTop = 16;
 	private Integer paddingBottom = 8;
 	private String timeAxisStyle = "#b0b0b0";
 	private String timeAxisFont = "13px Arial";
 	private String timeAxisFontStyle = "#000000";
 	private Integer timeAxisTextY = 14;
-	private String countAxisStyle = "d0d0d0";
+	private String countAxisStyle = "#b0b0b0";
 	private String countAxisFont = "10px Arial";
+	private String countAxisFontStyle = "#000000";
 	private Float cursorLineWidth1 = 1.0f;
 	private Float cursorLineWidth2 = 2.0f;
 	private String cursorStyle1 = "#FF9C00";

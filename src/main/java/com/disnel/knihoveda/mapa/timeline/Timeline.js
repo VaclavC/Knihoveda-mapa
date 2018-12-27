@@ -116,8 +116,8 @@ class Timeline {
 		// Nastavit limity pro graf
 		this.x1 = this.config.paddingLeft;
 		this.x2 = this.canvas.width - this.config.paddingRight;
-		this.y1 = this.config.paddingBottom;
-		this.y2 = this.canvas.height - this.config.paddingTop;
+		this.y1 = this.config.paddingTop;
+		this.y2 = this.canvas.height - this.config.paddingBottom;
 	}
 	
 	/********************************
@@ -125,8 +125,27 @@ class Timeline {
 	 */
 	drawOsy()
 	{
-		// Spolecne nastaveni
+		// Osa poctu vysledku
+		var countStep = (this.countMax > 100) ? 100 : ( (this.countMax > 10) ? 10 : 2 );
 		
+		this.ctx.lineWidth = 1;
+		this.ctx.strokeStyle = this.config.countAxisStyle;
+		this.ctx.fillStyle = this.config.countAxisFontStyle;
+		this.ctx.font = this.config.countAxisFont;
+		
+		this.ctx.beginPath();
+		for ( var c = 0; c < this.countMax; c += countStep)
+		{
+			var actY = this.yFromCount(c);
+			
+			this.ctx.moveTo(0, actY);
+			this.ctx.lineTo(this.canvas.width, actY);
+			
+			this.ctx.textAlign = "left";
+			this.ctx.fillText(" " + c.toString(), this.wrapLeft, actY - 3);
+		}
+		this.ctx.stroke();
+
 		// Casova osa
 		var timeLen = (this.yearMax - this.yearMin) * this.contWidth / this.wrapWidth;
 		var timeStep = (timeLen > 100) ? 50 : ( (timeLen > 20) ? 5 : 1 );
@@ -155,27 +174,6 @@ class Timeline {
 					this.ctx.textAlign = "right"; 
 				this.ctx.fillText(" " + t.toString() + " ", actX, textY);
 			}
-		this.ctx.stroke();
-		
-		// Osa poctu vysledku
-		var countStep = (this.countMax > 100) ? 100 : ( (this.countMax > 10) ? 10 : 2 );
-		
-		this.ctx.lineWidth = 1;
-		this.ctx.strokeStyle = this.config.countAxisStyle;
-		this.ctx.fillStyle = this.config.countAxisStyle;
-		this.ctx.font = this.config.countAxisFont;
-		
-		this.ctx.beginPath();
-		for ( var c = 0; c < this.countMax; c += countStep)
-		{
-			var actY = this.yFromCount(c);
-			
-			this.ctx.moveTo(0, actY);
-			this.ctx.lineTo(this.canvas.width, actY);
-			
-			this.ctx.textAlign = "left";
-			this.ctx.fillText(" " + c.toString(), 0, actY - 3);
-		}
 		this.ctx.stroke();
 	}
 
