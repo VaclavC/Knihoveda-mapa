@@ -38,8 +38,9 @@ class Timeline {
 	
 	draw()
 	{
-		this.findDataLimits();
+		this.findYearLimits();
 		this.initDraw();
+		this.findCountLimits();
 		this.drawOsy();
 		this.dataSets.forEach(function(dataset) {
 			this.drawDataset(dataset);
@@ -48,14 +49,12 @@ class Timeline {
 	}
 	
 	/************************************
-	 * Minima a maxima zobrazovanych dat
+	 * Minimum a maximum na casove ose
 	 */
-	findDataLimits()
+	findYearLimits()
 	{
 		var yearMin = Number.MAX_SAFE_INTEGER,
 			yearMax = Number.MIN_SAFE_INTEGER;
-		var countMin = Number.MAX_SAFE_INTEGER,
-			countMax = Number.MIN_SAFE_INTEGER;
 			
 		this.dataSets.forEach(function(dataset)
 		{
@@ -66,11 +65,8 @@ class Timeline {
 			{
 				dsYearMin = Math.min(dsYearMin, year);
 				dsYearMax = Math.max(dsYearMax, year);
-				
-				countMin = Math.min(countMin, count);
-				countMax = Math.max(countMax, count);
 			}
-			
+				
 			dataset.yearMin = dsYearMin;
 			dataset.yearMax = dsYearMax;
 			
@@ -78,11 +74,35 @@ class Timeline {
 			yearMax = Math.max(yearMax, dsYearMax);
 		});
 		
+		this.yearMin = yearMin;
+		this.yearMax = yearMax;
+	}
+	
+	/******************************************
+	 * Minimum a maximum na ose poctu vysledku
+	 */
+	findCountLimits()
+	{
+		var countMin = Number.MAX_SAFE_INTEGER,
+			countMax = Number.MIN_SAFE_INTEGER;
+
+		var self = this;
+		this.dataSets.forEach(function(dataset)
+		{
+			for (const [year, count] of Object.entries(dataset.data))
+			{
+				if ( self.isYearDisplayed(year) )
+				{
+//					console.log("year: " + year + " x: " + x + " pl: " + self. + " contWidth: " + self.contWidth);
+					countMin = Math.min(countMin, count);
+					countMax = Math.max(countMax, count);
+				}
+			}
+		});
+		
 		if ( countMax < 10 )
 			countMax = 10;
 		
-		this.yearMin = yearMin;
-		this.yearMax = yearMax;
 		this.countMin = countMin;
 		this.countMax = countMax;
 	}
@@ -552,6 +572,17 @@ class Timeline {
 			return [false, relX, relY];
 		
 		return [true, relX, relY];
+	}
+	
+	isYearDisplayed(year)
+	{
+		var x = this.xFromYear(year);
+		var parentOffset = $(this.canvas).offset().left;
+		
+		if ( x >= -parentOffset && x <= -parentOffset + this.contWidth )
+			return true;
+		else
+			return false;
 	}
 	
 	ajaxCall(data)
