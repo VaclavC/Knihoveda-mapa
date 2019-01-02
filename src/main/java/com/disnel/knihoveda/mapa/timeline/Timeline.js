@@ -588,7 +588,7 @@ class Timeline {
 	isYearDisplayed(year)
 	{
 		var x = this.xFromYear(year);
-		var parentOffset = $(this.canvas).offset().left;
+		var parentOffset = $(this.wrapSel).position().left;
 		
 		if ( x >= -parentOffset && x <= -parentOffset + this.contWidth )
 			return true;
