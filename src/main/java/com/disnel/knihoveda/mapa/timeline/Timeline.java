@@ -204,7 +204,9 @@ public class Timeline extends WebMarkupContainer
 	
 	public String getJSDrawSelection(Integer yearFrom, Integer yearTo)
 	{
-		return String.format("%s.drawSelection(%d, %d)", getJSVarName(), yearFrom, yearTo);
+		return String.format("%s.drawSelection(%d, %d); %s.zoomToSelection();",
+				getJSVarName(), yearFrom, yearTo,
+				getJSVarName());
 	}
 			
 	@Override

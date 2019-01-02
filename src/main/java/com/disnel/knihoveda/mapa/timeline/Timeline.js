@@ -48,7 +48,7 @@ class Timeline {
 		this.drawSelection(this.yearSelectFrom, this.yearSelectTo);
 	}
 	
-	/************************************
+	/***************************************************************************
 	 * Minimum a maximum na casove ose
 	 */
 	findYearLimits()
@@ -78,7 +78,7 @@ class Timeline {
 		this.yearMax = yearMax;
 	}
 	
-	/******************************************
+	/***************************************************************************
 	 * Minimum a maximum na ose poctu vysledku
 	 */
 	findCountLimits()
@@ -93,7 +93,6 @@ class Timeline {
 			{
 				if ( self.isYearDisplayed(year) )
 				{
-//					console.log("year: " + year + " x: " + x + " pl: " + self. + " contWidth: " + self.contWidth);
 					countMin = Math.min(countMin, count);
 					countMax = Math.max(countMax, count);
 				}
@@ -107,7 +106,7 @@ class Timeline {
 		this.countMax = countMax;
 	}
 	
-	/*************************
+	/***************************************************************************
 	 * Priprava na vykresleni
 	 */
 	initDraw()
@@ -130,6 +129,7 @@ class Timeline {
 		this.canvasBottom.height = this.tag.height();
 		
 		this.contWidth = $(this.wrapSel).parent().width();
+		this.graphWidth = this.contWidth - this.config.paddingLeft - this.config.paddingRight;
 		this.wrapWidth = $(this.wrapSel).width();
 		this.wrapLeft = -$(this.wrapSel).position().left;
 		
@@ -140,7 +140,7 @@ class Timeline {
 		this.y2 = this.canvas.height - this.config.paddingBottom;
 	}
 	
-	/********************************
+	/***************************************************************************
 	 * Vykresit osy (casova a pocet)
 	 */
 	drawOsy()
@@ -197,7 +197,7 @@ class Timeline {
 		this.ctx.stroke();
 	}
 
-	/*******************************
+	/***************************************************************************
 	 * Vykreslit jednu datovou sadu
 	 */
 	drawDataset(dataset)
@@ -231,7 +231,7 @@ class Timeline {
 		}
 	}
 	
-	/****************
+	/***************************************************************************
 	 * Vymaze vyber
 	 */
 	clearSelection()
@@ -239,8 +239,8 @@ class Timeline {
 		this.ctxBottom.clearRect(0, 0, this.canvas.width, this.canvas.height);
 	}
 	
-	/*******************************
-	/* Nakresli vyber na casove ose 
+	/***************************************************************************
+	 * /* Nakresli vyber na casove ose
 	 */
 	drawSelection(yearFrom, yearTo)
 	{
@@ -278,8 +278,26 @@ class Timeline {
 				0, this.config.selectTextDist);
 		this.ctxBottom.restore();
 	}
+
+	/***************************************************************************
+	 * Zazoomovat na vyber
+	 */
+	zoomToSelection()
+	{
+		if ( this.yearSelectFrom === null || this.yearSelectTo === null )
+			return;
+		
+		var newWrapW = this.graphWidth * (this.yearMax - this.yearMin) / (this.yearSelectTo - this.yearSelectFrom);
+		newWrapW = this.correctNewWrapW(newWrapW);
+		
+		var newLeft = newWrapW * (this.yearSelectFrom - this.yearMin) / (this.yearMax - this.yearMin);
+		newLeft = newLeft - this.config.paddingLeft * this.contWidth / newWrapW;
+		newLeft = this.correctNewLeft(newWrapW, newLeft);
+		
+		this.setNewWrap(newWrapW, newLeft);
+	}
 	
-	/****************
+	/***************************************************************************
 	 * Interaktivita
 	 */
 	
@@ -467,28 +485,20 @@ class Timeline {
 		else
 			newWrapW = this.wrapWidth * this.config.wheelScaleK;
 		
-		if ( newWrapW < this.contWidth )
-			newWrapW = this.contWidth;
-		
-		if ( newWrapW > 32000 )
-			newWrapW = 32000;
+		newWrapW = this.correctNewWrapW(newWrapW);
 		
 		// Nova pozice X
-		var k = newWrapW / this.wrapWidth;  // Tady musime vzit jak se to skutecne zmenilo, ne co bylo podle kolecka
+		var k = newWrapW / this.wrapWidth;  // Tady musime vzit jak se to
+											// skutecne zmenilo, ne co bylo
+											// podle kolecka
 		var newLeft = k * ( mouseX + this.wrapLeft ) - mouseX;
 		
-		if ( newLeft < 0 )
-			newLeft = 0;
-		
-		if ( newWrapW - newLeft < this.contWidth )
-			newLeft = newWrapW - this.contWidth;
-		
-		$(this.wrapSel).width(newWrapW);
-		$(this.wrapSel).css({left: -newLeft});
-		this.draw();
+		newLeft = this.correctNewLeft(newWrapW, newLeft);
+
+		this.setNewWrap(newWrapW, newLeft);
 	}
 	
-	/*****************
+	/***************************************************************************
 	 * Pomocne metody
 	 */
 	
@@ -536,7 +546,8 @@ class Timeline {
 	
 	closestYearInDatasetTo(dataset, yearToFind)
 	{
-		// Obecne predpokladame, ze je to serazene podle roku (to zaridi uz Solr)
+		// Obecne predpokladame, ze je to serazene podle roku (to zaridi uz
+		// Solr)
 		
 		// Zkusit, jestli neni primo
 		if ( yearToFind in dataset.data )
@@ -583,6 +594,39 @@ class Timeline {
 			return true;
 		else
 			return false;
+	}
+	
+	correctNewWrapW(newWrapW)
+	{
+		var ret = newWrapW;
+		
+		if ( ret < this.contWidth )
+			ret = this.contWidth;
+		
+		if ( ret > 32000 )
+			ret = 32000;
+		
+		return ret;
+	}
+	
+	correctNewLeft(newWrapW, newLeft)
+	{
+		var ret = newLeft;
+		
+		if ( ret < 0 )
+			ret = 0;
+		
+		if ( newWrapW - ret < this.contWidth )
+			ret = newWrapW - this.contWidth;
+		
+		return ret;
+	}
+	
+	setNewWrap(newWrapW, newLeft)
+	{
+		$(this.wrapSel).width(newWrapW);
+		$(this.wrapSel).css({left: -newLeft});
+		this.draw();
 	}
 	
 	ajaxCall(data)
