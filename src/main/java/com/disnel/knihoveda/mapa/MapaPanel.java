@@ -2,7 +2,6 @@ package com.disnel.knihoveda.mapa;
 
 import java.util.Arrays;
 
-import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.event.Broadcast;

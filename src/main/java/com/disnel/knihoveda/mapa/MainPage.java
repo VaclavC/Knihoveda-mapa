@@ -15,12 +15,9 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.request.resource.CssResourceReference;
 
-import com.googlecode.wicket.jquery.core.resource.JavaScriptPackageHeaderItem;
-import com.googlecode.wicket.jquery.core.settings.JQueryLibrarySettings;
 import com.googlecode.wicket.jquery.ui.settings.JQueryUILibrarySettings;
 
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesomeCssReference;
-import de.agilecoders.wicket.extensions.markup.html.bootstrap.jqueryui.JQueryUIAllJavaScriptReference;
 
 public class MainPage extends WebPage implements IAjaxIndicatorAware
 {
