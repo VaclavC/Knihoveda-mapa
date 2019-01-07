@@ -133,7 +133,8 @@ body {
 }
 .mistoOverlay .graph .bar { align-self: flex-end; margin: 0 1px; width: 8px; }
 
-.mistoOverlay .detail { transform: translate(-50%, -50%); z-index: 99999; display: none; }
+.mistoOverlay .detailCont { z-index: 99999; display: none; }
+.mistoOverlay .detail { transform: translate(-50%, -50%); }
 
 .mistoOverlay.selected .bottomDot {
 	background-image:

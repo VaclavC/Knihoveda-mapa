@@ -8,6 +8,23 @@
 
 <div wicket:id="overlays">[OVERLAYS]</div>
 
+<script>
+function scaleMapOverlays()
+{
+	var map = $("#mapa-content").data('mapObject');
+	var zoom = map.getView().getZoom();
+	
+	var k = (zoom - 9) / (11 - 9);
+	k = Math.min(1.0, Math.max(0.0, k));
+	
+	var scale = 1.0 + 1.0 * k;
+	var invScale = 1.0 / scale;
+	
+	$(".mistoOverlay").css("transform", "scale(" + scale + ")");
+	$(".mistoOverlay .detailCont").css("transform", "scale(" + invScale + ")");
+}
+</script>
+
 </wicket:panel>
 
 </body>

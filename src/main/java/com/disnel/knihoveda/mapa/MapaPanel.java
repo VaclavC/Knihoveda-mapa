@@ -2,12 +2,14 @@ package com.disnel.knihoveda.mapa;
 
 import java.util.Arrays;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.event.Broadcast;
 import org.apache.wicket.event.IEvent;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.wicketstuff.openlayers3.DefaultOpenLayersMap;
@@ -27,6 +29,8 @@ import com.disnel.knihoveda.wicket.model.ResultsInPlacesModel;
 public class MapaPanel extends Panel
 {
 
+	private WebMarkupContainer mapaCont;
+	
 	private AjaxOLMap mapa;
 
 	private MapaOverlays mapaOverlays;
@@ -37,7 +41,7 @@ public class MapaPanel extends Panel
 	{
 		super(id);
 
-		add(new DefaultOpenLayersMap("mapa", Model.of(mapa = new AjaxOLMap(
+		add(mapaCont = new DefaultOpenLayersMap("mapa", Model.of(mapa = new AjaxOLMap(
 				
 				Arrays.<Layer>asList(
 						new Tile(
@@ -50,6 +54,7 @@ public class MapaPanel extends Panel
 						.minZoom(8)
 						.maxZoom(11)
 						))));
+		mapaCont.setOutputMarkupId(true);
 
 		add(mapaOverlays = new MapaOverlays("overlays",
 				resultsInPlacesModel = new ResultsInPlacesModel()));
@@ -71,6 +76,7 @@ public class MapaPanel extends Panel
 						new MistoSelectEvent(target, null));
 			}
 		});
+		
 	}
 
 	@Override
@@ -89,6 +95,7 @@ public class MapaPanel extends Panel
 			
 			ev.getTarget().add(mapaOverlays);
 			ev.getTarget().appendJavaScript(mapa.overlaysChangedJs());
+			ev.getTarget().appendJavaScript("scaleMapOverlays();");
 		}
 	}
 	
@@ -103,6 +110,11 @@ public class MapaPanel extends Panel
 	@Override
 	public void renderHead(IHeaderResponse response)
 	{
+		// Ulozit mapu jako data do tagu
+		response.render(OnDomReadyHeaderItem.forScript(
+				String.format("$('#%s').data('mapObject', %s);",
+						mapaCont.getMarkupId(), mapa.getJsId())));
+		
 		// Zakazat zoom na doubleclick (potrebujeme ho na ruseni vyberu)
 		String removeInteraction = "var dblClickInteraction;\n" +
 				JavascriptObject.JS_GLOBAL + "['map_" + getMarkupId() + "-content']" +
@@ -115,6 +127,14 @@ public class MapaPanel extends Panel
 				".removeInteraction(dblClickInteraction);";
 		
 		response.render(OnDomReadyHeaderItem.forScript(removeInteraction));
+		
+		// Pripnout callback pro zoomovani overlays
+		String attachOverlayZoom =
+				String.format(
+						"%s.getView().on('change:resolution', scaleMapOverlays);",
+						mapa.getJsId());
+		
+		response.render(OnDomReadyHeaderItem.forScript(attachOverlayZoom));
 	}
 	
 }
