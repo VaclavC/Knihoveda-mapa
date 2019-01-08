@@ -37,5 +37,43 @@ $( function() {
 <!-- Ajax indikator -->
 <div id="ajaxIndicator"><div><div><div><img src="/img/nacitani.gif" alt="loading" /></div></div></div></div>
 
+<!-- Napoveda -->
+<div id="napoveda">
+	<div class="block" style="left: 88px; top: 120px; width: 384px;">
+		<div class="arrow left" style="top: 14px;"></div>
+		<wicket:message key="help.datasets"></wicket:message>
+	</div>	
+	<div class="block" style="right: 32px; top: 88px; width: 512px;">
+		<div class="arrow top" style="right: 256px;"></div>
+		<wicket:message key="help.fields"></wicket:message>
+	</div>	
+	<div class="block" style="right: 32px; bottom: 154px; width: 768px;">
+		<div class="arrow bottom" style="right: 384px;"></div>
+		<wicket:message key="help.timeline"></wicket:message>
+	</div>	
+	<div class="block" style="left: 32px; bottom: 154px; width: 256px;">
+		<div class="arrow bottom" style="left: 64px;"></div>
+		<wicket:message key="help.timeinterval"></wicket:message>
+	</div>
+	<div class="block centered"><wicket:message key="help.main"></wicket:message></div>
+</div>
+
+<script>
+$("#napoveda").on("click", function (ev) {
+	$("#napoveda").hide();
+});
+
+$(document).on("keydown", function (ev) {
+	if (ev.keyCode == 32) {
+		$("#napoveda").show();
+	}
+});
+$(document).on("keyup", function (ev) {
+	if (ev.keyCode == 32) {
+		$("#napoveda").hide();
+	}
+});
+</script>
+
 </body>
 </html>
