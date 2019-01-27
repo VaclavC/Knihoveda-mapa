@@ -266,4 +266,7 @@ body {
 #napoveda .arrow.top { top: -18px; border-bottom: 18px solid black; border-left: 8px solid transparent; border-right: solid 8px transparent; }
 #napoveda .arrow.bottom { bottom: -18px; border-top: 18px solid black; border-left: 8px solid transparent; border-right: solid 8px transparent; }
 #napoveda .centered { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+#napoveda .continue { font-size: 105%; text-align: right; }
 
+#napovedaButton { position: absolute; bottom: 6em; left: 0.5em; font-size: 150%; z-index: 99999999; }
+#napovedaButton a { color: black; }

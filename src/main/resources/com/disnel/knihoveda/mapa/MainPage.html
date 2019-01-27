@@ -2,7 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml"  xmlns:wicket="http://my.site.org">
 <head>
 	<meta charset="UTF-8">
-	<title>Knihověda</title>
+	<title><wicket:message key="main.title"></wicket:message></title>
+	
+	<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
 </head>
 <body>
 
@@ -39,28 +41,46 @@ $( function() {
 
 <!-- Napoveda -->
 <div id="napoveda">
-	<div class="block" style="left: 88px; top: 120px; width: 384px;">
+	<div id="help0" class="block centered" style="display: none;">
+		<wicket:message key="help.main"></wicket:message>
+		<div class="continue"><a href="#" onclick="nextPart();"><wicket:message key="help.continue"></wicket:message></a></div>
+	</div>
+	<div id="help1" class="block" style="left: 88px; top: 120px; width: 384px; display: none;">
 		<div class="arrow left" style="top: 14px;"></div>
 		<wicket:message key="help.datasets"></wicket:message>
+		<div class="continue"><a href="#" onclick="nextPart();"><wicket:message key="help.continue"></wicket:message></a></div>
 	</div>	
-	<div class="block" style="right: 32px; top: 88px; width: 512px;">
+	<div id="help2" class="block" style="right: 32px; top: 88px; width: 512px; display: none;">
 		<div class="arrow top" style="right: 256px;"></div>
 		<wicket:message key="help.fields"></wicket:message>
+		<div class="continue"><a href="#" onclick="nextPart();"><wicket:message key="help.continue"></wicket:message></a></div>
 	</div>	
-	<div class="block" style="right: 32px; bottom: 154px; width: 768px;">
+	<div id="help3" class="block" style="right: 32px; bottom: 154px; width: 768px; display: none;">
 		<div class="arrow bottom" style="right: 384px;"></div>
 		<wicket:message key="help.timeline"></wicket:message>
+		<div class="continue"><a href="#" onclick="nextPart();"><wicket:message key="help.continue"></wicket:message></a></div>
 	</div>	
-	<div class="block" style="left: 32px; bottom: 154px; width: 256px;">
-		<div class="arrow bottom" style="left: 64px;"></div>
-		<wicket:message key="help.timeinterval"></wicket:message>
-	</div>
-	<div class="block centered"><wicket:message key="help.main"></wicket:message></div>
+</div>
+
+<div id="napovedaButton" >
+	<a href="#" onclick="$('#napoveda').toggle();"><i class="fa fa-question-circle" aria-hidden="true"></i></a>
 </div>
 
 <script>
-$("#napoveda").on("click", function (ev) {
-	$("#napoveda").hide();
+var helpParts = [ '#help0', '#help1', '#help2', '#help3' ];
+var actPart;
+
+$(document).ready(function () {
+	helpButtonPos()
+	$("#casovyGrafCont").on('resize', helpButtonPos);
+	
+	if ( typeof Cookies.get('helpShown') === 'undefined' ) {
+		nextPart();
+	} else {
+		$("#napoveda").hide();
+		$('#napoveda .block').show();
+		$('#napoveda .continue').hide();
+	}
 });
 
 $(document).on("keydown", function (ev) {
@@ -73,6 +93,29 @@ $(document).on("keyup", function (ev) {
 		$("#napoveda").hide();
 	}
 });
+
+function nextPart() {
+	if ( typeof actPart !== 'undefined' )
+		$(actPart).hide();
+	
+	actPart = helpParts.shift();
+	
+	if ( typeof actPart !== 'undefined' ) {
+		$(actPart).show();
+	} else {
+		$("#napoveda").hide();
+		$('#napoveda .block').show();
+		$('#napoveda .continue').hide();
+		Cookies.set('helpShown', true);
+	}
+}
+
+function helpButtonPos() {
+	var bottom = $('#casovyGrafCont').height() + 12;
+	$('#napovedaButton').css("bottom", bottom);
+}
+
+
 </script>
 
 </body>
