@@ -77,9 +77,7 @@ $(document).ready(function () {
 	if ( typeof Cookies.get('helpShown') === 'undefined' ) {
 		nextPart();
 	} else {
-		$("#napoveda").hide();
-		$('#napoveda .block').show();
-		$('#napoveda .continue').hide();
+		helpShown();
 	}
 });
 
@@ -103,11 +101,17 @@ function nextPart() {
 	if ( typeof actPart !== 'undefined' ) {
 		$(actPart).show();
 	} else {
-		$("#napoveda").hide();
-		$('#napoveda .block').show();
-		$('#napoveda .continue').hide();
+		helpShow();
 		Cookies.set('helpShown', true);
 	}
+}
+
+function helpShown()
+{
+	$("#napoveda").hide();
+	$('#napoveda .block').show();
+	$('#napoveda .continue').hide();
+	$('#napoveda .fuckeu').hide();
 }
 
 function helpButtonPos() {
