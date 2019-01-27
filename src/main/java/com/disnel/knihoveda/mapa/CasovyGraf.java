@@ -5,10 +5,12 @@ import java.util.List;
 
 import org.apache.solr.client.solrj.response.FacetField.Count;
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
 import org.apache.wicket.event.Broadcast;
 import org.apache.wicket.event.IEvent;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.NumberTextField;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -23,7 +25,6 @@ import com.disnel.knihoveda.mapa.events.UserSelectionChangedEvent;
 import com.disnel.knihoveda.mapa.timeline.Timeline;
 import com.disnel.knihoveda.mapa.timeline.TimelineConf;
 import com.disnel.knihoveda.mapa.timeline.TimelineDataset;
-import com.googlecode.wicket.kendo.ui.form.button.AjaxButton;
 
 public class CasovyGraf extends Panel
 {
@@ -53,7 +54,7 @@ public class CasovyGraf extends Panel
 		// Ovladaci panel vlevo
 		add(form = new Form<Void>("form"));
 		form.setOutputMarkupId(true);
-		form.add(new AttributeModifier("style", getCssBorderColorProperty()));
+		form.add(new AttributeModifier("style", getCssDataSetColorProperty()));
 		
 		form.add(new AjaxFormSubmitBehavior("change")
 		{
@@ -84,19 +85,20 @@ public class CasovyGraf extends Panel
 		form.add(inputYearTo = new YearInput("inputDo",
 				new PropertyModel<Integer>(this, "yearTo")));
 		
-		form.add(new AjaxButton("butClear")
-		{
-			@Override
-			protected void onSubmit(AjaxRequestTarget target)
+		form.add(new WebMarkupContainer("butClear")
+			.add(new AjaxEventBehavior("click")
 			{
-				yearFrom = yearTo = null;
-				
-				updateCurrentDataSet();
-				
-				send(getPage(), Broadcast.BREADTH,
-						new TimeSelectEvent(target, yearFrom, yearTo));
-			}
-		});
+				@Override
+				protected void onEvent(AjaxRequestTarget target)
+				{
+					yearFrom = yearTo = null;
+					
+					updateCurrentDataSet();
+					
+					send(getPage(), Broadcast.BREADTH,
+							new TimeSelectEvent(target, yearFrom, yearTo));
+				}
+			}));
 	}
 
 	private TimelineDataset createTimelineDataSet(DataSet dataSet)
@@ -154,9 +156,7 @@ public class CasovyGraf extends Panel
 			target.appendJavaScript(timeline.getJSSetData());
 			target.appendJavaScript(timeline.getJSDraw());
 			updateInputs(target);
-			target.appendJavaScript(getJSChangeBorderColor());
-			
-			System.out.println(getJSChangeBorderColor());
+			target.appendJavaScript(getJSChangeDataSetColor());
 		}
 	}
 	
@@ -192,14 +192,14 @@ public class CasovyGraf extends Panel
 		}
 	}
 	
-	private String getCssBorderColorProperty()
+	private String getCssDataSetColorProperty()
 	{
-		return "border-color: " + MapaSession.get().currentDataSet().getColor().toString() + ";";
+		return "background-color: " + MapaSession.get().currentDataSet().getColor().toString() + ";";
 	}
 
-	private String getJSChangeBorderColor()
+	private String getJSChangeDataSetColor()
 	{
-		return String.format("$('#%s').css('border-color', '%s');",
+		return String.format("$('#%s').css('background-color', '%s');",
 				form.getMarkupId(),
 				MapaSession.get().currentDataSet().getColor().toString());
 	}

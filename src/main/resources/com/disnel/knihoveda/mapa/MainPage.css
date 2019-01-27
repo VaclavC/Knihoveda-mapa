@@ -63,6 +63,12 @@ body {
 	font-family: "Computer Modern", serif;
 }
 
+.button:hover { color: #FF9C00; }
+.button.hidden i { visibility: hidden; }
+.button.hidden:hover i { visibility: visible; }
+.button.semihidden i { color: rgba(255, 255, 255, 0.10); }
+.button.semihidden:hover i { color: white; }
+
 /******************/
 /* Vyberovy panel */
 
@@ -168,10 +174,13 @@ body {
 
 #timelinePanel {
 	background: #b0b0b0; font-size: 80%; text-align: right; padding: 0.5em 1em; z-index: 9999;
-	border-width: 3px; border-style: solid;
+	color: white;
+/* 	border-width: 3px; border-style: solid; */
 }
 #timelinePanel .head { font-size: 105%; font-weight: bold; margin-bottom: 0.5em; }
 #timelinePanel .k-widget.k-numerictextbox, #timelinePanel input[type=number] { width: 8em; text-align: right; }
+#timelinePanel .tools { text-align: center; margin-top: 0.5em; }
+#timelinePanel .button { font-size: 1.5em; }
 
 #timelineCont { flex-grow: 1.0; position: relative; }
 #timelineCont canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-top: solid 2px #b0b0b0; }
@@ -204,11 +213,6 @@ body {
 .dataSetItem .tools a { font-size: 16px; }
 .dataSetItem.new i { font-size: 24px; }
 .dataSetItem a { cursor: pointer; color: white; text-decoration: none; }
-.dataSetItem a.button:hover { color: #FF9C00; }
-.dataSetItem a.button.hidden i { visibility: hidden; }
-.dataSetItem a.button.hidden:hover i { visibility: visible; }
-.dataSetItem a.button.semihidden i { color: rgba(255, 255, 255, 0.10); }
-.dataSetItem a.button.semihidden:hover i { color: white; }
 
 .dataSetItem .detail {
 	position: absolute; top: 0; left: 100%; margin-left: 8px; border-radius: 4px; min-width: 25vw; font-size: 16px;
