@@ -190,11 +190,11 @@ body {
 
 #vyberyDlePoli { position: fixed; top: 0.5em; left: 8em; right: 0; display: flex; }
 #vyberyDlePoli>div { padding-right: 1em; }
-#vyberyDlePoli .masterPrinter { flex-grow: 0.50; }
-#vyberyDlePoli .topic { flex-grow: 0.20; }
-#vyberyDlePoli .genre { flex-grow: 0.20; }
-#vyberyDlePoli .language { flex-grow: 0.10; }
-.vyberDlePole .titul { font-weight: bold; font-size: 110%; min-width: 8em; }
+#vyberyDlePoli .masterPrinter { flex-grow: 0.45; }
+#vyberyDlePoli .topic { flex-grow: 0.15; }
+#vyberyDlePoli .genre { flex-grow: 0.15; }
+#vyberyDlePoli .language_cs { flex-grow: 0.15; }
+.vyberDlePole .titul { font-weight: bold; font-size: 110%; }
 .vyberDlePole select { font-size: 80%; }
 .vyberDlePole .k-multiselect-wrap input { font-family: "Computer Modern"; font-size: 18px; color: #404040; }
 
