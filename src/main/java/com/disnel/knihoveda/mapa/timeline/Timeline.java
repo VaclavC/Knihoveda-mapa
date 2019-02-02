@@ -22,6 +22,7 @@ import com.disnel.knihoveda.mapa.events.TimeSelectEvent;
 
 public class Timeline extends WebMarkupContainer
 {
+	private static final long serialVersionUID = 1L;
 
 	public static final String AJAX_CALLBACK_DATA_NAME = "callback";
 	
@@ -38,6 +39,11 @@ public class Timeline extends WebMarkupContainer
 		
 		add(new AbstractDefaultAjaxBehavior()
 		{
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 		    protected void onComponentTag(ComponentTag tag) {
 		        tag.put("data-" + AJAX_CALLBACK_DATA_NAME,

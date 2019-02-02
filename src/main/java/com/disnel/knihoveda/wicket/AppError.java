@@ -2,6 +2,7 @@ package com.disnel.knihoveda.wicket;
 
 public class AppError extends RuntimeException
 {
+	private static final long serialVersionUID = 1L;
 
 	public AppError()
 	{

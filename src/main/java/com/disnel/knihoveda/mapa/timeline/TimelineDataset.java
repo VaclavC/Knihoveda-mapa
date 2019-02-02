@@ -14,7 +14,8 @@ import lombok.experimental.Accessors;
 @lombok.Data
 public class TimelineDataset implements Serializable
 {
-	
+	private static final long serialVersionUID = 1L;
+
 	private Color color;
 	
 	private List<Integer> yearData;

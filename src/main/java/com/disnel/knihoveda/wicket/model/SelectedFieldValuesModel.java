@@ -13,6 +13,7 @@ import com.disnel.knihoveda.mapa.data.FieldValues;
 
 public class SelectedFieldValuesModel extends LoadableDetachableModel<List<Count>>
 {
+	private static final long serialVersionUID = 1L;
 
 	private String fieldName;
 	private IModel<List<Count>> possibleValuesModel;

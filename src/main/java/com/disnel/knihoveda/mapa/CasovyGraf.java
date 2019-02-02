@@ -28,6 +28,7 @@ import com.disnel.knihoveda.mapa.timeline.TimelineDataset;
 
 public class CasovyGraf extends Panel
 {
+	private static final long serialVersionUID = 1L;
 
 	private Timeline timeline;
 	
@@ -58,6 +59,11 @@ public class CasovyGraf extends Panel
 		
 		form.add(new AjaxFormSubmitBehavior("change")
 		{
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			protected void onSubmit(AjaxRequestTarget target)
 			{
@@ -88,6 +94,11 @@ public class CasovyGraf extends Panel
 		form.add(new WebMarkupContainer("butClear")
 			.add(new AjaxEventBehavior("click")
 			{
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
 				@Override
 				protected void onEvent(AjaxRequestTarget target)
 				{
@@ -177,6 +188,11 @@ public class CasovyGraf extends Panel
 	
 	private class YearInput extends NumberTextField<Integer>
 	{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		public YearInput(String id, IModel<Integer> model)
 		{
 			super(id, model);

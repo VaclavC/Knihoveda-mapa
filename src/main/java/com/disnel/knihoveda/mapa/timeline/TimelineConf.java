@@ -8,6 +8,8 @@ import lombok.experimental.Accessors;
 @lombok.Data
 public class TimelineConf implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	private Float lineWidth = 1.5f;
 	private Float dotSize = 5.0f;
 	private Integer paddingLeft = 32;

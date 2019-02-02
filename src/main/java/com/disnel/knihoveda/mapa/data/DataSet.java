@@ -19,6 +19,7 @@ import org.wicketstuff.openlayers3.api.util.Color;
  */
 public class DataSet implements Serializable
 {
+	private static final long serialVersionUID = 1L;
 
 	private Color color;
 	

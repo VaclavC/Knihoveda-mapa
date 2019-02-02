@@ -25,6 +25,7 @@ import com.disnel.knihoveda.mapa.events.MistoSelectEvent;
 
 public class MapaMistoOverlay extends Panel
 {
+	private static final long serialVersionUID = 1L;
 
 	private enum DisplayState { NORMAL, SELECTED, SHADED };
 	
@@ -85,6 +86,11 @@ public class MapaMistoOverlay extends Panel
 		
 		detail.add(new ListView<DataSet>("vysledek", dataSetsToDisplay)
 		{
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			protected void populateItem(ListItem<DataSet> item)
 			{
@@ -101,6 +107,11 @@ public class MapaMistoOverlay extends Panel
 		
 		detail.add(new AjaxEventBehavior("click")
 		{
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			protected void onEvent(AjaxRequestTarget target)
 			{

@@ -19,7 +19,8 @@ import com.googlecode.wicket.kendo.ui.renderer.ChoiceRenderer;
 
 public abstract class VyberDlePoleMultiSelect extends AjaxMultiSelect<FacetFieldCountWrapper>
 {
-	
+	private static final long serialVersionUID = 1L;
+
 	private String fieldName;
 	private IModel<? extends List<FacetFieldCountWrapper>> possibleValuesModel;
 	private Collection<FacetFieldCountWrapper> selectedValues;

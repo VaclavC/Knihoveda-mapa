@@ -10,7 +10,8 @@ import com.disnel.knihoveda.mapa.data.FacetFieldCountWrapper;
 
 public class PossibleFieldValuesModel extends LoadableDetachableModel<List<FacetFieldCountWrapper>>
 {
-	
+	private static final long serialVersionUID = 1L;
+
 	private String fieldName;
 
 	public PossibleFieldValuesModel(String fieldName)

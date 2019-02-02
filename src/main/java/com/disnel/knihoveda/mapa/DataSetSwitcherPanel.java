@@ -28,6 +28,7 @@ import com.disnel.knihoveda.mapa.events.UserSelectionChangedEvent;
 
 public class DataSetSwitcherPanel extends Panel
 {
+	private static final long serialVersionUID = 1L;
 
 	public DataSetSwitcherPanel(String id)
 	{
@@ -37,6 +38,11 @@ public class DataSetSwitcherPanel extends Panel
 		
 		add(new ListView<DataSet>("dataSet", MapaSession.get().dataSets())
 		{
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			protected void populateItem(ListItem<DataSet> item)
 			{
@@ -50,6 +56,11 @@ public class DataSetSwitcherPanel extends Panel
 				item.add(setActive = new WebMarkupContainer("setActive", item.getDefaultModel())
 						.add(new AjaxEventBehavior("click")
 						{
+							/**
+							 * 
+							 */
+							private static final long serialVersionUID = 1L;
+
 							@Override
 							protected void onEvent(AjaxRequestTarget target)
 							{
@@ -61,6 +72,11 @@ public class DataSetSwitcherPanel extends Panel
 				item.add(delete = new WebMarkupContainer("delete", item.getDefaultModel())
 						.add(new AjaxEventBehavior("click")
 						{
+							/**
+							 * 
+							 */
+							private static final long serialVersionUID = 1L;
+
 							@Override
 							protected void onEvent(AjaxRequestTarget target)
 							{
@@ -111,6 +127,11 @@ public class DataSetSwitcherPanel extends Panel
 
 					cont.add(new ListView<String>("value", new ArrayList<String>(selectedPlaces))
 					{
+						/**
+						 * 
+						 */
+						private static final long serialVersionUID = 1L;
+
 						@Override
 						protected void populateItem(ListItem<String> item)
 						{
@@ -133,6 +154,11 @@ public class DataSetSwitcherPanel extends Panel
 
 					cont.add(new ListView<String>("value", new ArrayList<String>(fv.getValues()))
 					{
+						/**
+						 * 
+						 */
+						private static final long serialVersionUID = 1L;
+
 						@Override
 						protected void populateItem(ListItem<String> item)
 						{
@@ -196,6 +222,11 @@ public class DataSetSwitcherPanel extends Panel
 			
 			dataSetNew.add(new AjaxEventBehavior("click")
 			{
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
 				@Override
 				protected void onEvent(AjaxRequestTarget target)
 				{

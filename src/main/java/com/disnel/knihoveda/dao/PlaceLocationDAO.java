@@ -47,6 +47,11 @@ public class PlaceLocationDAO
 	public static class PointSerializer implements Serializable, Serializer<Point>
 	{
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		@SuppressWarnings("unchecked")
 		@Override
 		public void serialize(DataOutput2 out, Point value) throws IOException

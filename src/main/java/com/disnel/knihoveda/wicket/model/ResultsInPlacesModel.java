@@ -9,6 +9,7 @@ import com.disnel.knihoveda.mapa.data.ResultsInPlace;
 
 public class ResultsInPlacesModel extends LoadableDetachableModel<List<ResultsInPlace>>
 {
+	private static final long serialVersionUID = 1L;
 
 	@Override
 	protected List<ResultsInPlace> load()

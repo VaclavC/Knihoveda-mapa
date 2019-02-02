@@ -8,6 +8,7 @@ import org.wicketstuff.openlayers3.api.util.Color;
 
 public class TiskyStyle extends Style
 {
+	private static final long serialVersionUID = 1L;
 
 	public static Fill FILL = new Fill(new Color(0, 0, 0));
 	public static Stroke STROKE = new Stroke(new Color(0, 0, 0));

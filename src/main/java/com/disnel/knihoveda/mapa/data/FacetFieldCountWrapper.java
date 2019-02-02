@@ -6,6 +6,7 @@ import org.apache.solr.client.solrj.response.FacetField.Count;
 
 public class FacetFieldCountWrapper implements Serializable
 {
+	private static final long serialVersionUID = 1L;
 
 	private Count count;
 	

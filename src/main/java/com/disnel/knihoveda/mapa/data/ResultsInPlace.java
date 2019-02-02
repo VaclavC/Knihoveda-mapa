@@ -8,6 +8,7 @@ import org.wicketstuff.openlayers3.api.geometry.Point;
 
 public class ResultsInPlace implements Serializable
 {
+	private static final long serialVersionUID = 1L;
 
 	private String placeName;
 	

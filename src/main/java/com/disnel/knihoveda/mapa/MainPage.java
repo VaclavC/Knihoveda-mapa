@@ -21,6 +21,7 @@ import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesomeCs
 
 public class MainPage extends WebPage implements IAjaxIndicatorAware
 {
+	private static final long serialVersionUID = 1L;
 
 	private PageParameters commonSearchParams;
 	
@@ -34,6 +35,11 @@ public class MainPage extends WebPage implements IAjaxIndicatorAware
 		
 		add(new ListView<String>("vyberyDlePoli", Arrays.asList(KnihovedaMapaConfig.FIELDS))
 		{
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			protected void populateItem(ListItem<String> item)
 			{

@@ -8,6 +8,7 @@ import org.wicketstuff.openlayers3.api.style.Style;
 
 public class AjaxVector extends Vector
 {
+	private static final long serialVersionUID = 1L;
 
 	public AjaxVector(VectorSource source)
 	{

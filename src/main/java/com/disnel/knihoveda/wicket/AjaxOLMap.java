@@ -10,6 +10,7 @@ import org.wicketstuff.openlayers3.api.overlay.Overlay;
 
 public class AjaxOLMap extends Map
 {
+	private static final long serialVersionUID = 1L;
 
 	public AjaxOLMap(List<Layer> layers)
 	{

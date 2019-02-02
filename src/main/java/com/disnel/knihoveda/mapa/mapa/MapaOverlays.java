@@ -15,7 +15,8 @@ import com.disnel.knihoveda.mapa.data.ResultsInPlace;
 
 public class MapaOverlays extends Panel
 {
-	
+	private static final long serialVersionUID = 1L;
+
 	private List<Overlay> overlays;
 
 	public MapaOverlays(String id, IModel<List<ResultsInPlace>> model)

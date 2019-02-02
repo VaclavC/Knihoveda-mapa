@@ -27,6 +27,7 @@ import com.disnel.knihoveda.wicket.model.ResultsInPlacesModel;
 
 public class MapaPanel extends Panel
 {
+	private static final long serialVersionUID = 1L;
 
 	private WebMarkupContainer mapaCont;
 	
@@ -64,6 +65,11 @@ public class MapaPanel extends Panel
 		// Na dvojklik zrusit jakykoliv vyber mista
 		add(new AjaxEventBehavior("dblclick")
 		{
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			protected void onEvent(AjaxRequestTarget target)
 			{

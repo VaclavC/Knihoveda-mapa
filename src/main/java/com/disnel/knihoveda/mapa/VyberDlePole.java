@@ -25,6 +25,7 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.behavior.CssClassNameApp
 
 public class VyberDlePole extends Panel
 {
+	private static final long serialVersionUID = 1L;
 
 	private String fieldName;
 	
@@ -51,6 +52,11 @@ public class VyberDlePole extends Panel
 		
 		form.add(selectInst = new VyberDlePoleMultiSelect("select", fieldName, possibleValuesModel)
 		{
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void onSelectionChanged(AjaxRequestTarget target)
 			{

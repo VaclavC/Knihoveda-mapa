@@ -26,6 +26,8 @@ import com.disnel.knihoveda.mapa.data.DataSet;
  */
 public class MapaSession extends WebSession
 {
+	private static final long serialVersionUID = 1L;
+
 	public MapaSession(Request request)
 	{
 		super(request);
