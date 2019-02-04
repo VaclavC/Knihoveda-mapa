@@ -125,19 +125,17 @@ body {
 
 .mistoOverlay { cursor: pointer; }
 .mistoOverlay .bottomDot {
-	position: absolute; width: 14px; height: 14px; left: -15px; top: -15px; margin: 8px;
-	border-radius: 50%;
-	background-image:
-		linear-gradient(180deg, transparent 50%, black 50%),
-		linear-gradient(  0deg, black 50%, transparent 50%);
+	position: absolute; width: 14px; height: 14px; left: -15px; top: -15px; margin: 8px; z-index: 1;
+	border-radius: 50%; background: black;
 }
-.mistoOverlay .graph {
-	position: absolute; transform: translate(-50%, -100%); padding: 0 2px; min-width: 18px;
-	border-bottom: solid 2px black;
-	display: flex; justify-content: center;
-	pointer-events: none;
-}
-.mistoOverlay .graph .bar { align-self: flex-end; margin: 0 1px; width: 8px; }
+.mistoOverlay .graph { position: absolute; pointer-events: none; }
+.mistoOverlay .graph .bar { position: absolute; top: 0; left: -4px; width: 8px; transform-origin: center top; }
+.mistoOverlay .graph .bar:nth-child(1) { transform: rotate(180deg); }
+.mistoOverlay .graph .bar:nth-child(2) { transform: rotate(240deg); }
+.mistoOverlay .graph .bar:nth-child(3) { transform: rotate(120deg); }
+.mistoOverlay .graph .bar:nth-child(4) { transform: rotate(300deg); }
+.mistoOverlay .graph .bar:nth-child(5) { transform: rotate(60deg); }
+.mistoOverlay .graph .bar:nth-child(6) { transform: rotate(0deg); }
 
 .mistoOverlay .detailCont { z-index: 99999; display: none; }
 .mistoOverlay .detail { transform: translate(-50%, -50%); }

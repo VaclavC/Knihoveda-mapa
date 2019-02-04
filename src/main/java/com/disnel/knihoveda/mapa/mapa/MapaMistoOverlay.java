@@ -62,11 +62,12 @@ public class MapaMistoOverlay extends Panel
 				it.remove();
 		
 		// Graf s vysledky a jeho sloupce
+		// Tady zobrazime vsechny vysledky, ale nulove male, jinak nefunguje "ruzice" konzistentne
 		RepeatingView bars;
 		add(bars = new RepeatingView("result"));
 		
 		if ( dState != DisplayState.SHADED )
-			for ( DataSet dataSet : dataSetsToDisplay )
+			for ( DataSet dataSet : MapaSession.get().dataSets() )
 			{
 				Component bar;
 				bars.add(bar = new WebMarkupContainer(bars.newChildId()));

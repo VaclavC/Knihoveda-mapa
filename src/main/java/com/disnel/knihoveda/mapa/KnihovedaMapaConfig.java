@@ -27,7 +27,7 @@ public class KnihovedaMapaConfig
 	public static String locationsFileName;
 
 	// Predefined values
-	public static final float MIN_PLACE_SIZE =  4.0f;
+	public static final float MIN_PLACE_SIZE = 12.0f;
 	public static final float MAX_PLACE_SIZE = 48.0f;
 	public static final float PLACE_SIZE_DIFF = MAX_PLACE_SIZE - MIN_PLACE_SIZE;
 	
