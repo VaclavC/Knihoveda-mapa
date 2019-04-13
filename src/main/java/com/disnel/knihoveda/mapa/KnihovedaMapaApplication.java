@@ -7,7 +7,6 @@ import org.apache.wicket.request.Request;
 import org.apache.wicket.request.Response;
 import org.apache.wicket.resource.JQueryResourceReference;
 import org.apache.wicket.settings.ExceptionSettings.AjaxErrorStrategy;
-import com.disnel.knihoveda.dao.PlaceLocationDAO;
 import com.disnel.knihoveda.dao.SolrDAO;
 
 import de.agilecoders.wicket.webjars.WicketWebjars;
@@ -44,7 +43,6 @@ public class KnihovedaMapaApplication extends WebApplication
 		
 		// Inicializovat
 		SolrDAO.init();
-		PlaceLocationDAO.init();
 		
 		WicketWebjars.install(this);
 		

@@ -1,38 +1,42 @@
-apply plugin: 'java'
-apply plugin: 'war'
-apply plugin: 'eclipse'
-apply plugin: 'eclipse-wtp'
+apply plugin: "java"
+apply plugin: "eclipse"
+apply plugin: "war"
+
 project.webAppDirName = 'WebContent'
 
-ext.wicket = "8.0.0-M6"
-ext.servletApi = "3.1.0"
+ext.wicket = "8.3.0"
+ext.wicketBootstrap = "3.0.0-M9-SNAPSHOT"
 ext.solr = "5.5.0"
 
 repositories {
 	jcenter()
+	maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
 }
 
 dependencies {
-	compileOnly('org.projectlombok:lombok:1.18.2')
+	compile 'javax.servlet:javax.servlet-api:3.1.0'
 
-	compile 'org.slf4j:slf4j-simple:1.8.0-beta2'
-	
-	compile "org.apache.wicket:wicket:${wicket}"
+	compile 'org.slf4j:slf4j-simple:1.7.25'
+
+	compileOnly('org.projectlombok:lombok:1.18.6')
+	//annotationProcessor 'org.projectlombok:lombok:1.18.6'
+
+	compile "org.apache.wicket:wicket-core:${wicket}"
+
 	compile "com.googlecode.wicket-jquery-ui:wicket-jquery-ui:${wicket}"
 	compile "com.googlecode.wicket-jquery-ui:wicket-jquery-ui-theme-blitzer:${wicket}"
 	compile "com.googlecode.wicket-jquery-ui:wicket-kendo-ui:${wicket}"
 	compile "com.googlecode.wicket-jquery-ui:wicket-kendo-ui-theme-default:${wicket}"
 	
-	compile group: 'javax.servlet', name: 'javax.servlet-api', version: "${servletApi}"
-	
 	compile "org.apache.solr:solr-solrj:${solr}"
 	
 	compile "org.wicketstuff:wicketstuff-openlayers3:${wicket}"
 	
-	compile 'org.mapdb:mapdb:3.0.5'
-	compile 'com.opencsv:opencsv:4.0'
+	compile "de.agilecoders.wicket:wicket-bootstrap-core:${wicketBootstrap}"
+	compile "de.agilecoders.wicket:wicket-bootstrap-extensions:${wicketBootstrap}"
+	compile "de.agilecoders.wicket:wicket-bootstrap-sass:${wicketBootstrap}"
 	
-	compile 'de.agilecoders.wicket:wicket-bootstrap-core:2.0.1'
-	compile 'de.agilecoders.wicket:wicket-bootstrap-extensions:2.0.1'
+	compile 'com.github.sommeri:less4j:1.17.2'
+	compile 'org.webjars:font-awesome:5.7.2'
 }
 

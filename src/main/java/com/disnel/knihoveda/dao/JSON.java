@@ -3,9 +3,8 @@ package com.disnel.knihoveda.dao;
 import java.lang.reflect.Field;
 import java.util.List;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import com.github.openjson.JSONException;
+import com.github.openjson.JSONObject;
 
 public class JSON
 {
