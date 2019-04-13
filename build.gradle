@@ -19,7 +19,6 @@ dependencies {
 	compile 'org.slf4j:slf4j-simple:1.7.25'
 
 	compileOnly('org.projectlombok:lombok:1.18.6')
-	//annotationProcessor 'org.projectlombok:lombok:1.18.6'
 
 	compile "org.apache.wicket:wicket-core:${wicket}"
 
@@ -33,10 +32,14 @@ dependencies {
 	compile "org.wicketstuff:wicketstuff-openlayers3:${wicket}"
 	
 	compile "de.agilecoders.wicket:wicket-bootstrap-core:${wicketBootstrap}"
-	compile "de.agilecoders.wicket:wicket-bootstrap-extensions:${wicketBootstrap}"
+	compile("de.agilecoders.wicket:wicket-bootstrap-extensions:${wicketBootstrap}") {
+		exclude group: 'com.google.javascript', module: 'closure-compiler'
+	}
 	compile "de.agilecoders.wicket:wicket-bootstrap-sass:${wicketBootstrap}"
 	
-	compile 'com.github.sommeri:less4j:1.17.2'
+	compile('com.github.sommeri:less4j:1.17.2') {
+		exclude group: 'commons-logging', module: 'commons-logging'
+	}
 	compile 'org.webjars:font-awesome:5.7.2'
 }
 
