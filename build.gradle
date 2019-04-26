@@ -37,9 +37,6 @@ dependencies {
 	}
 	compile "de.agilecoders.wicket:wicket-bootstrap-sass:${wicketBootstrap}"
 	
-	compile('com.github.sommeri:less4j:1.17.2') {
-		exclude group: 'commons-logging', module: 'commons-logging'
-	}
 	compile 'org.webjars:font-awesome:5.7.2'
 }
 

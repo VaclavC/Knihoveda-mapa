@@ -28,6 +28,8 @@ public class MapaSession extends WebSession
 {
 	private static final long serialVersionUID = 1L;
 
+	/* Konstruktor */
+	
 	public MapaSession(Request request)
 	{
 		super(request);
@@ -42,9 +44,12 @@ public class MapaSession extends WebSession
 		initMaxCountInPlace();
 	}
 
-	///////////////////////////////////////////////
-	// Barvy pro datove sady a souvisejici metody
-	//
+	
+	/* Various state variables */
+	public Integer sidePanelIndex;
+	
+	
+	/* Barvy pro datove sady a souvisejici metody */
 	
 	private Set<Color> usedColors;
 	
@@ -96,9 +101,9 @@ public class MapaSession extends WebSession
 		usedColors.remove(color);
 	}
 	
-	/////////////////////////////////////
-	// Datove sady a souvisejici metody
-	//
+	
+	/* Datove sady a souvisejici metody */
+
 	private List<DataSet> dataSets;
 	private DataSet currentDataSet;
 
@@ -106,10 +111,10 @@ public class MapaSession extends WebSession
 	{
 		dataSets = new ArrayList<>();
 		
-		// Pridat vychozi dataset, nastavit jeho barvu jako pouzitou
-		Color color = newDataSetColor();
-		dataSets.add(currentDataSet = new DataSet(color));
-		useDataSetColor(color);
+		for ( Color color : KnihovedaMapaConfig.DATA_SET_COLORS )
+			dataSets.add(new DataSet(color));
+
+		currentDataSet = dataSets.get(0);
 	}
 
 	public List<DataSet> dataSets()
@@ -137,9 +142,9 @@ public class MapaSession extends WebSession
 		this.currentDataSet = currentDataSet;
 	}
 	
-	///////////////////////////////////////////////////////////
-	// Maximalni pocet zaznamu pro misto a souvisejici metody
-	//
+	
+	/* Maximalni pocet zaznamu pro misto a souvisejici metody */
+
 	private long maxCountInPlace;
 	
 	private void initMaxCountInPlace()

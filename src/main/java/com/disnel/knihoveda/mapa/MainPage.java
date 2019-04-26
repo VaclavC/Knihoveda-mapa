@@ -15,6 +15,8 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.request.resource.CssResourceReference;
 
+import com.disnel.knihoveda.mapa.panel.CasovyGraf;
+import com.disnel.knihoveda.mapa.panel.Mapa;
 import com.googlecode.wicket.jquery.ui.settings.JQueryUILibrarySettings;
 
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesomeCssReference;
@@ -29,7 +31,7 @@ public class MainPage extends WebPage implements IAjaxIndicatorAware
 	{
 		super(parameters);
 		
-		add(new MapaPanel("mapa"));
+		add(new Mapa("mapa"));
 	
 		add(new CasovyGraf("casovyGraf"));
 		

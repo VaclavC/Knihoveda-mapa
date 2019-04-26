@@ -116,6 +116,20 @@ public class DataSet implements Serializable
 		return this.fieldsValues.get(name);
 	}
 	
+	public FieldValues getFieldValuesNotNull(String name)
+	{
+		FieldValues ret = getFieldValues(name);
+		
+		if ( ret == null )
+		{
+			ret = new FieldValues(name);
+			
+			fieldsValues.put(name, ret);
+		}
+		
+		return ret;
+	}
+	
 	public void setFieldValues(String name, Collection<String> values)
 	{
 		if ( values.isEmpty() )

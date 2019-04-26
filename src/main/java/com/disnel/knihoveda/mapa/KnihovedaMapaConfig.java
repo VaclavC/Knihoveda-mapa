@@ -36,24 +36,14 @@ public class KnihovedaMapaConfig
 	public static final String FIELD_TIME = "publishDate";
 	public static final String FIELD_GEOLOC = "long_lat";
 	
+	
 	public static final Color[] DATA_SET_COLORS = new Color[]
 	{
-		new Color("#333333"),
-		new Color("#E86329"),
-		new Color("#D92D28"),
-		new Color("#752722"),
-		new Color("#73814A"),
-		new Color("#935794"),
-//		new Color("#726FDB"),
-//		new Color("#F263B7"),
-//		new Color("#92E787"),
-//		new Color("#58E00F"),
-//		new Color("#C44DB0"),
-//		new Color("#FBCD9A"),
-//		new Color("#BCECC9"),
-//		new Color("#DC9FD4"),
-//		new Color("#F7871C"),
-//		new Color("#F4A586"),
+		new Color("#800000"),
+		new Color("#808833"),
+		new Color("#DC5E07"),
+		new Color("#E1D503"),
+		new Color("#88D5F3")
 	};
 	
 	// Pole, ktera potrebuji pridavat _facet pro facetove vyhledavani

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:wicket="http://my.site.org">
+<head>
+	<meta charset="UTF-8">
+	<title><wicket:message key="title.title"></wicket:message></title>
+	
+	<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+</head>
+<body>
+
+<div id="Map" wicket:id="map"></div>
+
+<div id="Title">
+	<div class="logo">
+		<img src="/img/knihoveda-logo.svg" alt="" />
+	</div>
+	<div class="title">
+		<span><wicket:message key="title.title"></wicket:message></span>
+	</div>
+</div>
+
+<div id="SidePanel">
+	<div class="head main">
+		<span class="button" wicket:id="sidePanelButton"><i class="fas" wicket:id="icon"></i></span>
+	</div>
+	<div class="content main" wicket:id="sidePanelContent"></div>
+</div>
+
+<div id="Timeline" wicket:id="timeline"></div>
+
+<div id="ajaxIndicator"><div>
+	<div class="gears">
+		<wicket:link>
+			<img src="img/gears/0001.png" class="f0001" />
+			<img src="img/gears/0002.png" class="f0002" />
+			<img src="img/gears/0003.png" class="f0003" />
+			<img src="img/gears/0004.png" class="f0004" />
+			<img src="img/gears/0005.png" class="f0005" />
+			<img src="img/gears/0006.png" class="f0006" />
+			<img src="img/gears/0007.png" class="f0007" />
+			<img src="img/gears/0008.png" class="f0008" />
+			<img src="img/gears/0009.png" class="f0009" />
+			<img src="img/gears/0010.png" class="f0010" />
+			<img src="img/gears/0011.png" class="f0011" />
+			<img src="img/gears/0012.png" class="f0012" />
+		</wicket:link>
+	</div>
+	<div id="ajaxIndicatorDetail"></div>
+</div></div>
+
+</body>
+</html>

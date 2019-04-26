@@ -3,9 +3,8 @@ package com.disnel.knihoveda.mapa.data;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Uklada mozne hodnoty pole, podle kterych bude omezena mnozina vysledku
@@ -19,12 +18,12 @@ public class FieldValues implements Serializable
 
 	private String name;
 	
-	private Set<String> values;
+	private LinkedHashSet<String> values;
 	
 	public FieldValues(String name, Collection<String> values)
 	{
 		this.name = name;
-		this.values = new HashSet<>(values);
+		this.values = new LinkedHashSet<>(values);
 	}
 	
 	public FieldValues(String name, String... values)
@@ -37,14 +36,14 @@ public class FieldValues implements Serializable
 		return name;
 	}
 	
-	public Set<String> getValues()
+	public LinkedHashSet<String> getValues()
 	{
 		return this.values;
 	}
 	
 	public void setValues(Collection<String> values)
 	{
-		this.values = new HashSet<>(values);
+		this.values = new LinkedHashSet<>(values);
 	}
 	
 	public void addValue(String value)
@@ -59,7 +58,7 @@ public class FieldValues implements Serializable
 	
 	public void replaceValues(List<String> values)
 	{
-		this.values = new HashSet<>(values);
+		this.values = new LinkedHashSet<>(values);
 	}
 
 	public boolean isEmpty()

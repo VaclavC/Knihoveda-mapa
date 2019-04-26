@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:wicket="http://my.site.org">
+<body>
+
+<wicket:panel>
+
+
+
+<div class="container fluid">
+	<div class="row mt-4">
+		<div class="col-md-auto"><span class="title" wicket:id="title">[TITLE]</span></div>
+		<div class="col text-right"><span class="resultsNum" wicket:id="resultsNum">[NUM]</span></div>
+	</div>
+	<div class="row" wicket:id="valueRow">
+		<div class="col-md-auto">
+			<button type="button" class="btn-sm btn-outline-primary" wicket:id="trashButton"><i class="fas fa-trash"></i></button>
+		</div>
+		<div class="col"><span wicket:id="value"></span></div>	
+	</div>
+	<div class="row">
+		<div class="col"><select class="form-control" wicket:id="select"></select></div>
+	</div>
+</div>
+
+
+
+</wicket:panel>
+
+</body>
+</html>

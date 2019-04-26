@@ -1,4 +1,4 @@
-package com.disnel.knihoveda.mapa;
+package com.disnel.knihoveda.mapa.panel;
 
 import java.util.Arrays;
 
@@ -17,6 +17,9 @@ import org.wicketstuff.openlayers3.api.View;
 import org.wicketstuff.openlayers3.api.coordinate.LongLat;
 import org.wicketstuff.openlayers3.api.layer.Layer;
 import org.wicketstuff.openlayers3.api.layer.Tile;
+
+import com.disnel.knihoveda.mapa.KnihovedaMapaConfig;
+import com.disnel.knihoveda.mapa.MapaSession;
 import com.disnel.knihoveda.mapa.events.AjaxEvent;
 import com.disnel.knihoveda.mapa.events.MistoSelectEvent;
 import com.disnel.knihoveda.mapa.events.UserSelectionChangedEvent;
@@ -25,7 +28,7 @@ import com.disnel.knihoveda.mapa.ol.CustomTileSource;
 import com.disnel.knihoveda.wicket.AjaxOLMap;
 import com.disnel.knihoveda.wicket.model.ResultsInPlacesModel;
 
-public class MapaPanel extends Panel
+public class Mapa extends Panel
 {
 	private static final long serialVersionUID = 1L;
 
@@ -37,7 +40,7 @@ public class MapaPanel extends Panel
 	
 	private ResultsInPlacesModel resultsInPlacesModel;
 	
-	public MapaPanel(String id)
+	public Mapa(String id)
 	{
 		super(id);
 
@@ -65,9 +68,6 @@ public class MapaPanel extends Panel
 		// Na dvojklik zrusit jakykoliv vyber mista
 		add(new AjaxEventBehavior("dblclick")
 		{
-			/**
-			 * 
-			 */
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -122,13 +122,13 @@ public class MapaPanel extends Panel
 		
 		// Zakazat zoom na doubleclick (potrebujeme ho na ruseni vyberu)
 		String removeInteraction = "var dblClickInteraction;\n" +
-				JavascriptObject.JS_GLOBAL + "['map_" + getMarkupId() + "-content']" +
+				JavascriptObject.JS_GLOBAL + "['map_mapa-content']" +
 				".getInteractions().getArray().forEach(function(interaction) {\n" + 
 				"  if (interaction instanceof ol.interaction.DoubleClickZoom) {\n" + 
 				"    dblClickInteraction = interaction;\n" + 
 				"  }\n" + 
 				"});\n" +
-				JavascriptObject.JS_GLOBAL + "['map_" + getMarkupId() + "-content']" +
+				JavascriptObject.JS_GLOBAL + "['map_mapa-content']" +
 				".removeInteraction(dblClickInteraction);";
 		
 		response.render(OnDomReadyHeaderItem.forScript(removeInteraction));

@@ -39,9 +39,6 @@ public class Timeline extends WebMarkupContainer
 		
 		add(new AbstractDefaultAjaxBehavior()
 		{
-			/**
-			 * 
-			 */
 			private static final long serialVersionUID = 1L;
 
 			@Override

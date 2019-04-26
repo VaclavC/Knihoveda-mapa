@@ -1,4 +1,3 @@
-@CHARSET "UTF-8";
 
 /*********/
 /* Reset */
@@ -228,7 +227,6 @@ body {
 .dataSetItem .detail .line .fieldName { font-style: oblique; font-size: 90%; text-decoration: underline; }
 .dataSetItem .detail .line .fieldName:after { content: ":"; }
 .dataSetItem .detail .line .values { margin-top: 0.2em; padding: 0 2em; }
-.dataSetItem .detail .line .values .value {}
 .dataSetItem .detail .line .values .value:not(:first-child):before { content: ", "; }
 
 /******************/

@@ -1,0 +1,206 @@
+package com.disnel.knihoveda.mapa.panel;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.solr.client.solrj.response.FacetField.Count;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.event.IEvent;
+import org.apache.wicket.markup.html.panel.Panel;
+import com.disnel.knihoveda.dao.SolrDAO;
+import com.disnel.knihoveda.mapa.MapaSession;
+import com.disnel.knihoveda.mapa.data.DataSet;
+import com.disnel.knihoveda.mapa.events.AjaxEvent;
+import com.disnel.knihoveda.mapa.events.UserSelectionChangedEvent;
+import com.disnel.knihoveda.mapa.timeline.Timeline;
+import com.disnel.knihoveda.mapa.timeline.TimelineConf;
+import com.disnel.knihoveda.mapa.timeline.TimelineDataset;
+
+public class CasovyGraf extends Panel
+{
+	private static final long serialVersionUID = 1L;
+
+	private Timeline timeline;
+	
+	private Integer minYear = Integer.MAX_VALUE,
+			        maxYear = Integer.MIN_VALUE;
+	
+//	private Integer yearFrom, yearTo;
+	
+//	private YearInput inputYearFrom, inputYearTo;
+
+//	private Form<Void> form;
+	
+	public CasovyGraf(String id)
+	{
+		super(id);
+		
+		// Vlastni casovy graf
+		TimelineConf conf = new TimelineConf();
+		conf.setDetailPanelId("timelineRecordInfo");
+		
+		add(timeline = new Timeline("timeline", conf));
+		timeline.setData(createTimelineData());
+		
+//		// Ovladaci panel vlevo
+//		add(form = new Form<Void>("form"));
+//		form.setOutputMarkupId(true);
+//		form.add(new AttributeModifier("style",
+//				"border-color: " + MapaSession.get().currentDataSet().getColor().toString() + ";"));
+//		
+//		form.add(new AjaxFormSubmitBehavior("change")
+//		{
+//			/**
+//			 * 
+//			 */
+//			private static final long serialVersionUID = 1L;
+//
+//			@Override
+//			protected void onSubmit(AjaxRequestTarget target)
+//			{
+//				if ( yearFrom == null ) yearFrom = minYear;
+//				if ( yearTo == null ) yearTo = maxYear;
+//				
+//				if ( yearFrom > yearTo )
+//				{
+//					Integer tmp = yearFrom;
+//					yearFrom = yearTo;
+//					yearTo = tmp;
+//				}
+//				
+//				updateCurrentDataSet();
+//				updateInputs(target);
+//
+//				send(getPage(), Broadcast.BREADTH,
+//						new TimeSelectEvent(target, yearFrom, yearTo));
+//			}
+//		});
+//
+//		form.add(inputYearFrom = new YearInput("inputOd",
+//				new PropertyModel<Integer>(this, "yearFrom")));
+//		
+//		form.add(inputYearTo = new YearInput("inputDo",
+//				new PropertyModel<Integer>(this, "yearTo")));
+//		
+//		form.add(new WebMarkupContainer("butClear")
+//			.add(new AjaxEventBehavior("click")
+//			{
+//				/**
+//				 * 
+//				 */
+//				private static final long serialVersionUID = 1L;
+//
+//				@Override
+//				protected void onEvent(AjaxRequestTarget target)
+//				{
+//					yearFrom = yearTo = null;
+//					
+//					updateCurrentDataSet();
+//					
+//					send(getPage(), Broadcast.BREADTH,
+//							new TimeSelectEvent(target, yearFrom, yearTo));
+//				}
+//			}));
+	}
+
+	private TimelineDataset createTimelineDataSet(DataSet dataSet)
+	{
+		TimelineDataset tlDataset =
+				new TimelineDataset(dataSet.getColor());
+
+		for ( Count count : SolrDAO.getCountByYear(dataSet) )
+		{
+			String countName = count.getName();
+
+			if ( !countName.isEmpty() )
+			{
+				Integer year = Integer.parseInt(count.getName());
+				Long countVal = count.getCount();
+
+				tlDataset.addCount(year, countVal);
+				
+				if ( year < minYear ) minYear = year;
+				if ( year > maxYear ) maxYear = year;
+			}
+		}
+		
+		return tlDataset;
+	}
+	
+	private List<TimelineDataset> createTimelineData()
+	{
+		List<TimelineDataset> datasetList =
+				new ArrayList<>(MapaSession.get().dataSets().size());
+		
+		for ( DataSet dataSet : MapaSession.get().dataSets() )
+			if ( dataSet != MapaSession.get().currentDataSet() )
+				datasetList.add(createTimelineDataSet(dataSet));
+		
+		datasetList.add(createTimelineDataSet(MapaSession.get().currentDataSet()));
+		
+		return datasetList;
+	}
+	
+	@Override
+	public void onEvent(IEvent<?> event)
+	{
+		if ( event.getPayload() instanceof UserSelectionChangedEvent )
+		{
+			AjaxEvent ev = (AjaxEvent) event.getPayload();
+			AjaxRequestTarget target = ev.getTarget();
+			
+			timeline.setData(createTimelineData());
+			
+//			DataSet currentDataSet = MapaSession.get().currentDataSet();
+//			timeline.setYearFrom(yearFrom = currentDataSet.getYearFrom());
+//			timeline.setYearTo(yearTo = currentDataSet.getYearTo());
+			
+			target.appendJavaScript(timeline.getJSSetData());
+			target.appendJavaScript(timeline.getJSDraw());
+//			updateInputs(target);
+//			target.appendJavaScript(getJSChangeDataSetColor());
+		}
+	}
+	
+//	private void updateCurrentDataSet()
+//	{
+//		DataSet currentDataSet = MapaSession.get().currentDataSet();
+//		currentDataSet.setYearFrom(yearFrom);
+//		currentDataSet.setYearTo(yearTo);
+//	}
+	
+//	private void updateInputs(AjaxRequestTarget target)
+//	{
+//		inputYearFrom.modelChanged();
+//		inputYearTo.modelChanged();
+//		
+//		target.add(inputYearFrom, inputYearTo);
+//	}
+	
+//	private class YearInput extends NumberTextField<Integer>
+//	{
+//		private static final long serialVersionUID = 1L;
+//
+//		public YearInput(String id, IModel<Integer> model)
+//		{
+//			super(id, model);
+//			
+//			setOutputMarkupId(true);
+//			
+//			setMinimum(minYear);
+//			setMaximum(maxYear);
+//			
+////			options.set("format", "'####'");
+////			options.set("min", minYear);
+////			options.set("max", maxYear);
+//		}
+//	}
+	
+//	private String getJSChangeDataSetColor()
+//	{
+////		return String.format("$('#%s').css('background-color', '%s');",
+////				form.getMarkupId(),
+////				MapaSession.get().currentDataSet().getColor().toString());
+//	}
+	
+}
