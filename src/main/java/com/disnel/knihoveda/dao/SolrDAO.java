@@ -12,6 +12,7 @@ import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.FacetField.Count;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.params.FacetParams;
+import org.apache.wicket.Application;
 import org.wicketstuff.openlayers3.api.coordinate.Coordinate;
 import org.wicketstuff.openlayers3.api.geometry.Point;
 import org.apache.solr.client.solrj.response.FacetField;
@@ -52,7 +53,8 @@ public class SolrDAO
 		{
 			query.add("wt", "javabin");
 			
-			System.out.println("Query: " + query);
+			if ( Application.get().usesDevelopmentConfig() )
+				System.out.println("Query: " + query);
 			
 			return client().query(query);
 		}
