@@ -7,8 +7,12 @@
 
 
 <div class="Search">
-	<div class="line">
-		<h1><wicket:message key="search.title"></wicket:message></h1>
+	<div class="container fluid">
+		<div class="row mt-3">
+			<div class="col">
+				<h3><wicket:message key="search.title"></wicket:message></h3>
+			</div>
+		</div>
 	</div>
 	
 	<div class="head">
@@ -17,6 +21,11 @@
 	
 	<div class="content" wicket:id="content">
 		<div class="fields container fluid">
+			<div class="row mt-2">
+				<div class="col">
+					<h5><wicket:message key="search.fields.head"></wicket:message></h5>
+				</div>
+			</div>
 			<div class="row">
 				<div class="col">
 					<wicket:container wicket:id="fields">
@@ -26,8 +35,10 @@
 			</div>
 		</div>
 		
-		<div class="timeline">
-			[TIMELINE]
+		<div class="timeline container fluid">
+			<div class="row mt-2">
+				<div class="col" wicket:id="timeRange"></div>
+			</div>
 		</div>
 	</div>
 </div>

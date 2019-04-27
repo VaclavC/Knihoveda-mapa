@@ -11,6 +11,7 @@ import org.apache.solr.client.solrj.response.FacetField.Count;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.event.Broadcast;
@@ -18,6 +19,7 @@ import org.apache.wicket.event.IEvent;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.FormComponent;
+import org.apache.wicket.markup.html.form.NumberTextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -33,6 +35,7 @@ import com.disnel.knihoveda.mapa.data.DataSet;
 import com.disnel.knihoveda.mapa.data.FieldValues;
 import com.disnel.knihoveda.mapa.events.AjaxEvent;
 import com.disnel.knihoveda.mapa.events.FieldValuesChangedEvent;
+import com.disnel.knihoveda.mapa.events.TimeSelectEvent;
 import com.disnel.knihoveda.mapa.events.UserSelectionChangedEvent;
 import com.disnel.knihoveda.wicket.AjaxGeneralButton;
 
@@ -103,6 +106,9 @@ public class Search extends Panel
 				item.add(new Field("field", item.getModelObject()));
 			}
 		});
+		
+		/* Time range */
+		content.add(new TimeRange("timeRange"));
 	}
 	
 	
@@ -289,6 +295,116 @@ public class Search extends Panel
 				
 				return byName.get(name);
 			}
+		}
+	}
+	
+	
+	/**
+	 * Time range selector
+	 * 
+	 * @author Vaclav Cermak <disnel@disnel.com>
+	 *
+	 */
+	class TimeRange extends Panel
+	{
+		private static final long serialVersionUID = 1L;
+		
+		private Integer minYear = KnihovedaMapaSession.get().minYear();
+		private Integer maxYear = KnihovedaMapaSession.get().maxYear();
+
+		private IModel<Integer> yearFromModel = new Model<>(), yearToModel = new Model<>();
+		
+		public TimeRange(String id)
+		{
+			super(id);
+			
+			setOutputMarkupId(true);
+			
+			DataSet currentDataSet = KnihovedaMapaSession.get().currentDataSet();
+			yearFromModel.setObject(currentDataSet.getYearFrom());
+			yearToModel.setObject(currentDataSet.getYearTo());
+			
+			add(new TimeInput("yearFrom", yearFromModel));
+			add(new TimeInput("yearTo", yearToModel));
+			
+			add(new AjaxGeneralButton("clear", "click")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onClick(AjaxRequestTarget target)
+				{
+					updateCurrentDataSet(target, null, null);
+				}
+			});
+		}
+
+		private void updateCurrentDataSet(AjaxRequestTarget target, Integer yearFrom, Integer yearTo)
+		{
+			yearFromModel.setObject(yearFrom);
+			yearToModel.setObject(yearTo);
+			
+			DataSet currentDataSet = KnihovedaMapaSession.get().currentDataSet();
+			currentDataSet.setYearFrom(yearFrom);
+			currentDataSet.setYearTo(yearTo);
+			
+			send(getPage(), Broadcast.BREADTH,
+					new TimeSelectEvent(target, yearFrom, yearTo));
+		}
+
+		@Override
+		public void onEvent(IEvent<?> event)
+		{
+			if ( event.getPayload() instanceof TimeSelectEvent )
+			{
+				TimeSelectEvent ev = (TimeSelectEvent) event.getPayload();
+			
+				yearFromModel.setObject(ev.yearFrom());
+				yearToModel.setObject(ev.yearTo());
+				
+				ev.getTarget().add(this);
+			}
+		}
+
+		
+		/* Time input */
+		
+		private class TimeInput extends NumberTextField<Integer>
+		{
+			private static final long serialVersionUID = 1L;
+
+			public TimeInput(String id, IModel<Integer> model)
+			{
+				super(id, model, Integer.class);
+				
+				add(new AjaxFormComponentUpdatingBehavior("change")
+				{
+					private static final long serialVersionUID = 1L;
+
+					@Override
+					protected void onUpdate(AjaxRequestTarget target)
+					{
+						Integer yearFrom = yearFromModel.getObject();
+						Integer yearTo = yearToModel.getObject();
+						
+						if ( yearFrom == null ) yearFrom = minYear;
+						if ( yearTo == null ) yearTo = maxYear;
+						
+						yearFrom = Math.max(yearFrom, minYear);
+						yearTo = Math.min(yearTo, maxYear);
+						
+						if ( yearTo < yearFrom )
+						{
+							Integer tmp = yearFrom;
+							yearFrom = yearTo;
+							yearTo = tmp;
+						}
+						
+						updateCurrentDataSet(target, yearFrom, yearTo);
+					}
+				});
+			}
+			
 		}
 	}
 

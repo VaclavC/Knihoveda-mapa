@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:wicket="http://my.site.org">
+<body>
+
+<wicket:panel>
+
+
+
+<h5><wicket:message key="search.timerange.head"></wicket:message></h5>
+
+<div class="input-group">
+	<div class="input-group-prepend"><span class="input-group-text"><wicket:message key="search.timerange.from"></wicket:message></span></div>
+	<input type="number" class="form-control" wicket:id="yearFrom"/>
+	<div class="input-group-prepend"><span class="input-group-text"><wicket:message key="search.timerange.to"></wicket:message></span></div>
+	<input type="number" class="form-control" wicket:id="yearTo"/>
+</div>
+
+<div class="input-group-prepend"><button type="button" class="btn btn-primary btn-block mt-3" wicket:id="clear"><wicket:message key="search.timerange.clear"></wicket:message></button></div>
+
+
+
+</wicket:panel>
+
+</body>
+</html>

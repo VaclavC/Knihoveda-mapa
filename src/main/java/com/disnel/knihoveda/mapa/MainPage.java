@@ -5,14 +5,13 @@ package com.disnel.knihoveda.mapa;
 import org.apache.wicket.ajax.IAjaxIndicatorAware;
 import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
-import org.apache.wicket.markup.head.JavaScriptHeaderItem;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.request.resource.CssResourceReference;
 
 import com.disnel.knihoveda.mapa.panel.CasovyGraf;
 import com.disnel.knihoveda.mapa.panel.Mapa;
-import com.googlecode.wicket.jquery.ui.settings.JQueryUILibrarySettings;
+//import com.googlecode.wicket.jquery.ui.settings.JQueryUILibrarySettings;
 
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesomeCssReference;
 
@@ -65,11 +64,11 @@ public class MainPage extends WebPage implements IAjaxIndicatorAware
 		super.renderHead(response);
 		
 		// JS knihovny
-		response.render(JavaScriptHeaderItem.forReference(JQueryUILibrarySettings.get().getJavaScriptReference()));
+//		response.render(JavaScriptHeaderItem.forReference(JQueryUILibrarySettings.get().getJavaScriptReference()));
 
 		// CSS
 		response.render(CssHeaderItem.forReference(FontAwesomeCssReference.instance()));
-		response.render(CssHeaderItem.forReference(JQueryUILibrarySettings.get().getStyleSheetReference()));
+//		response.render(CssHeaderItem.forReference(JQueryUILibrarySettings.get().getStyleSheetReference()));
 		response.render(CssHeaderItem.forReference(new CssResourceReference(MainPage.class, "MainPage.css")));
 		
 //		// Prebarvit selecty

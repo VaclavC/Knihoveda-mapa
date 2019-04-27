@@ -15,6 +15,7 @@ import org.apache.solr.common.params.FacetParams;
 import org.wicketstuff.openlayers3.api.coordinate.Coordinate;
 import org.wicketstuff.openlayers3.api.geometry.Point;
 import org.apache.solr.client.solrj.response.FacetField;
+import org.apache.solr.client.solrj.response.FieldStatsInfo;
 import org.apache.solr.client.solrj.response.Group;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import com.disnel.knihoveda.mapa.KnihovedaMapaConfig;
@@ -296,6 +297,31 @@ public class SolrDAO
 		return new ArrayList<ResultsInPlace>(resultsInPlaces.values());
 	}
 
+	
+	public static int[] findTimeRange()
+	{
+		// Pripravit dotaz
+		SolrQuery query = new SolrQuery();
+
+		String qParams = emptyQueryParams()
+				+ " AND " + KnihovedaMapaConfig.FIELD_TIME + ":[ 0 TO *]";
+		query.add("q", qParams);
+
+		query.setGetFieldStatistics(true);
+		query.setGetFieldStatistics(KnihovedaMapaConfig.FIELD_TIME);
+		
+		query.setRows(-0);
+		
+		// Ziskat odpoved
+		QueryResponse response = SolrDAO.getResponse(query);
+		FieldStatsInfo info = response.getFieldStatsInfo().get(KnihovedaMapaConfig.FIELD_TIME);
+		
+		return new int[] {
+				Integer.valueOf((String) info.getMin()),
+				Integer.valueOf((String) info.getMax())
+				};
+	}
+	
 	/**
 	 * Zjisti maximalni pocet zaznamu v jednom geografickem miste
 	 * 

@@ -432,7 +432,7 @@ class Timeline {
 	{
 		if ( ev.originalEvent.button == 0 )
 		{
-			if ( this.yearSelectFrom == null )
+			if ( this.yearSelectFrom == null || this.yearSelectTo !== null )
 				return;
 			
 			var inChart, relX, relY;
@@ -456,6 +456,11 @@ class Timeline {
 			{
 				this.yearSelectTo = yearSelect;
 			}
+			
+			if ( this.yearSelectFrom < this.config.yearMin )
+				this.yearSelectFrom = this.config.yearMin;
+			if ( this.yearSelectTo > this.config.yearMax )
+				this.yearSelectTo = this.config.yearMax;
 			
 			this.ajaxCall("S" + this.yearSelectFrom + "-" + this.yearSelectTo);
 		}
