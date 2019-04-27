@@ -317,7 +317,7 @@ public class Search extends Panel
 	 * @author Vaclav Cermak <disnel@disnel.com>
 	 *
 	 */
-	class TimeRange extends Panel
+	private class TimeRange extends Panel
 	{
 		private static final long serialVersionUID = 1L;
 		
