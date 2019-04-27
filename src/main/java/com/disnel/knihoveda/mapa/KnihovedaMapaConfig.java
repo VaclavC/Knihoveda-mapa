@@ -24,12 +24,10 @@ public class KnihovedaMapaConfig
 	// Live configuration
 	public static String osmURL;
 	public static String solrURL;
-	public static String locationsFileName;
 
 	// Predefined values
 	public static final float MIN_PLACE_SIZE = 12.0f;
 	public static final float MAX_PLACE_SIZE = 48.0f;
-	public static final float PLACE_SIZE_DIFF = MAX_PLACE_SIZE - MIN_PLACE_SIZE;
 	
 	public static final String FIELD_PLACE_NAME = "publishPlace_geo";
 	public static final String FIELDS[] = new String[] { "publishPlace_geo", "masterPrinter", "topic", "genre", "language_cs" };
@@ -69,7 +67,6 @@ public class KnihovedaMapaConfig
 			
 			osmURL = getProperty(props, PROPERTY_OSM_URL);
 			solrURL = getProperty(props, PROPERTY_SOLR_URL);
-			locationsFileName = getProperty(props, PROPERTY_LOCATIONS_FILE);
 		}
 		catch (IOException e)
 		{

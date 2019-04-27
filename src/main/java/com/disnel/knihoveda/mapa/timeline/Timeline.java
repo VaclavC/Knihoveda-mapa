@@ -87,13 +87,6 @@ public class Timeline extends WebMarkupContainer
 		});
 	}
 	
-	public Timeline setConf(TimelineConf conf)
-	{
-		this.conf = conf;
-		
-		return this;
-	}
-	
 	public Timeline setData(List<TimelineDataset> data)
 	{
 		this.data = data;
