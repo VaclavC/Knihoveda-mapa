@@ -3,6 +3,7 @@ package com.disnel.knihoveda.mapa.data;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.wicketstuff.openlayers3.api.geometry.Point;
 
@@ -45,6 +46,15 @@ public class ResultsInPlace implements Serializable
 			return ret;
 		else
 			return 0L;
+	}
+	
+	public boolean hasAnyNonZeroResult()
+	{
+		for (Entry<DataSet, Long> e : numResults.entrySet() )
+			if ( e.getKey().isActive() && e.getValue() != 0L )
+				return true;
+		
+		return false;
 	}
 
 	@Override

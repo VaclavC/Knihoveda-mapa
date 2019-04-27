@@ -6,7 +6,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.wicketstuff.openlayers3.api.util.Color;
+
+import com.disnel.knihoveda.mapa.KnihovedaMapaSession;
 
 /**
  * Reprezentace datove sady vysledku
@@ -85,6 +89,9 @@ public class DataSet implements Serializable
 	 */
 	public boolean isActive()
 	{
+		if ( this == KnihovedaMapaSession.get().currentDataSet() )
+			return true;
+		
 		if ( ! fieldsValues.isEmpty() )
 			return true;
 		
@@ -128,7 +135,13 @@ public class DataSet implements Serializable
 	{
 		return fieldsValues.values();
 	}
-
+	
+	public Collection<FieldValues> getFieldsValuesExcept(String fieldName)
+	{
+		return fieldsValues.values().stream()
+				.filter( fv -> { return ! fv.name.equals(fieldName); })
+				.collect(Collectors.toList());
+	}
 	
 	/* Work with individual field values */
 	

@@ -225,7 +225,7 @@ public class SolrDAO
 		SolrQuery query = new SolrQuery();
 
 		String qParams = emptyQueryParams()
-				+ fieldValuesQueryParams(dataSet.getFieldsValues(), null)
+				+ fieldValuesQueryParams(dataSet.getFieldsValuesExcept(KnihovedaMapaConfig.FIELD_PLACE_NAME), null)
 				+ timeRangeQueryParams(dataSet.getYearFrom(), dataSet.getYearTo());
 		query.add("q", qParams);
 		

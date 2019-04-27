@@ -33,15 +33,16 @@ public class MapaOverlays extends Panel
 		add(overlaysRV = new RepeatingView("overlay"));
 		
 		for ( ResultsInPlace resultsInPlace : resultsInPlaces )
-		{
-			Component overlay;
-			overlaysRV.add(overlay = new MapaMistoOverlay(overlaysRV.newChildId(), resultsInPlace));
-			
-			overlays.add(new Overlay(
-				overlay,
-				new LongLat(resultsInPlace.getPlacePoint().getCoordinate(), "EPSG:4326" ).transform(View.DEFAULT_PROJECTION)
-			));
-		}
+			if ( resultsInPlace.hasAnyNonZeroResult() )
+			{
+				Component overlay;
+				overlaysRV.add(overlay = new MapaMistoOverlay(overlaysRV.newChildId(), resultsInPlace));
+				
+				overlays.add(new Overlay(
+					overlay,
+					new LongLat(resultsInPlace.getPlacePoint().getCoordinate(), "EPSG:4326" ).transform(View.DEFAULT_PROJECTION)
+				));
+			}
 	}
 
 	public List<Overlay> getOverlays()

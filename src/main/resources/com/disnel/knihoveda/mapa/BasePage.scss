@@ -127,41 +127,26 @@ h1 { font-size: 125%; }
 	#mapa-content { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
 	
 	.mistoOverlay {
-		cursor: pointer;
+		cursor: pointer; position: relative;
 		
-		.bottomDot {
-			position: absolute; width: 14px; height: 14px; left: -15px; top: -15px; margin: 8px; z-index: 1;
+		$overlayDotSize: 20px;
+		$overlayDotMargin: 8px;
+		$overlayFontSize: 12px;
+		
+		.placeName, .count {
+			background: rgba(255, 255, 255, 0.9); padding: 0.05em 0.33em; 
+			white-space: nowrap; font-size: $overlayFontSize; font-weight: bold;
+		}
+		.placeName { position: absolute; transform: translate(0, -$overlayDotSize/2 - $overlayDotMargin) translate(-50%, -50%); }
+		.count { position: absolute; transform: translate(0, $overlayDotSize/2 + $overlayDotMargin) translate(-50%, -50%); }
+		.dot {
+			position: absolute; width: $overlayDotSize; height: $overlayDotSize; margin: $overlayDotMargin;
+			left: -$overlayDotSize/2 - $overlayDotMargin; top: -$overlayDotSize/2 - $overlayDotMargin; z-index: 1;
 			border-radius: 50%; background: black;
 		}
 		
-		.graph {
-			position: absolute; pointer-events: none;
-			.bar {
-				position: absolute; top: 0; left: -4px; width: 8px; transform-origin: center top;
-				&:nth-child(1) { transform: rotate(180deg); }
-				&:nth-child(2) { transform: rotate(240deg); }
-				&:nth-child(3) { transform: rotate(120deg); }
-				&:nth-child(4) { transform: rotate(300deg); }
-				&:nth-child(5) { transform: rotate(60deg); }
-				&:nth-child(6) { transform: rotate(0deg); }
-			}
-		}
-		
-		.detailCont { z-index: 99999; display: none; }
+		.detailCont { z-index: 999999999; display: none; }
 		.detail { transform: translate(-50%, -50%); }
-		
-		&.selected {
-			.bottomDot {
-				background-image:
-					linear-gradient(180deg, transparent 50%, #FF9C00 50%),
-					linear-gradient(  0deg, #FF9C00 50%, transparent 50%);
-			}
-			.graph { border-bottom: solid 2px #FF9C00; }
-			.detail {
-				border: solid 1px #FF9C00;
-				.head { background: #FF9C00; }
-			}
-		}
 		
 		&.shaded { opacity: 0.4; }
 	}

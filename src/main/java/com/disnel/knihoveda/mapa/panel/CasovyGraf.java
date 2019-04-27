@@ -65,7 +65,7 @@ public class CasovyGraf extends Panel
 		
 		for ( DataSet dataSet : KnihovedaMapaSession.get().dataSets() )
 			if ( dataSet != KnihovedaMapaSession.get().currentDataSet()
-				&& ( dataSet.isActive() || dataSet == KnihovedaMapaSession.get().firstDataSet() ))
+				&& dataSet.isActive() )
 				datasetList.add(createTimelineDataSet(dataSet));
 		
 		datasetList.add(createTimelineDataSet(KnihovedaMapaSession.get().currentDataSet()));

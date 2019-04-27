@@ -14,7 +14,6 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.Model;
 
 import com.disnel.knihoveda.mapa.KnihovedaMapaConfig;
@@ -49,34 +48,27 @@ public class MapaMistoOverlay extends Panel
 			else
 				dState = DisplayState.SHADED;
 		}
+
+		// Informace o miste
+		add(new Label("placeName", resultsInPlace.getPlaceName())
+				.add(new AttributeAppender("style", "color: " + currentDataSet.getColor() + ";", ";")));
+		add(new Label("count", resultsInPlace.getNumResultsForDataSet(currentDataSet))
+				.add(new AttributeAppender("style", "color: " + currentDataSet.getColor() + ";", ";")));
 		
 		// Tecka v miste obce
-		Component bottomDot;
-		add(bottomDot = new WebMarkupContainer("bottomDot"));
+		Component dot;
+		add(dot = new WebMarkupContainer("dot"));
 
-		// Vyhodit sady s nulovymi vysledky
+		// Vyhodit sady s nulovymi vysledky nebo neaktivni
 		List<DataSet> dataSetsToDisplay = new ArrayList<>(KnihovedaMapaSession.get().dataSets());
 		Iterator<DataSet> it = dataSetsToDisplay.iterator();
 		while ( it.hasNext() )
-			if ( resultsInPlace.getNumResultsForDataSet(it.next()) == 0)
+		{
+			DataSet dataSet = it.next();
+			if ( ! dataSet.isActive()
+					|| resultsInPlace.getNumResultsForDataSet(dataSet) == 0 )
 				it.remove();
-		
-		// Graf s vysledky a jeho sloupce
-		// Tady zobrazime vsechny vysledky, ale nulove male, jinak nefunguje "ruzice" konzistentne
-		RepeatingView bars;
-		add(bars = new RepeatingView("result"));
-		
-		if ( dState != DisplayState.SHADED )
-			for ( DataSet dataSet : KnihovedaMapaSession.get().dataSets() )
-			{
-				Component bar;
-				bars.add(bar = new WebMarkupContainer(bars.newChildId()));
-				bar.add(new AttributeAppender("style",
-						String.format("height: %dpx; background-color: %s;",
-								sizeFromPocet(resultsInPlace.getNumResultsForDataSet(dataSet)),
-								dataSet.getColor().toString()),
-						";"));
-			}
+		}
 
 		// Detail vysledku
 		WebMarkupContainer detail;
@@ -129,26 +121,13 @@ public class MapaMistoOverlay extends Panel
 		});
 		
 		// Nejaky ten JS pro zobrazovani detailu
-		bottomDot.add(new AttributeAppender("onmouseover",
+		dot.add(new AttributeAppender("onmouseover",
 				String.format("$('#%s').show();", detail.getMarkupId())));
 		detail.add(new AttributeAppender("onmouseleave",
 				String.format("$('#%s').hide();", detail.getMarkupId())));
 		
 		// Nastavit, jak se ma zobrazovat
 		add(new AttributeAppender("class", dState.name().toLowerCase(), " "));
-	}
-	
-	private int sizeFromPocet(long pocet)
-	{
-		if ( pocet == 0 )
-			return 0;
-		
-		double k = (double) pocet / KnihovedaMapaSession.get().maxCountInPlace();
-		k = Math.max(Math.min(Math.log10(1.0 + 9.0*k), 1.0), 0.0);
-		int size = (int) Math.round(KnihovedaMapaConfig.MIN_PLACE_SIZE
-				+ k * KnihovedaMapaConfig.PLACE_SIZE_DIFF);
-		
-		return size;
 	}
 	
 }
