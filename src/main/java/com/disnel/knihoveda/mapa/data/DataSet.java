@@ -23,7 +23,7 @@ public class DataSet implements Serializable
 
 	private Color color;
 	
-	private Set<String> selectedPlaces = new HashSet<>();
+	private Set<String> selectedPlaces;
 	
 	private Map<String, FieldValues> fieldsValues;
 	
@@ -31,6 +31,7 @@ public class DataSet implements Serializable
 	
 	public DataSet(Color color)
 	{
+		this.selectedPlaces = new HashSet<>();
 		this.fieldsValues = new HashMap<>();
 		this.color = color;
 	}
@@ -40,6 +41,25 @@ public class DataSet implements Serializable
 		return color;
 	}
 
+	/**
+	 * Vrati true kdyz je cokoliv vybrano
+	 * 
+	 * @return
+	 */
+	public boolean isActive()
+	{
+		if ( ! selectedPlaces.isEmpty() )
+			return true;
+		
+		if ( ! fieldsValues.isEmpty() )
+			return true;
+		
+		if ( yearFrom != null || yearTo != null )
+			return true;
+		
+		return false;
+	}
+	
 	/**
 	 * Vrati mnozinu vsech vybranych mist
 	 * 

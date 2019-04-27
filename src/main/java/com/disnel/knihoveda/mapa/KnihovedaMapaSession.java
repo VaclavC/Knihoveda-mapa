@@ -142,6 +142,14 @@ public class KnihovedaMapaSession extends WebSession
 	{
 		this.currentDataSet = currentDataSet;
 	}
+	
+	public DataSet firstDataSet()
+	{
+		if ( dataSets.size() > 0 )
+			return dataSets.get(0);
+		
+		return null;
+	}
 
 	
 	/* Minimalni a maximalni rok */

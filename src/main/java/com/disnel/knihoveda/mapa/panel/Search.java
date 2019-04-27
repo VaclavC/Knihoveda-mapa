@@ -34,6 +34,7 @@ import com.disnel.knihoveda.mapa.KnihovedaMapaSession;
 import com.disnel.knihoveda.mapa.data.DataSet;
 import com.disnel.knihoveda.mapa.data.FieldValues;
 import com.disnel.knihoveda.mapa.events.AjaxEvent;
+import com.disnel.knihoveda.mapa.events.DataSetChangedEvent;
 import com.disnel.knihoveda.mapa.events.FieldValuesChangedEvent;
 import com.disnel.knihoveda.mapa.events.TimeSelectEvent;
 import com.disnel.knihoveda.mapa.events.UserSelectionChangedEvent;
@@ -82,8 +83,12 @@ public class Search extends Panel
 					@Override
 					protected void onEvent(AjaxRequestTarget target)
 					{
-						// TODO Auto-generated method stub
+						DataSet dataSet = item.getModelObject();
 						
+						KnihovedaMapaSession.get().currentDataSet(dataSet);
+						
+						send(getPage(), Broadcast.BREADTH,
+								new DataSetChangedEvent(target, dataSet));
 					}
 				});
 			}
@@ -121,7 +126,14 @@ public class Search extends Panel
 		{
 			AjaxEvent ev = (AjaxEvent) event.getPayload();
 		
-			ev.getTarget().add(this);
+			if ( ev instanceof DataSetChangedEvent )
+			{
+				ev.getTarget().add(replaceWith(new Search(getId())));
+			}
+			else
+			{
+				ev.getTarget().add(this);
+			}
 		}
 	}
 	
