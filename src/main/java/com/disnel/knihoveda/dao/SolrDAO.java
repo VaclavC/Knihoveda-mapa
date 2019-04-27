@@ -22,7 +22,7 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import com.disnel.knihoveda.mapa.KnihovedaMapaConfig;
 import com.disnel.knihoveda.mapa.KnihovedaMapaSession;
 import com.disnel.knihoveda.mapa.data.DataSet;
-import com.disnel.knihoveda.mapa.data.FieldValues;
+import com.disnel.knihoveda.mapa.data.DataSet.FieldValues;
 import com.disnel.knihoveda.mapa.data.ResultsInPlace;
 
 public class SolrDAO
@@ -79,33 +79,6 @@ public class SolrDAO
 		return "geo:*";
 	}
 	
-	private static String placeSelectionQueryParams(Collection<String> placeNames)
-	{
-		if ( placeNames.isEmpty() )
-			return "";
-		
-		StringBuilder qPars = new StringBuilder();
-
-		qPars.append(" AND (");
-		
-		String fvDelim = "";
-		for (String placeName : placeNames)
-		{
-			qPars.append(fvDelim);
-			qPars.append(KnihovedaMapaConfig.FIELD_PLACE_NAME);
-			qPars.append(":");
-			qPars.append('"');
-			qPars.append(placeName);
-			qPars.append('"');
-			
-			fvDelim = " OR ";
-		}
-		
-		qPars.append(")");
-
-		return qPars.toString();
-	}
-	
 	private static String fieldValuesQueryParams(
 			Collection<FieldValues> fieldValues, String exceptField)
 	{
@@ -114,29 +87,28 @@ public class SolrDAO
 		String qParsDelim = " AND (";
 		String qParsEnd = "";
 		for ( FieldValues fv : fieldValues )
-			if ( !fv.isEmpty())
+		{
+			if ( exceptField != null && exceptField.contains(fv.getName()) )
+				continue;
+			
+			qPars.append(qParsDelim);
+			
+			String fvDelim = "";
+			for ( String value : fv.getValues())
 			{
-				if ( exceptField != null && exceptField.contains(fv.getName()) )
-					continue;
+				qPars.append(fvDelim);
+				qPars.append(fv.getName());
+				qPars.append(":");
+				qPars.append('"');
+				qPars.append(value);
+				qPars.append('"');
 				
-				qPars.append(qParsDelim);
-				
-				String fvDelim = "";
-				for ( String value : fv.getValues())
-				{
-					qPars.append(fvDelim);
-					qPars.append(fv.getName());
-					qPars.append(":");
-					qPars.append('"');
-					qPars.append(value);
-					qPars.append('"');
-					
-					fvDelim = " OR ";
-				}
-				
-				qParsDelim = ") AND (";
-				qParsEnd = ")";
+				fvDelim = " OR ";
 			}
+			
+			qParsDelim = ") AND (";
+			qParsEnd = ")";
+		}
 		
 		qPars.append(qParsEnd);
 
@@ -174,7 +146,6 @@ public class SolrDAO
 		SolrQuery query = new SolrQuery();
 		
 		String qParams = emptyQueryParams()
-				+ placeSelectionQueryParams(dataSet.getSelectedPlaces())
 				+ fieldValuesQueryParams(dataSet.getFieldsValues(), null);
 		query.add("q", qParams);
 		
@@ -227,7 +198,6 @@ public class SolrDAO
 		// Tadu potrebujeme vsechny krome toho, pro ktere pole to delame
 		String qParams = emptyQueryParams()
 				+ " AND " + fieldName + ":*"
-				+ placeSelectionQueryParams(dataSet.getSelectedPlaces())
 				+ fieldValuesQueryParams(dataSet.getFieldsValues(), fieldName)
 				+ timeRangeQueryParams(dataSet.getYearFrom(), dataSet.getYearTo());
 		query.add("q", qParams);

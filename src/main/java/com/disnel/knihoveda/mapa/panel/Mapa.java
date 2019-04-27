@@ -21,7 +21,7 @@ import org.wicketstuff.openlayers3.api.layer.Tile;
 import com.disnel.knihoveda.mapa.KnihovedaMapaConfig;
 import com.disnel.knihoveda.mapa.KnihovedaMapaSession;
 import com.disnel.knihoveda.mapa.events.AjaxEvent;
-import com.disnel.knihoveda.mapa.events.MistoSelectEvent;
+import com.disnel.knihoveda.mapa.events.FieldValuesChangedEvent;
 import com.disnel.knihoveda.mapa.events.UserSelectionChangedEvent;
 import com.disnel.knihoveda.mapa.mapa.MapaOverlays;
 import com.disnel.knihoveda.mapa.ol.CustomTileSource;
@@ -73,12 +73,15 @@ public class Mapa extends Panel
 			@Override
 			protected void onEvent(AjaxRequestTarget target)
 			{
-				KnihovedaMapaSession.get().currentDataSet().clearSelectedPlaces();
-				
-				target.appendJavaScript("$('.mistoOverlay').removeClass('selected');");
-				
-				send(getPage(), Broadcast.BREADTH,
-						new MistoSelectEvent(target, null));
+				if ( KnihovedaMapaSession.get().currentDataSet()
+					.removeFieldValues(KnihovedaMapaConfig.FIELD_PLACE_NAME) != null )
+				{
+					
+					target.appendJavaScript("$('.mistoOverlay').removeClass('selected');");
+					
+					send(getPage(), Broadcast.BREADTH,
+							new FieldValuesChangedEvent(target, KnihovedaMapaConfig.FIELD_PLACE_NAME));
+				}
 			}
 		});
 		

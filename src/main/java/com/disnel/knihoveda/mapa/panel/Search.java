@@ -33,7 +33,7 @@ import com.disnel.knihoveda.dao.SolrDAO.FieldCounts;
 import com.disnel.knihoveda.mapa.KnihovedaMapaConfig;
 import com.disnel.knihoveda.mapa.KnihovedaMapaSession;
 import com.disnel.knihoveda.mapa.data.DataSet;
-import com.disnel.knihoveda.mapa.data.FieldValues;
+import com.disnel.knihoveda.mapa.data.DataSet.FieldValues;
 import com.disnel.knihoveda.mapa.events.AjaxEvent;
 import com.disnel.knihoveda.mapa.events.DataSetChangedEvent;
 import com.disnel.knihoveda.mapa.events.FieldValuesChangedEvent;
@@ -190,8 +190,7 @@ public class Search extends Panel
 						protected void onClick(AjaxRequestTarget target)
 						{
 							KnihovedaMapaSession.get().currentDataSet()
-								.getFieldValuesNotNull(fieldName)
-								.removeValue(item.getModelObject());
+								.removeFieldValue(fieldName, item.getModelObject());
 							
 							send(getPage(), Broadcast.BREADTH,
 									new FieldValuesChangedEvent(target, fieldName));
@@ -222,8 +221,7 @@ public class Search extends Panel
 				protected void onUpdate(AjaxRequestTarget target)
 				{
 					KnihovedaMapaSession.get().currentDataSet()
-						.getFieldValuesNotNull(fieldName)
-						.addValue(selectedValue.getObject().getName());
+						.addFieldValue(fieldName, selectedValue.getObject().getName());
 					
 					send(getPage(), Broadcast.BREADTH,
 							new FieldValuesChangedEvent(target, fieldName));

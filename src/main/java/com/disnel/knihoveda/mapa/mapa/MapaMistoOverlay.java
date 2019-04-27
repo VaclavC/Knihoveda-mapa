@@ -21,7 +21,7 @@ import com.disnel.knihoveda.mapa.KnihovedaMapaConfig;
 import com.disnel.knihoveda.mapa.KnihovedaMapaSession;
 import com.disnel.knihoveda.mapa.data.DataSet;
 import com.disnel.knihoveda.mapa.data.ResultsInPlace;
-import com.disnel.knihoveda.mapa.events.MistoSelectEvent;
+import com.disnel.knihoveda.mapa.events.FieldValuesChangedEvent;
 
 public class MapaMistoOverlay extends Panel
 {
@@ -38,13 +38,13 @@ public class MapaMistoOverlay extends Panel
 		// Zjistit, jestli jak se ma zobrazit vhledem k moznemu vyberu
 		DisplayState dState;
 		DataSet currentDataSet = KnihovedaMapaSession.get().currentDataSet();
-		if ( !currentDataSet.isAnyPlaceSelected() )
+		if ( ! currentDataSet.hasFieldValue(KnihovedaMapaConfig.FIELD_PLACE_NAME) )
 		{
 			dState = DisplayState.NORMAL;
 		}
 		else
 		{
-			if ( currentDataSet.isPlaceSelected(resultsInPlace.getPlaceName()))
+			if ( currentDataSet.hasFieldValue(KnihovedaMapaConfig.FIELD_PLACE_NAME, resultsInPlace.getPlaceName()) )
 				dState = DisplayState.SELECTED;
 			else
 				dState = DisplayState.SHADED;
@@ -87,9 +87,6 @@ public class MapaMistoOverlay extends Panel
 		
 		detail.add(new ListView<DataSet>("vysledek", dataSetsToDisplay)
 		{
-			/**
-			 * 
-			 */
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -108,9 +105,6 @@ public class MapaMistoOverlay extends Panel
 		
 		detail.add(new AjaxEventBehavior("click")
 		{
-			/**
-			 * 
-			 */
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -118,8 +112,9 @@ public class MapaMistoOverlay extends Panel
 			{
 				String placeName = (String) getComponent().getDefaultModelObject();
 				
-				boolean selected = KnihovedaMapaSession.get().currentDataSet()
-						.toggleSelectedPlace(placeName);
+				boolean selected = KnihovedaMapaSession.get()
+						.currentDataSet()
+						.toggleFieldValue(KnihovedaMapaConfig.FIELD_PLACE_NAME, placeName);
 				
 				if ( selected )
 					target.appendJavaScript(String.format(
@@ -129,7 +124,7 @@ public class MapaMistoOverlay extends Panel
 							"$('#%s').removeClass('selected')", MapaMistoOverlay.this.getMarkupId()));
 				
 				send(getPage(), Broadcast.BREADTH,
-						new MistoSelectEvent(target, placeName));
+						new FieldValuesChangedEvent(target, KnihovedaMapaConfig.FIELD_PLACE_NAME));
 			}
 		});
 		

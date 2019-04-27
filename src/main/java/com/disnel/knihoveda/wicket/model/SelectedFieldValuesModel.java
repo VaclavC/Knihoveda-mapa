@@ -9,9 +9,9 @@ import org.apache.wicket.model.LoadableDetachableModel;
 
 import com.disnel.knihoveda.mapa.KnihovedaMapaSession;
 import com.disnel.knihoveda.mapa.data.DataSet;
-import com.disnel.knihoveda.mapa.data.FieldValues;
+import com.disnel.knihoveda.mapa.data.DataSet.FieldValues;
 
-public class SelectedFieldValuesModel extends LoadableDetachableModel<List<Count>>
+public class SelectedFieldValuesModel extends LoadableDetachableModel<List<Count>> // TODO: Delete this
 {
 	private static final long serialVersionUID = 1L;
 

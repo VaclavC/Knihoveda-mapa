@@ -1,12 +1,11 @@
 package com.disnel.knihoveda.mapa.data;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
-
 import org.wicketstuff.openlayers3.api.util.Color;
 
 /**
@@ -21,180 +20,33 @@ public class DataSet implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	private Color color;
 	
-	private Set<String> selectedPlaces;
+	private Color color;
 	
 	private Map<String, FieldValues> fieldsValues;
 	
 	private Integer yearFrom, yearTo;
 	
+	
+	/* Constructors */
+	
 	public DataSet(Color color)
 	{
-		this.selectedPlaces = new HashSet<>();
 		this.fieldsValues = new HashMap<>();
 		this.color = color;
 	}
 
+	
+	/* Getters and setters */
+	
 	public Color getColor()
 	{
 		return color;
 	}
-
-	/**
-	 * Vrati true kdyz je cokoliv vybrano
-	 * 
-	 * @return
-	 */
-	public boolean isActive()
-	{
-		if ( ! selectedPlaces.isEmpty() )
-			return true;
-		
-		if ( ! fieldsValues.isEmpty() )
-			return true;
-		
-		if ( yearFrom != null || yearTo != null )
-			return true;
-		
-		return false;
-	}
 	
-	/**
-	 * Vrati mnozinu vsech vybranych mist
-	 * 
-	 * @return
-	 */
-	public Set<String> getSelectedPlaces()
-	{
-		return selectedPlaces;
-	}
 	
-	/**
-	 * Vrati zda je misto se zadanym nazvem vybrano
-	 * 
-	 * @param placeName
-	 * @return
-	 */
-	public boolean isPlaceSelected(String placeName )
-	{
-		return selectedPlaces.contains(placeName);
-	}
+	/* Utility methods */
 	
-	/**
-	 * Vrati zda je nejake misto vybrano
-	 * 
-	 * @return
-	 */
-	public boolean isAnyPlaceSelected()
-	{
-		return !selectedPlaces.isEmpty();
-	}
-	
-	/**
-	 * Vrati zda je po operaci misto vybrano nebo ne
-	 * 
-	 * @param placeName
-	 * @return
-	 */
-	public boolean toggleSelectedPlace(String placeName)
-	{
-		if ( selectedPlaces.contains(placeName) )
-		{
-			selectedPlaces.remove(placeName);
-			return false;
-		}
-		else
-		{
-			selectedPlaces.add(placeName);
-			return true;
-		}
-	}
-	
-	public void clearSelectedPlaces()
-	{
-		selectedPlaces.clear();
-	}
-	
-	public Collection<FieldValues> getFieldsValues()
-	{
-		return fieldsValues.values();
-	}
-
-	public void addFieldValues(FieldValues fv)
-	{
-		this.fieldsValues.put(fv.getName(), fv);
-	}
-	
-	public void removeFieldValues(FieldValues fv)
-	{
-		this.fieldsValues.remove(fv.getName());
-	}
-
-	public FieldValues getFieldValues(String name)
-	{
-		return this.fieldsValues.get(name);
-	}
-	
-	public FieldValues getFieldValuesNotNull(String name)
-	{
-		FieldValues ret = getFieldValues(name);
-		
-		if ( ret == null )
-		{
-			ret = new FieldValues(name);
-			
-			fieldsValues.put(name, ret);
-		}
-		
-		return ret;
-	}
-	
-	public void setFieldValues(String name, Collection<String> values)
-	{
-		if ( values.isEmpty() )
-		{
-			fieldsValues.remove(name);
-		}
-		else 
-		{
-			FieldValues fv = fieldsValues.get(name);
-			if ( fv == null )
-			{
-				fv = new FieldValues(name, values);
-				fieldsValues.put(name, fv);
-			}
-			else
-			{
-				fv.setValues(values);
-			}
-		}
-	}
-	
-	public Integer getYearFrom()
-	{
-		return yearFrom;
-	}
-
-	public DataSet setYearFrom(Integer yearFrom)
-	{
-		this.yearFrom = yearFrom;
-		
-		return this;
-	}
-	
-	public Integer getYearTo()
-	{
-		return yearTo;
-	}
-
-	public DataSet setYearTo(Integer yearTo)
-	{
-		this.yearTo = yearTo;
-		
-		return this;
-	}
-
 	@Override
 	public String toString()
 	{
@@ -220,25 +72,246 @@ public class DataSet implements Serializable
 			sb.append("]\n");
 		}
 		
-		if ( !selectedPlaces.isEmpty() )
+		sb.append("}\n");
+		
+		return sb.toString();
+	}
+
+
+	/**
+	 * Returns true if anything is selected
+	 * 
+	 * @return
+	 */
+	public boolean isActive()
+	{
+		if ( ! fieldsValues.isEmpty() )
+			return true;
+		
+		if ( yearFrom != null || yearTo != null )
+			return true;
+		
+		return false;
+	}
+
+
+	/* Work with timeline */
+	
+	public Integer getYearFrom()
+	{
+		return yearFrom;
+	}
+
+	public DataSet setYearFrom(Integer yearFrom)
+	{
+		this.yearFrom = yearFrom;
+		
+		return this;
+	}
+	
+	public Integer getYearTo()
+	{
+		return yearTo;
+	}
+
+	public DataSet setYearTo(Integer yearTo)
+	{
+		this.yearTo = yearTo;
+		
+		return this;
+	}
+	
+	
+	/* Get all field values */
+	
+	public Collection<FieldValues> getFieldsValues()
+	{
+		return fieldsValues.values();
+	}
+
+	
+	/* Work with individual field values */
+	
+	public FieldValues removeFieldValues(String fieldName)
+	{
+		return this.fieldsValues.remove(fieldName);
+	}
+
+	public FieldValues getFieldValues(String name)
+	{
+		return this.fieldsValues.get(name);
+	}
+	
+	public boolean hasFieldValue(String fieldName)
+	{
+		return fieldsValues.containsKey(fieldName);
+	}
+	
+	public boolean hasFieldValue(String fieldName, String value)
+	{
+		if ( fieldsValues.containsKey(fieldName) )
+			return fieldsValues.get(fieldName).hasValue(value);
+		
+		return false;
+	}
+
+	public void addFieldValue(String fieldName, String value)
+	{
+		if ( fieldsValues.containsKey(fieldName) )
 		{
-			sb.append("\tSelected places [");
+			fieldsValues.get(fieldName).addValue(value);
+		}
+		else
+		{
+			fieldsValues.put(fieldName, new FieldValues(fieldName, value));
+		}
+	}
+	
+	public void removeFieldValue(String fieldName, String value)
+	{
+		if ( fieldsValues.containsKey(fieldName) )
+		{
+			FieldValues fv = fieldsValues.get(fieldName); 
+			
+			fv.removeValue(value);
+			
+			if ( fv.isEmpty() )
+				fieldsValues.remove(fieldName);
+		}
+	}
+	
+	public boolean toggleFieldValue(String fieldName, String value)
+	{
+		if ( hasFieldValue(fieldName, value) )
+		{
+			removeFieldValue(fieldName, value);
+			
+			return false;
+		}
+		else
+		{
+			addFieldValue(fieldName, value);
+			
+			return true;
+		}
+	}	
+	
+	
+	/* Field values class */
+	
+	public static class FieldValues implements Serializable
+	{
+		private static final long serialVersionUID = 1L;
+
+		
+		private String name;
+		
+		private LinkedHashSet<String> values;
+		
+		
+		/* Constructors */
+		
+		public FieldValues(String name, Collection<String> values)
+		{
+			this.name = name;
+			this.values = new LinkedHashSet<>(values);
+		}
+		
+		public FieldValues(String name, String... values)
+		{
+			this(name, Arrays.asList(values));
+		}
+
+		
+		/* Getters and setters */
+		
+		public String getName()
+		{
+			return name;
+		}
+		
+		public LinkedHashSet<String> getValues()
+		{
+			return this.values;
+		}
+		
+		
+		/* Utility methods */
+		
+		@Override
+		public int hashCode()
+		{
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((name == null) ? 0 : name.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj)
+		{
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			FieldValues other = (FieldValues) obj;
+			if (name == null)
+			{
+				if (other.name != null)
+					return false;
+			} else if (!name.equals(other.name))
+				return false;
+			return true;
+		}
+		
+		@Override
+		public String toString()
+		{
+			StringBuilder sb = new StringBuilder();
+			
+			sb.append("FieldValues { ");
+			sb.append(name);
+			sb.append(" -> ");
 			
 			String delim = "";
-			for ( String place : selectedPlaces )
+			for ( String value : values )
 			{
 				sb.append(delim);
-				sb.append(place);
+				sb.append(value);
 				
 				delim = ", ";
 			}
 			
-			sb.append("]\n");
+			sb.append(" }");
+			
+			return sb.toString();
 		}
 		
-		sb.append("}\n");
+
+		/* Work with values */
+
+		protected boolean isEmpty()
+		{
+			return values.isEmpty();
+		}
+
+		protected boolean hasValue(String value)
+		{
+			return values.contains(value);
+		}
 		
-		return sb.toString();
+		protected void addValue(String value)
+		{
+			values.add(value);
+		}
+		
+		protected void removeValue(String value)
+		{
+			values.remove(value);
+		}
+
 	}
 
 }
