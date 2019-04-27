@@ -74,6 +74,12 @@ class Timeline {
 			yearMax = Math.max(yearMax, dsYearMax);
 		});
 		
+		if ( yearMax - yearMin < 10 )
+		{
+			yearMin -= 5;
+			yearMax += 5;
+		}
+		
 		this.yearMin = yearMin;
 		this.yearMax = yearMax;
 	}
