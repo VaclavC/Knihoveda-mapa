@@ -203,7 +203,19 @@ public class SolrDAO
 	}
 
 	
-	public static List<Count> getFieldCounts(String fieldName, DataSet dataSet)
+	public static class FieldCounts
+	{
+		public Long totalCount;
+		public List<Count> counts;
+
+		public FieldCounts(Long totalCount, List<Count> counts)
+		{
+			this.totalCount = totalCount;
+			this.counts = counts;
+		}
+	}
+	
+	public static FieldCounts getFieldCounts(String fieldName, DataSet dataSet)
 	{
 		SolrQuery query = new SolrQuery();
 		
@@ -212,6 +224,7 @@ public class SolrDAO
 		
 		// Tadu potrebujeme vsechny krome toho, pro ktere pole to delame
 		String qParams = emptyQueryParams()
+				+ " AND " + fieldName + ":*"
 				+ placeSelectionQueryParams(dataSet.getSelectedPlaces())
 				+ fieldValuesQueryParams(dataSet.getFieldsValues(), fieldName)
 				+ timeRangeQueryParams(dataSet.getYearFrom(), dataSet.getYearTo());
@@ -223,9 +236,9 @@ public class SolrDAO
 		query.setRows(0);
 		
 		QueryResponse response = SolrDAO.getResponse(query);
-		
 		FacetField ff = response.getFacetField(facetFieldName);
-		return ff.getValues();
+		
+		return new FieldCounts(response.getResults().getNumFound(), ff.getValues());
 	}
 	
 	/**

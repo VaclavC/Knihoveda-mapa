@@ -29,6 +29,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 
 import com.disnel.knihoveda.dao.SolrDAO;
+import com.disnel.knihoveda.dao.SolrDAO.FieldCounts;
 import com.disnel.knihoveda.mapa.KnihovedaMapaConfig;
 import com.disnel.knihoveda.mapa.KnihovedaMapaSession;
 import com.disnel.knihoveda.mapa.data.DataSet;
@@ -101,7 +102,7 @@ public class Search extends Panel
 				"border-color: " + KnihovedaMapaSession.get().currentDataSet().getColor().toString() + ";"));
 		
 		/* Search fields */
-		content.add(new ListView<String>("fields", Arrays.asList(KnihovedaMapaConfig.FIELDS)) // TODO: Model
+		content.add(new ListView<String>("fields", Arrays.asList(KnihovedaMapaConfig.FIELDS))
 		{
 			private static final long serialVersionUID = 1L;
 
@@ -157,7 +158,7 @@ public class Search extends Panel
 
 			/* Title and possible number of results */
 			add(new Label("title", new ResourceModel("field." + fieldName)));
-			add(new Label("resultsNum", "TODO: num")); // TODO: Number of possible results
+			add(new Label("resultsNum", pvModel.getTotalCount()));
 			
 			/* Already selected values */
 			add(new ListView<String>("valueRow", svModel)
@@ -279,18 +280,20 @@ public class Search extends Panel
 		{
 			private static final long serialVersionUID = 1L;
 
+			private Long totalCount;
 			private Map<String, Count> byName;
 			
 			@Override
 			protected List<Count> load()
 			{
-				List<Count> ret =
-						SolrDAO.getFieldCounts(fieldName, KnihovedaMapaSession.get().currentDataSet());
+				FieldCounts result = SolrDAO.getFieldCounts(fieldName, KnihovedaMapaSession.get().currentDataSet()); 
 				
-				byName = ret.stream().collect(
+				totalCount = result.totalCount;
+				
+				byName = result.counts.stream().collect(
 						Collectors.toMap(Count::getName, ffc -> ffc));
 				
-				return ret;
+				return result.counts;
 			}
 			
 			@Override
@@ -299,6 +302,13 @@ public class Search extends Panel
 				byName = null;
 				
 				super.onDetach();
+			}
+			
+			public Long getTotalCount()
+			{
+				getObject();
+				
+				return totalCount;
 			}
 			
 			public Count getCountByName(String name)
