@@ -15,7 +15,7 @@ import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.resource.PackageResourceReference;
 
 import com.disnel.knihoveda.dao.JSON;
-import com.disnel.knihoveda.mapa.MapaSession;
+import com.disnel.knihoveda.mapa.KnihovedaMapaSession;
 import com.disnel.knihoveda.mapa.data.DataSet;
 import com.disnel.knihoveda.mapa.events.TimeSelectEvent;
 import com.github.openjson.JSONException;
@@ -54,7 +54,7 @@ public class Timeline extends WebMarkupContainer
 				String data = requestCycle.getRequest().getRequestParameters()
 						.getParameterValue("data").toString();
 				
-				DataSet currentDataSet = MapaSession.get().currentDataSet(); 
+				DataSet currentDataSet = KnihovedaMapaSession.get().currentDataSet(); 
 				
 				// Tady predpokladame vstup ve formatu [SC]yyyy-yyyy
 				switch ( data.charAt(0) )

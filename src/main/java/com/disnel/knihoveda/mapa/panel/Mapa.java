@@ -19,7 +19,7 @@ import org.wicketstuff.openlayers3.api.layer.Layer;
 import org.wicketstuff.openlayers3.api.layer.Tile;
 
 import com.disnel.knihoveda.mapa.KnihovedaMapaConfig;
-import com.disnel.knihoveda.mapa.MapaSession;
+import com.disnel.knihoveda.mapa.KnihovedaMapaSession;
 import com.disnel.knihoveda.mapa.events.AjaxEvent;
 import com.disnel.knihoveda.mapa.events.MistoSelectEvent;
 import com.disnel.knihoveda.mapa.events.UserSelectionChangedEvent;
@@ -73,7 +73,7 @@ public class Mapa extends Panel
 			@Override
 			protected void onEvent(AjaxRequestTarget target)
 			{
-				MapaSession.get().currentDataSet().clearSelectedPlaces();
+				KnihovedaMapaSession.get().currentDataSet().clearSelectedPlaces();
 				
 				target.appendJavaScript("$('.mistoOverlay').removeClass('selected');");
 				

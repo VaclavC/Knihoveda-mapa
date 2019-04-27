@@ -3,14 +3,18 @@ package com.disnel.knihoveda.mapa.panel;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.solr.client.solrj.response.FacetField.Count;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.event.Broadcast;
+import org.apache.wicket.event.IEvent;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.FormComponent;
@@ -22,14 +26,15 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 
+import com.disnel.knihoveda.dao.SolrDAO;
 import com.disnel.knihoveda.mapa.KnihovedaMapaConfig;
-import com.disnel.knihoveda.mapa.MapaSession;
+import com.disnel.knihoveda.mapa.KnihovedaMapaSession;
 import com.disnel.knihoveda.mapa.data.DataSet;
-import com.disnel.knihoveda.mapa.data.FacetFieldCountWrapper;
 import com.disnel.knihoveda.mapa.data.FieldValues;
+import com.disnel.knihoveda.mapa.events.AjaxEvent;
 import com.disnel.knihoveda.mapa.events.FieldValuesChangedEvent;
+import com.disnel.knihoveda.mapa.events.UserSelectionChangedEvent;
 import com.disnel.knihoveda.wicket.AjaxGeneralButton;
-import com.disnel.knihoveda.wicket.model.PossibleFieldValuesModel;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.behavior.CssClassNameAppender;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.form.select.BootstrapSelect;
@@ -39,6 +44,9 @@ public class Search extends Panel
 {
 	private static final long serialVersionUID = 1L;
 
+	
+	/* Constructor */
+	
 	public Search(String id)
 	{
 		super(id);
@@ -46,7 +54,7 @@ public class Search extends Panel
 		setOutputMarkupId(true);
 		
 		/* Data sets */
-		add(new ListView<DataSet>("dataSet", MapaSession.get().dataSets())
+		add(new ListView<DataSet>("dataSet", KnihovedaMapaSession.get().dataSets())
 		{
 			private static final long serialVersionUID = 1L;
 
@@ -55,7 +63,7 @@ public class Search extends Panel
 			{
 				DataSet dataSet = item.getModelObject();
 				
-				if ( dataSet.equals(MapaSession.get().currentDataSet()) )
+				if ( dataSet.equals(KnihovedaMapaSession.get().currentDataSet()) )
 					item.add(new CssClassNameAppender("active"));
 				
 				item.add(new AttributeAppender("style",
@@ -82,7 +90,7 @@ public class Search extends Panel
 		WebMarkupContainer content;
 		add(content = new WebMarkupContainer("content"));
 		content.add(new AttributeModifier("style",
-				"border-color: " + MapaSession.get().currentDataSet().getColor().toString() + ";"));
+				"border-color: " + KnihovedaMapaSession.get().currentDataSet().getColor().toString() + ";"));
 		
 		/* Search fields */
 		content.add(new ListView<String>("fields", Arrays.asList(KnihovedaMapaConfig.FIELDS)) // TODO: Model
@@ -97,72 +105,93 @@ public class Search extends Panel
 		});
 	}
 	
+	
+	/* React to events */
+	
+	@Override
+	public void onEvent(IEvent<?> event)
+	{
+		if ( event.getPayload() instanceof UserSelectionChangedEvent )
+		{
+			AjaxEvent ev = (AjaxEvent) event.getPayload();
+		
+			ev.getTarget().add(this);
+		}
+	}
+	
+	
+	/**
+	 * Class for field values selector
+	 * 
+	 * @author Vaclav Cermak <disnel@disnel.com>
+	 *
+	 */
 	private class Field extends Panel
 	{
 		private static final long serialVersionUID = 1L;
 
-		private IModel<FacetFieldCountWrapper> selectedValue = new Model<>();
+		private String fieldName;
 		
 		public Field(String id, String fieldName)
 		{
 			super(id);
+			this.fieldName = fieldName;
 
 			/* Title and possible number of results */
 			add(new Label("title", new ResourceModel("field." + fieldName)));
-			
-			add(new Label("resultsNum", "TODO: num"));
+			add(new Label("resultsNum", "TODO: num")); // TODO: Number of possible results
 			
 			/* Already selected values */
-			add(new ListView<String>("valueRow", new LoadableDetachableModel<List<String>>()
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected List<String> load()
-				{
-					DataSet currentDataSet = MapaSession.get().currentDataSet();
-					FieldValues fieldValues = currentDataSet.getFieldValues(fieldName);
-					
-					if ( fieldValues != null )
-						return fieldValues.getValues()
-								.stream()
-								.collect(Collectors.toList());
-					
-					return Collections.emptyList();
-				}
-			})
+			add(new ListView<String>("valueRow", svModel)
 			{
 				private static final long serialVersionUID = 1L;
 
 				@Override
 				protected void populateItem(ListItem<String> item)
 				{
-					item.add(new Label("value", item.getModel()));
+					Count count = pvModel.getCountByName(item.getModelObject());
 					
-					item.add(new AjaxGeneralButton("trashButton", "dblclick")
+					if ( count != null )
+					{
+						item.add(new Label("value", count.getName()));
+						item.add(new Label("count", count.getCount()));
+					}
+					else
+					{
+						item.add(new Label("value", item.getModel())
+								.add(new CssClassNameAppender("text-muted")));
+						item.add(new Label("count", "").setVisible(false));
+					}
+					
+					item.add(new AjaxGeneralButton("trashButton", "click")
 					{
 						private static final long serialVersionUID = 1L;
 
 						@Override
 						protected void onClick(AjaxRequestTarget target)
 						{
-							MapaSession.get().currentDataSet()
+							KnihovedaMapaSession.get().currentDataSet()
 								.getFieldValuesNotNull(fieldName)
 								.removeValue(item.getModelObject());
 							
 							send(getPage(), Broadcast.BREADTH,
 									new FieldValuesChangedEvent(target, fieldName));
-							
-							target.add(Search.this); // TODO: Place this into onEvent
 						}
 					});
 				}
 			});
 					
 			/* Select a new value */
-			FormComponent<FacetFieldCountWrapper> select;
-			add(select = new BootstrapSelect<FacetFieldCountWrapper>("select", selectedValue,
-					new PossibleFieldValuesModel(fieldName))
+			IModel<Count> selectedValue = new Model<>();
+			
+			FormComponent<?> select;
+			add(select = new BootstrapSelect<Count>("select",
+					selectedValue, pvModel.map( lc ->
+					{
+						return lc.stream()
+								.filter( c -> { return ! svModel.isSelected(c.getName()); } )
+								.collect(Collectors.toList());
+					}))
 					.with(new BootstrapSelectConfig()
 							.withLiveSearch(true)));
 			
@@ -173,16 +202,93 @@ public class Search extends Panel
 				@Override
 				protected void onUpdate(AjaxRequestTarget target)
 				{
-					MapaSession.get().currentDataSet()
+					KnihovedaMapaSession.get().currentDataSet()
 						.getFieldValuesNotNull(fieldName)
-						.addValue(selectedValue.getObject().getText());
+						.addValue(selectedValue.getObject().getName());
 					
 					send(getPage(), Broadcast.BREADTH,
 							new FieldValuesChangedEvent(target, fieldName));
-					
-					target.add(Search.this); // TODO: Place this into onEvent
 				}
 			});
+		}
+		
+		
+		/* Model for field selected values */
+
+		private SelectedValuesModel svModel = new SelectedValuesModel();
+		
+		private class SelectedValuesModel extends LoadableDetachableModel<List<String>>
+		{
+			private static final long serialVersionUID = 1L;
+
+			private Set<String> valuesSet;
+			
+			@Override
+			protected List<String> load()
+			{
+				DataSet currentDataSet = KnihovedaMapaSession.get().currentDataSet();
+				FieldValues fieldValues = currentDataSet.getFieldValues(fieldName);
+				
+				if ( fieldValues != null )
+				{
+					valuesSet = fieldValues.getValues();
+					
+					return valuesSet.stream()
+							.collect(Collectors.toList());
+				}
+				
+				return Collections.emptyList();
+			}
+			
+			
+			public boolean isSelected(String value)
+			{
+				getObject();
+				
+				if ( valuesSet == null )
+					return false;
+				
+				return valuesSet.contains(value);
+			}
+		}
+		
+		
+		/* Model for field possible values */
+		
+		private PossibleValuesModel pvModel = new PossibleValuesModel();
+		
+		private class PossibleValuesModel extends LoadableDetachableModel<List<Count>>
+		{
+			private static final long serialVersionUID = 1L;
+
+			private Map<String, Count> byName;
+			
+			@Override
+			protected List<Count> load()
+			{
+				List<Count> ret =
+						SolrDAO.getFieldCounts(fieldName, KnihovedaMapaSession.get().currentDataSet());
+				
+				byName = ret.stream().collect(
+						Collectors.toMap(Count::getName, ffc -> ffc));
+				
+				return ret;
+			}
+			
+			@Override
+			public void onDetach()
+			{
+				byName = null;
+				
+				super.onDetach();
+			}
+			
+			public Count getCountByName(String name)
+			{
+				getObject();
+				
+				return byName.get(name);
+			}
 		}
 	}
 

@@ -18,7 +18,7 @@ import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.Model;
 
 import com.disnel.knihoveda.mapa.KnihovedaMapaConfig;
-import com.disnel.knihoveda.mapa.MapaSession;
+import com.disnel.knihoveda.mapa.KnihovedaMapaSession;
 import com.disnel.knihoveda.mapa.data.DataSet;
 import com.disnel.knihoveda.mapa.data.ResultsInPlace;
 import com.disnel.knihoveda.mapa.events.MistoSelectEvent;
@@ -37,7 +37,7 @@ public class MapaMistoOverlay extends Panel
 		
 		// Zjistit, jestli jak se ma zobrazit vhledem k moznemu vyberu
 		DisplayState dState;
-		DataSet currentDataSet = MapaSession.get().currentDataSet();
+		DataSet currentDataSet = KnihovedaMapaSession.get().currentDataSet();
 		if ( !currentDataSet.isAnyPlaceSelected() )
 		{
 			dState = DisplayState.NORMAL;
@@ -55,7 +55,7 @@ public class MapaMistoOverlay extends Panel
 		add(bottomDot = new WebMarkupContainer("bottomDot"));
 
 		// Vyhodit sady s nulovymi vysledky
-		List<DataSet> dataSetsToDisplay = new ArrayList<>(MapaSession.get().dataSets());
+		List<DataSet> dataSetsToDisplay = new ArrayList<>(KnihovedaMapaSession.get().dataSets());
 		Iterator<DataSet> it = dataSetsToDisplay.iterator();
 		while ( it.hasNext() )
 			if ( resultsInPlace.getNumResultsForDataSet(it.next()) == 0)
@@ -67,7 +67,7 @@ public class MapaMistoOverlay extends Panel
 		add(bars = new RepeatingView("result"));
 		
 		if ( dState != DisplayState.SHADED )
-			for ( DataSet dataSet : MapaSession.get().dataSets() )
+			for ( DataSet dataSet : KnihovedaMapaSession.get().dataSets() )
 			{
 				Component bar;
 				bars.add(bar = new WebMarkupContainer(bars.newChildId()));
@@ -118,7 +118,7 @@ public class MapaMistoOverlay extends Panel
 			{
 				String placeName = (String) getComponent().getDefaultModelObject();
 				
-				boolean selected = MapaSession.get().currentDataSet()
+				boolean selected = KnihovedaMapaSession.get().currentDataSet()
 						.toggleSelectedPlace(placeName);
 				
 				if ( selected )
@@ -148,7 +148,7 @@ public class MapaMistoOverlay extends Panel
 		if ( pocet == 0 )
 			return 0;
 		
-		double k = (double) pocet / MapaSession.get().maxCountInPlace();
+		double k = (double) pocet / KnihovedaMapaSession.get().maxCountInPlace();
 		k = Math.max(Math.min(Math.log10(1.0 + 9.0*k), 1.0), 0.0);
 		int size = (int) Math.round(KnihovedaMapaConfig.MIN_PLACE_SIZE
 				+ k * KnihovedaMapaConfig.PLACE_SIZE_DIFF);

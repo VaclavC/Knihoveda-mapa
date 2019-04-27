@@ -9,7 +9,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
 import com.disnel.knihoveda.dao.ResourceDAO;
-import com.disnel.knihoveda.mapa.MapaSession;
+import com.disnel.knihoveda.mapa.KnihovedaMapaSession;
 import com.disnel.knihoveda.mapa.data.DataSet;
 import com.disnel.knihoveda.mapa.data.FacetFieldCountWrapper;
 import com.disnel.knihoveda.mapa.data.FieldValues;
@@ -49,7 +49,7 @@ public abstract class VyberDlePoleMultiSelect extends AjaxMultiSelect<FacetField
 	private void lookForSelectedValues()
 	{
 		List<FacetFieldCountWrapper> possibleValues = possibleValuesModel.getObject();
-		DataSet currentDataSet = MapaSession.get().currentDataSet();
+		DataSet currentDataSet = KnihovedaMapaSession.get().currentDataSet();
 		FieldValues fieldValue = currentDataSet.getFieldValues(fieldName);
 
 		selectedValues.clear();

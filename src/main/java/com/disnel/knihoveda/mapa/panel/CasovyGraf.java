@@ -8,7 +8,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.event.IEvent;
 import org.apache.wicket.markup.html.panel.Panel;
 import com.disnel.knihoveda.dao.SolrDAO;
-import com.disnel.knihoveda.mapa.MapaSession;
+import com.disnel.knihoveda.mapa.KnihovedaMapaSession;
 import com.disnel.knihoveda.mapa.data.DataSet;
 import com.disnel.knihoveda.mapa.events.AjaxEvent;
 import com.disnel.knihoveda.mapa.events.UserSelectionChangedEvent;
@@ -130,13 +130,13 @@ public class CasovyGraf extends Panel
 	private List<TimelineDataset> createTimelineData()
 	{
 		List<TimelineDataset> datasetList =
-				new ArrayList<>(MapaSession.get().dataSets().size());
+				new ArrayList<>(KnihovedaMapaSession.get().dataSets().size());
 		
-		for ( DataSet dataSet : MapaSession.get().dataSets() )
-			if ( dataSet != MapaSession.get().currentDataSet() )
+		for ( DataSet dataSet : KnihovedaMapaSession.get().dataSets() )
+			if ( dataSet != KnihovedaMapaSession.get().currentDataSet() )
 				datasetList.add(createTimelineDataSet(dataSet));
 		
-		datasetList.add(createTimelineDataSet(MapaSession.get().currentDataSet()));
+		datasetList.add(createTimelineDataSet(KnihovedaMapaSession.get().currentDataSet()));
 		
 		return datasetList;
 	}

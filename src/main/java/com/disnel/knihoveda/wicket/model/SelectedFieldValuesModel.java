@@ -7,7 +7,7 @@ import org.apache.solr.client.solrj.response.FacetField.Count;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 
-import com.disnel.knihoveda.mapa.MapaSession;
+import com.disnel.knihoveda.mapa.KnihovedaMapaSession;
 import com.disnel.knihoveda.mapa.data.DataSet;
 import com.disnel.knihoveda.mapa.data.FieldValues;
 
@@ -28,7 +28,7 @@ public class SelectedFieldValuesModel extends LoadableDetachableModel<List<Count
 	protected List<Count> load()
 	{
 		List<Count> ret = new ArrayList<>();
-		DataSet currentDataSet = MapaSession.get().currentDataSet();
+		DataSet currentDataSet = KnihovedaMapaSession.get().currentDataSet();
 		FieldValues fieldValues = currentDataSet.getFieldValues(fieldName);
 		
 		for ( Count count : possibleValuesModel.getObject() )

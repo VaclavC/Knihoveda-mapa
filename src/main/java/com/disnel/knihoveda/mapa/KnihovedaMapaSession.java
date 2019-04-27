@@ -24,13 +24,13 @@ import com.disnel.knihoveda.mapa.data.DataSet;
  * @author Vaclav Cermak <disnel@disnel.com>
  *
  */
-public class MapaSession extends WebSession
+public class KnihovedaMapaSession extends WebSession
 {
 	private static final long serialVersionUID = 1L;
 
 	/* Konstruktor */
 	
-	public MapaSession(Request request)
+	public KnihovedaMapaSession(Request request)
 	{
 		super(request);
 		
@@ -157,9 +157,14 @@ public class MapaSession extends WebSession
 		return maxCountInPlace;
 	}
 
-	public static MapaSession get()
+	public static KnihovedaMapaSession get()
 	{
-		return (MapaSession) WebSession.get();
+		return (KnihovedaMapaSession) WebSession.get();
 	}
+	
+	
+	/* Reakce na eventy */
+	
+	
 
 }

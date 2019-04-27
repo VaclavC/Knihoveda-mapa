@@ -47,7 +47,7 @@ public class BasePage extends WebPage implements IAjaxIndicatorAware
 				item.setOutputMarkupId(true);
 				
 				/* Set CSS class for active panel */
-				Integer actPanelIndex = MapaSession.get().sidePanelIndex;
+				Integer actPanelIndex = KnihovedaMapaSession.get().sidePanelIndex;
 				if ( actPanelIndex != null && actPanelIndex == item.getIndex()
 						|| actPanelIndex == null && item.getIndex() == 0 )
 					item.add(new CssClassNameAppender("active"));
@@ -65,7 +65,7 @@ public class BasePage extends WebPage implements IAjaxIndicatorAware
 					@Override
 					protected void onEvent(AjaxRequestTarget target)
 					{
-						MapaSession.get().sidePanelIndex = item.getIndex();
+						KnihovedaMapaSession.get().sidePanelIndex = item.getIndex();
 						
 						TabDef def = item.getModelObject();
 						
@@ -82,7 +82,7 @@ public class BasePage extends WebPage implements IAjaxIndicatorAware
 		});
 		
 		/* Side panel */
-		int actPanelIndex = MapaSession.get().sidePanelIndex != null ? MapaSession.get().sidePanelIndex : 0;
+		int actPanelIndex = KnihovedaMapaSession.get().sidePanelIndex != null ? KnihovedaMapaSession.get().sidePanelIndex : 0;
 		TabDef actTabDef = sidePanelTabs.get(actPanelIndex);
 		
 		add(sidePanel = actTabDef.panelCreator.apply("sidePanelContent"));

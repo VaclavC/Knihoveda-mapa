@@ -3,7 +3,6 @@ package com.disnel.knihoveda.dao;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import org.apache.solr.client.solrj.SolrClient;
@@ -19,9 +18,8 @@ import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.Group;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import com.disnel.knihoveda.mapa.KnihovedaMapaConfig;
-import com.disnel.knihoveda.mapa.MapaSession;
+import com.disnel.knihoveda.mapa.KnihovedaMapaSession;
 import com.disnel.knihoveda.mapa.data.DataSet;
-import com.disnel.knihoveda.mapa.data.FacetFieldCountWrapper;
 import com.disnel.knihoveda.mapa.data.FieldValues;
 import com.disnel.knihoveda.mapa.data.ResultsInPlace;
 
@@ -202,15 +200,9 @@ public class SolrDAO
 		else
 			return fieldName;
 	}
+
 	
-	/**
-	 * Vrati mozne hodnoty pole s ohledem na ostatni vybrana pole
-	 * 
-	 * @param fieldName
-	 * @param dataSet
-	 * @return
-	 */
-	public static List<FacetFieldCountWrapper> getFieldValues(String fieldName, DataSet dataSet)
+	public static List<Count> getFieldCounts(String fieldName, DataSet dataSet)
 	{
 		SolrQuery query = new SolrQuery();
 		
@@ -232,17 +224,9 @@ public class SolrDAO
 		QueryResponse response = SolrDAO.getResponse(query);
 		
 		FacetField ff = response.getFacetField(facetFieldName);
-		List<Count> res = ff.getValues();
-		
-		List<FacetFieldCountWrapper> ret = new ArrayList<>(res.size());
-		Iterator<Count> it = res.iterator();
-		while (it.hasNext())
-			ret.add(new FacetFieldCountWrapper(it.next()));
-				
-		
-		return ret;
+		return ff.getValues();
 	}
-
+	
 	/**
 	 * Zjisti pocty zaznamu pro jednotliva geograficka mista pro danou datovou sadu
 	 * 
@@ -284,7 +268,7 @@ public class SolrDAO
 	{
 		LinkedHashMap<String, ResultsInPlace> resultsInPlaces = new LinkedHashMap<>();
 		
-		for ( DataSet dataSet : MapaSession.get().dataSets() )
+		for ( DataSet dataSet : KnihovedaMapaSession.get().dataSets() )
 		{
 			for ( Group group : resultsInPlacesForDataSet(dataSet) )
 			{

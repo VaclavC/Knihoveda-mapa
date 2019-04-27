@@ -36,7 +36,7 @@ public class DataSetSwitcherPanel extends Panel
 		
 		setOutputMarkupId(true);
 		
-		add(new ListView<DataSet>("dataSet", MapaSession.get().dataSets())
+		add(new ListView<DataSet>("dataSet", KnihovedaMapaSession.get().dataSets())
 		{
 			/**
 			 * 
@@ -82,25 +82,25 @@ public class DataSetSwitcherPanel extends Panel
 							{
 								DataSet dataSet = (DataSet) getComponent().getDefaultModelObject();
 								
-								DataSet mainDataSet = MapaSession.get().dataSets().get(0); 
+								DataSet mainDataSet = KnihovedaMapaSession.get().dataSets().get(0); 
 								
 								if ( dataSet == mainDataSet )
 									return;
 								
-								MapaSession.get().removeDataSet(dataSet);
-								MapaSession.get().freeDataSetColor(dataSet.getColor());
+								KnihovedaMapaSession.get().removeDataSet(dataSet);
+								KnihovedaMapaSession.get().freeDataSetColor(dataSet.getColor());
 								
 								setCurrentDataSet(target, mainDataSet);
 							}
 						}));
 				item.add(openDetail = new WebMarkupContainer("openDetail"));
 				
-				if ( dataSet == MapaSession.get().currentDataSet() )
+				if ( dataSet == KnihovedaMapaSession.get().currentDataSet() )
 					setActive.setVisible(false);
 				else
 					isActive.setVisible(false);
 				
-				if ( dataSet == MapaSession.get().dataSets().get(0) )
+				if ( dataSet == KnihovedaMapaSession.get().dataSets().get(0) )
 					delete.setVisible(false);
 				
 				// Rozklikavaci detail
@@ -117,7 +117,7 @@ public class DataSetSwitcherPanel extends Panel
 				detail.add(valuesRV = new RepeatingView("fieldValues"));
 				
 				// Vybrana mista
-				Set<String> selectedPlaces = MapaSession.get().currentDataSet().getSelectedPlaces();
+				Set<String> selectedPlaces = KnihovedaMapaSession.get().currentDataSet().getSelectedPlaces();
 				if ( !selectedPlaces.isEmpty() )
 				{
 					WebMarkupContainer cont;
@@ -150,7 +150,7 @@ public class DataSetSwitcherPanel extends Panel
 					WebMarkupContainer cont;
 					valuesRV.add(cont = new WebMarkupContainer(valuesRV.newChildId()));
 					
-					cont.add(new Label("name", VyberDlePole.getFieldNameModel(fv.getName())));
+//					cont.add(new Label("name", VyberDlePole.getFieldNameModel(fv.getName())));
 
 					cont.add(new ListView<String>("value", new ArrayList<String>(fv.getValues()))
 					{
@@ -214,9 +214,9 @@ public class DataSetSwitcherPanel extends Panel
 		add(dataSetNew = new WebMarkupContainer("dataSetNew"));
 		
 		
-		if ( MapaSession.get().hasNewDataSetColor() )
+		if ( KnihovedaMapaSession.get().hasNewDataSetColor() )
 		{
-			Color dataSetNewColor = MapaSession.get().newDataSetColor();
+			Color dataSetNewColor = KnihovedaMapaSession.get().newDataSetColor();
 			dataSetNew.add(new AttributeAppender("style", "color: " + dataSetNewColor.toString(), "; "));
 			dataSetNew.setDefaultModel(Model.of(dataSetNewColor));
 			
@@ -232,8 +232,8 @@ public class DataSetSwitcherPanel extends Panel
 				{
 					Color dataSetNewColor = (Color) getComponent().getDefaultModelObject();
 					DataSet dataSet = new DataSet(dataSetNewColor);
-					MapaSession.get().addDataSet(dataSet);
-					MapaSession.get().useDataSetColor(dataSetNewColor);
+					KnihovedaMapaSession.get().addDataSet(dataSet);
+					KnihovedaMapaSession.get().useDataSetColor(dataSetNewColor);
 					
 					setCurrentDataSet(target, dataSet);
 				}
@@ -254,7 +254,7 @@ public class DataSetSwitcherPanel extends Panel
 	
 	private void setCurrentDataSet(AjaxRequestTarget target, DataSet dataSet)
 	{
-		MapaSession.get().currentDataSet(dataSet);
+		KnihovedaMapaSession.get().currentDataSet(dataSet);
 		send(getPage(), Broadcast.BREADTH, new DataSetChangedEvent(target, dataSet));
 
 		redraw(target);

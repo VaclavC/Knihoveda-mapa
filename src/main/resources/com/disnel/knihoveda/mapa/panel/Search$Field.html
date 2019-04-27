@@ -6,20 +6,19 @@
 
 
 
-<div class="container fluid">
-	<div class="row mt-4">
-		<div class="col-md-auto"><span class="title" wicket:id="title">[TITLE]</span></div>
-		<div class="col text-right"><span class="resultsNum" wicket:id="resultsNum">[NUM]</span></div>
+<div class="SearchField card mt-3">
+	<div class="card-header d-flex justify-content-between align-items-center">
+		<span wicket:id="title">[TITLE]</span>
+		<span class="badge badge-primary" wicket:id="resultsNum">[NUM]</span>
 	</div>
-	<div class="row" wicket:id="valueRow">
-		<div class="col-md-auto">
-			<button type="button" class="btn-sm btn-outline-primary" wicket:id="trashButton"><i class="fas fa-trash"></i></button>
-		</div>
-		<div class="col"><span wicket:id="value"></span></div>	
-	</div>
-	<div class="row">
-		<div class="col"><select class="form-control" wicket:id="select"></select></div>
-	</div>
+	<ul class="list-group list-group-flush">
+		<li class="list-group-item" wicket:id="valueRow">
+			<span class="myButton small" wicket:id="trashButton"><i class="fas fa-times"></i></span>
+			<span wicket:id="value"></span>
+			<span class="badge badge-light" wicket:id="count"></span>
+		</li>
+	</ul>
+	<select class="form-control" wicket:id="select"></select>
 </div>
 
 

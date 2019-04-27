@@ -1,7 +1,12 @@
 package com.disnel.knihoveda.mapa;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.wicket.Page;
 import org.apache.wicket.Session;
+import org.apache.wicket.markup.head.CssHeaderItem;
+import org.apache.wicket.markup.head.HeaderItem;
 import org.apache.wicket.markup.html.SecurePackageResourceGuard;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.Request;
@@ -12,7 +17,10 @@ import com.disnel.knihoveda.dao.SolrDAO;
 
 import de.agilecoders.wicket.core.Bootstrap;
 import de.agilecoders.wicket.core.settings.BootstrapSettings;
+import de.agilecoders.wicket.core.settings.SingleThemeProvider;
+import de.agilecoders.wicket.core.settings.Theme;
 import de.agilecoders.wicket.sass.BootstrapSass;
+import de.agilecoders.wicket.sass.SassResourceReference;
 import de.agilecoders.wicket.webjars.WicketWebjars;
 
 public class KnihovedaMapaApplication extends WebApplication
@@ -49,7 +57,20 @@ public class KnihovedaMapaApplication extends WebApplication
 		SolrDAO.init();
 		
 		WicketWebjars.install(this);
-		Bootstrap.install(this, new BootstrapSettings());
+		
+		BootstrapSettings bSettings = new BootstrapSettings();
+		bSettings.setThemeProvider(new SingleThemeProvider(new Theme("knihoveda")
+		{
+		    @Override
+		    public List<HeaderItem> getDependencies()
+		    {
+		    	return Arrays.asList(
+		    			CssHeaderItem.forReference(new SassResourceReference(BasePage.class, "bootstrap-knihoveda.scss"))
+		    			);
+		    }
+		}));
+		Bootstrap.install(this, bSettings);
+		
 		BootstrapSass.install(this);
 		
 		// Nastavit ruzne veci
@@ -65,7 +86,7 @@ public class KnihovedaMapaApplication extends WebApplication
 	@Override
 	public Session newSession(Request request, Response response)
 	{
-		return new MapaSession(request);
+		return new KnihovedaMapaSession(request);
 	}
 	
 }
