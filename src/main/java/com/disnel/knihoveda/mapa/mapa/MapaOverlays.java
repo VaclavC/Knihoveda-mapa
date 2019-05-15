@@ -39,16 +39,54 @@ public class MapaOverlays extends Panel
 				Component overlay;
 				overlaysRV.add(overlay = new MapaMistoOverlay(overlaysRV.newChildId(), resultsInPlace));
 				
-				overlays.add(new Overlay(
-					overlay,
-					new LongLat(resultsInPlace.getPlacePoint().getCoordinate(), "EPSG:4326" ).transform(View.DEFAULT_PROJECTION)
-				));
+				Overlay overlayInst = new MyOverlay(
+						overlay,
+						new LongLat(resultsInPlace.getPlacePoint().getCoordinate(), "EPSG:4326" ).transform(View.DEFAULT_PROJECTION)
+					);
+				overlayInst.setStopEvent(false);
+				
+				overlays.add(overlayInst);
 			}
 	}
 
 	public List<Overlay> getOverlays()
 	{
 		return overlays;
+	}
+	
+	
+	private class MyOverlay extends Overlay
+	{
+		private static final long serialVersionUID = 1L;
+
+		public MyOverlay(Component overlay, LongLat transform)
+		{
+			super(overlay, transform);
+		}
+
+		@Override
+		protected String renderAttributesJs() {
+
+			StringBuilder builder = new StringBuilder();
+
+			if (getElement() != null) {
+				builder.append("'element': document.getElementById('" + element.getMarkupId() + "'),");
+			}
+
+			if (getPosition() != null) {
+				builder.append("'position': " + position.renderJs() + ",");
+			}
+
+			if (getPositioning() != null) {
+				builder.append("'positioning': '" + getPositioning() + "',");
+			}
+
+			if ( getStopEvent() != null ) {
+				builder.append("'stopEvent': " + getStopEvent() + ",");
+			}
+
+			return builder.toString();
+		}
 	}
 	
 }
