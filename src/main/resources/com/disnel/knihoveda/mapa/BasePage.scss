@@ -154,7 +154,8 @@ h1 { font-size: 125%; }
 			position: absolute; width: $overlayDotSize; height: $overlayDotSize; margin: $overlayDotMargin;
 			left: -$overlayDotSize/2 - $overlayDotMargin; top: -$overlayDotSize/2 - $overlayDotMargin; z-index: 1;
 			border-radius: 50%; background: black;
-			z-index: 9;
+			z-index: 5;
+			&.active { z-index: 15; }
 		}
 		
 		$detailH: 3.75 * $overlayDotSize;
@@ -171,7 +172,7 @@ h1 { font-size: 125%; }
 		.detail { 
 			position: absolute; height: $detailH; transform: translate(-$detailDX, -50%);
 			display: flex;
-			z-index: 5;
+			z-index: 10;
 			
 			.leftPart {
 				width: 0; height: $detailH;
