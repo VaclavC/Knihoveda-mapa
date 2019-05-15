@@ -1,7 +1,10 @@
 package com.disnel.knihoveda.mapa.mapa;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxEventBehavior;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.AttributeAppender;
+import org.apache.wicket.event.Broadcast;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -13,6 +16,7 @@ import com.disnel.knihoveda.mapa.KnihovedaMapaConfig;
 import com.disnel.knihoveda.mapa.KnihovedaMapaSession;
 import com.disnel.knihoveda.mapa.data.DataSet;
 import com.disnel.knihoveda.mapa.data.ResultsInPlace;
+import com.disnel.knihoveda.mapa.events.FieldValuesChangedEvent;
 
 public class MapaMistoOverlay extends Panel
 {
@@ -49,6 +53,31 @@ public class MapaMistoOverlay extends Panel
 		// Tecka v miste obce
 		Component dot;
 		add(dot = new WebMarkupContainer("dot"));
+		
+		dot.add(new AjaxEventBehavior("click")
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected void onEvent(AjaxRequestTarget target)
+			{
+				String placeName = resultsInPlace.getPlaceName();
+				
+				boolean selected = KnihovedaMapaSession.get()
+						.currentDataSet()
+						.toggleFieldValue(KnihovedaMapaConfig.FIELD_PLACE_NAME, placeName);
+				
+				if ( selected )
+					target.appendJavaScript(String.format(
+							"$('#%s').addClass('selected')", MapaMistoOverlay.this.getMarkupId()));
+				else
+					target.appendJavaScript(String.format(
+							"$('#%s').removeClass('selected')", MapaMistoOverlay.this.getMarkupId()));
+				
+				send(getPage(), Broadcast.BREADTH,
+						new FieldValuesChangedEvent(target, KnihovedaMapaConfig.FIELD_PLACE_NAME));
+			}
+		});
 
 		// Detail vysledku
 		WebMarkupContainer detail;
