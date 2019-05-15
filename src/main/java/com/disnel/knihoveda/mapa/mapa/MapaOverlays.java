@@ -11,6 +11,7 @@ import org.wicketstuff.openlayers3.api.View;
 import org.wicketstuff.openlayers3.api.coordinate.LongLat;
 import org.wicketstuff.openlayers3.api.overlay.Overlay;
 
+import com.disnel.knihoveda.mapa.KnihovedaMapaSession;
 import com.disnel.knihoveda.mapa.data.ResultsInPlace;
 
 public class MapaOverlays extends Panel
@@ -33,7 +34,7 @@ public class MapaOverlays extends Panel
 		add(overlaysRV = new RepeatingView("overlay"));
 		
 		for ( ResultsInPlace resultsInPlace : resultsInPlaces )
-			if ( resultsInPlace.hasAnyNonZeroResult() )
+			if ( resultsInPlace.getNumResultsForDataSet(KnihovedaMapaSession.get().currentDataSet()) > 0 )
 			{
 				Component overlay;
 				overlaysRV.add(overlay = new MapaMistoOverlay(overlaysRV.newChildId(), resultsInPlace));
