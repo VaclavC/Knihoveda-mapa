@@ -6,15 +6,19 @@
 
 <div class="placeName" wicket:id="placeName">[PLACE NAME]</div>
 <div class="dot" wicket:id="dot">&nbsp;</div>
-<div class="count" wicket:id="count">[COUNT]</div>
 
-<div wicket:id="detail" class="detailCont"><div class="detail">
-	<div wicket:id="nazevMista" class="head">[NAZEV MISTA]</div>
-	<div wicket:id="vysledek" class="vysledek">
-		<span wicket:id="dataSetIndicator" class="dataSetIndicator">&nbsp;</span>
-		<span wicket:id="pocet" class="pocet">[POCET]</span>
+<div wicket:id="detail" class="detail hidden">
+	<div class="leftPart">&nbsp;</div>
+	<div class="content">
+		<div class="dataSet" wicket:id="dataSet">
+			<div class="indicator" wicket:id="indicator">&nbsp;</div>
+			<div class="results" wicket:id="results"></div>
+		</div>
 	</div>
-</div></div>
+	<div class="rightPart">
+		<div><wicket:message key="map.detail.numResults"></wicket:message></div>
+	</div>
+</div>
 
 </wicket:panel>
 

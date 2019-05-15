@@ -1,4 +1,6 @@
 
+@import "trigonometry.scss";
+
 /* Fonts */
 @import url('https://fonts.googleapis.com/css?family=Noto+Serif');
 
@@ -15,9 +17,11 @@ $sidePanelWidth: 25rem;
 $timelineHeight: 10rem;
 
 $border1: solid 1px $color1;
-$border1Hidden: solid 1px $color0;
+$border1Hidden: solid 1px $color0; 
 
 $searchBorderWidth: 0.7rem;
+
+$datasetsNum: 5;
 
 
 /* Main CSS */
@@ -31,21 +35,12 @@ h1 { font-size: 125%; }
 
 .line { margin: 0 1em; }
 
-.detail {
-	position: absolute; z-index: 99999;
-	background: white; border: solid 1px black; border-radius: 4px;
-	font-size: 14px;
-	.head { background: black; color: white; font-weight: bold; padding: 0.5em; }
-	.vysledek {
-		margin: 0.5em 0; padding: 0 0.5em; white-space: nowrap; font-size: 12px;
-		.dataSetIndicator { display: inline-block; width: 1em; height: 1em; }
-	}
-}
-
 .myButton {
 	cursor: pointer;
 	&:hover { color: $color3; }
 }
+
+.hidden { display: none !important; }
 
 /* Page parts */
 
@@ -120,33 +115,101 @@ h1 { font-size: 125%; }
 	overflow: hidden;
 	
 	canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-top: solid 2px #b0b0b0; }
+	
+	.detail {
+		position: absolute; z-index: 99999;
+		background: white; border: solid 1px black; border-radius: 4px;
+		font-size: 14px;
+		.head { background: black; color: white; font-weight: bold; padding: 0.5em; }
+		.vysledek {
+			margin: 0.5em 0; padding: 0 0.5em; white-space: nowrap; font-size: 12px;
+			.dataSetIndicator { display: inline-block; width: 1em; height: 1em; }
+		}
+	}
 }
 
 #Map {
 	position: fixed; top: $headerHeight; left: 0; right: $sidePanelWidth; bottom: $timelineHeight;
-	#mapa-content { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
+	#mapa-content { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 0; }
 	
 	.mistoOverlay {
 		cursor: pointer; position: relative;
 		
-		$overlayDotSize: 20px;
+		font-family: "Helvetica Neue, Helvetica, Liberation Sans, Arial, sans-serif";
+		
+		$overlayDotSize: 24px;
 		$overlayDotMargin: 8px;
 		$overlayFontSize: 12px;
+		$overlayBgColor: rgba(255, 255, 255, 0.9); 
 		
-		.placeName, .count {
-			background: rgba(255, 255, 255, 0.9); padding: 0.05em 0.33em; 
+		.placeName {
+			position: absolute; transform: translate(-100%, -50%);
+			height: $overlayDotSize; padding-right: 2*$overlayDotSize/3; padding-left: 0.5em;
+			line-height: $overlayDotSize; 
+			background: $overlayBgColor;  
 			white-space: nowrap; font-size: $overlayFontSize; font-weight: bold;
+			z-index: 1;
 		}
-		.placeName { position: absolute; transform: translate(0, -$overlayDotSize/2 - $overlayDotMargin) translate(-50%, -50%); }
-		.count { position: absolute; transform: translate(0, $overlayDotSize/2 + $overlayDotMargin) translate(-50%, -50%); }
 		.dot {
 			position: absolute; width: $overlayDotSize; height: $overlayDotSize; margin: $overlayDotMargin;
 			left: -$overlayDotSize/2 - $overlayDotMargin; top: -$overlayDotSize/2 - $overlayDotMargin; z-index: 1;
 			border-radius: 50%; background: black;
+			z-index: 9;
 		}
 		
-		.detailCont { z-index: 999999999; display: none; }
-		.detail { transform: translate(-50%, -50%); }
+		$detailH: 3.75 * $overlayDotSize;
+		$detailAng: 40deg;
+		$detailLineH: $detailH / $datasetsNum;
+		$detailLineRB: solid 1px #ddd;
+		
+		$tmpDetSinA: sin($detailAng);
+		$tmpDetCosA: cos($detailAng);
+		$detailAY: $detailH / 2 - $overlayDotSize * $tmpDetCosA / 2;
+		$detailAX: $detailAY * $tmpDetCosA / $tmpDetSinA;
+		$detailDX: $overlayDotSize * $tmpDetSinA / 2;
+		
+		.detail { 
+			position: absolute; height: $detailH; transform: translate(-$detailDX, -50%);
+			display: flex;
+			z-index: 5;
+			
+			.leftPart {
+				width: 0; height: $detailH;
+				border-right: solid $detailAX $overlayBgColor;
+				border-top: solid $detailAY rgba(255, 255, 255, 0);
+				border-bottom: solid $detailAY rgba(255, 255, 255, 0);
+			}
+			
+			.content {
+				background: $overlayBgColor;
+				
+				.dataSet {
+					height: $detailLineH;
+					display: flex; align-items: center;
+					
+					.indicator { width: $detailLineH; height: $detailLineH; }
+					.results {
+						background: $overlayBgColor; min-width: 4em;
+						padding: 0 0.25em; border-top: $detailLineRB; border-bottom: $detailLineRB; 
+						white-space: nowrap; line-height: $detailLineH - 2px; height: $detailLineH;
+						font-size: 0.65 * $detailLineH; font-weight: bold;
+					}
+				}
+			}
+			
+			.rightPart {
+				$rightPartW: 1.5 * $detailLineH; 
+				
+				width: $rightPartW; height: $detailH;
+				background: black; color: white; height: $detailH;
+				font-size: 0.65 * $detailLineH;
+				div {
+					position: absolute; width: $detailH; height: $rightPartW;
+					text-align: center; line-height: $rightPartW;
+					transform: rotate(-90deg) translate(-100%, 0); transform-origin: top left;
+				}
+			}
+		}
 		
 		&.shaded { opacity: 0.4; }
 	}
