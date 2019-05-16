@@ -27,6 +27,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
 
 import com.disnel.knihoveda.dao.SolrDAO;
 import com.disnel.knihoveda.dao.SolrDAO.FieldCounts;
@@ -95,11 +96,28 @@ public class Search extends Panel
 			}
 		});
 		
+		/* Title */
+		WebMarkupContainer title;
+		add(title = new WebMarkupContainer("title"));
+		title.add(new AttributeModifier("style",
+				"background-color: " + KnihovedaMapaSession.get().currentDataSet().getColor().toString() + ";"));
+		
+		title.add(new Label("titleMessage",
+				new StringResourceModel("search.title.message")
+					.setParameters(new LoadableDetachableModel<Long>()
+					{
+						private static final long serialVersionUID = 1L;
+
+						@Override
+						protected Long load()
+						{
+							return SolrDAO.getCountForDataSet(KnihovedaMapaSession.get().currentDataSet());
+						}}))
+				.setEscapeModelStrings(false));
+		
 		/* Content */
 		WebMarkupContainer content;
 		add(content = new WebMarkupContainer("content"));
-		content.add(new AttributeModifier("style",
-				"border-color: " + KnihovedaMapaSession.get().currentDataSet().getColor().toString() + ";"));
 		
 		/* Search fields */
 		content.add(new ListView<String>("fields", Arrays.asList(KnihovedaMapaConfig.FIELDS))
@@ -347,16 +365,16 @@ public class Search extends Panel
 			add(new TimeInput("yearFrom", yearFromModel));
 			add(new TimeInput("yearTo", yearToModel));
 			
-			add(new AjaxGeneralButton("clear", "click")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onClick(AjaxRequestTarget target)
-				{
-					updateCurrentDataSet(target, null, null);
-				}
-			});
+//			add(new AjaxGeneralButton("clear", "click")
+//			{
+//				private static final long serialVersionUID = 1L;
+//
+//				@Override
+//				protected void onClick(AjaxRequestTarget target)
+//				{
+//					updateCurrentDataSet(target, null, null);
+//				}
+//			});
 		}
 
 		private void updateCurrentDataSet(AjaxRequestTarget target, Integer yearFrom, Integer yearTo)

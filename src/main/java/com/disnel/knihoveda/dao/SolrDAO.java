@@ -28,7 +28,12 @@ import com.disnel.knihoveda.mapa.data.ResultsInPlace;
 public class SolrDAO
 {
 
+	
+	/* Link to SOLR */
 	private static HttpSolrClient solrClient;
+	
+	
+	/* Initialization */
 	
 	public static void init()
 	{
@@ -39,7 +44,10 @@ public class SolrDAO
 		}
 	}
 	
-	public static SolrClient client()
+	
+	/* Internal methods for SOLR interaction */
+	
+	private static SolrClient client()
 	{
 		if ( solrClient == null )
 			throw new IllegalStateException("You must call SolrDAO.init() first");
@@ -47,7 +55,7 @@ public class SolrDAO
 		return solrClient;
 	}
 	
-	public static QueryResponse getResponse(SolrQuery query)
+	private static QueryResponse getResponse(SolrQuery query)
 	{
 		try
 		{
@@ -74,11 +82,40 @@ public class SolrDAO
 		}
 	}
 
+	
+	/* Internal methods for query parameters */
+	
+	/**
+	 * Field name for faceted search
+	 * 
+	 * @param fieldName
+	 * @return
+	 */
+	private static String facetFieldName(String fieldName)
+	{
+		if ( KnihovedaMapaConfig.FILEDS_WITH_SEPARATE_FACET.contains(fieldName) )
+			return fieldName + KnihovedaMapaConfig.FACET_FIELD_SUFFIX;
+		else
+			return fieldName;
+	}
+	
+	/**
+	 * Parameters for "empty" query
+	 * 
+	 * @return
+	 */
 	private static String emptyQueryParams()
 	{
 		return "geo:*";
 	}
 	
+	/**
+	 * Field values as search parameter
+	 * 
+	 * @param fieldValues
+	 * @param exceptField
+	 * @return
+	 */
 	private static String fieldValuesQueryParams(
 			Collection<FieldValues> fieldValues, String exceptField)
 	{
@@ -115,6 +152,14 @@ public class SolrDAO
 		return qPars.toString();
 	}
 	
+	
+	/**
+	 * Time range as search parameter
+	 * 
+	 * @param yearFrom
+	 * @param yearTo
+	 * @return
+	 */
 	private static String timeRangeQueryParams(
 			Integer yearFrom, Integer yearTo)
 	{
@@ -141,6 +186,37 @@ public class SolrDAO
 		return qPars.toString();
 	}
 	
+	
+	/* Public methods for various numbers of results */
+	
+	/**
+	 * Get number of results for a dataset
+	 * 
+	 * @param dataSet
+	 * @return
+	 */
+	public static long getCountForDataSet(DataSet dataSet)
+	{
+		SolrQuery query = new SolrQuery();
+		
+		String qParams = emptyQueryParams()
+				+ fieldValuesQueryParams(dataSet.getFieldsValues(), null)
+				+ timeRangeQueryParams(dataSet.getYearFrom(), dataSet.getYearTo());
+		query.add("q", qParams);
+		
+		query.setRows(0);
+		
+		QueryResponse response = SolrDAO.getResponse(query);
+		
+		return response.getResults().getNumFound();
+	}
+	
+	/**
+	 * Get number of results for each year in dataset
+	 * 
+	 * @param dataSet
+	 * @return
+	 */
 	public static List<Count> getCountByYear(DataSet dataSet)
 	{
 		SolrQuery query = new SolrQuery();
@@ -160,34 +236,15 @@ public class SolrDAO
 		
 		return publishPlaceFF.getValues();
 	}
+
 	
 	/**
-	 * Vrati nazev pole pro facetove vyhledavani
+	 * Get number of results for a field in dataset
 	 * 
 	 * @param fieldName
+	 * @param dataSet
 	 * @return
 	 */
-	private static String facetFieldName(String fieldName)
-	{
-		if ( KnihovedaMapaConfig.FILEDS_WITH_SEPARATE_FACET.contains(fieldName) )
-			return fieldName + KnihovedaMapaConfig.FACET_FIELD_SUFFIX;
-		else
-			return fieldName;
-	}
-
-	
-	public static class FieldCounts
-	{
-		public Long totalCount;
-		public List<Count> counts;
-
-		public FieldCounts(Long totalCount, List<Count> counts)
-		{
-			this.totalCount = totalCount;
-			this.counts = counts;
-		}
-	}
-	
 	public static FieldCounts getFieldCounts(String fieldName, DataSet dataSet)
 	{
 		SolrQuery query = new SolrQuery();
@@ -213,13 +270,26 @@ public class SolrDAO
 		return new FieldCounts(response.getResults().getNumFound(), ff.getValues());
 	}
 	
+	public static class FieldCounts
+	{
+		public Long totalCount;
+		public List<Count> counts;
+
+		public FieldCounts(Long totalCount, List<Count> counts)
+		{
+			this.totalCount = totalCount;
+			this.counts = counts;
+		}
+	}
+	
+	
 	/**
-	 * Zjisti pocty zaznamu pro jednotliva geograficka mista pro danou datovou sadu
+	 * Get number of results for each place in dataset
 	 * 
 	 * @param dataSet
 	 * @return
 	 */
-	private static List<Group> resultsInPlacesForDataSet(DataSet dataSet)
+	private static List<Group> getResultsInPlaces(DataSet dataSet)
 	{
 		// Pripravit dotaz
 		SolrQuery query = new SolrQuery();
@@ -244,19 +314,20 @@ public class SolrDAO
 		return resGroups;
 	}
 	
+	
 	/**
-	 * Nacte pocty vysledku pro datove sady ve vsech mistech
+	 * Get number of results in all places
 	 * 
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public static List<ResultsInPlace> loadResultsInPlaces()
+	public static List<ResultsInPlace> getResultsInPlaces()
 	{
 		LinkedHashMap<String, ResultsInPlace> resultsInPlaces = new LinkedHashMap<>();
 		
 		for ( DataSet dataSet : KnihovedaMapaSession.get().dataSets() )
 		{
-			for ( Group group : resultsInPlacesForDataSet(dataSet) )
+			for ( Group group : getResultsInPlaces(dataSet) )
 			{
 				if ( group.getGroupValue() != null )
 				{
@@ -281,8 +352,24 @@ public class SolrDAO
 
 		return new ArrayList<ResultsInPlace>(resultsInPlaces.values());
 	}
+	
+	private static Point pointFromString(String coordinates)
+	{
+		String[] parts = coordinates.split(",");
+		double lat = Double.parseDouble(parts[0]);
+		double lon = Double.parseDouble(parts[1]);
+
+		return new Point(new Coordinate(lon, lat));
+	}
 
 	
+	/* Public methods for various data limits */
+	
+	/**
+	 * Find time range covering available data
+	 * 
+	 * @return
+	 */
 	public static int[] findTimeRange()
 	{
 		// Pripravit dotaz
@@ -308,14 +395,14 @@ public class SolrDAO
 	}
 	
 	/**
-	 * Zjisti maximalni pocet zaznamu v jednom geografickem miste
+	 * Find maximal count of results in a place 
 	 * 
 	 * @return
 	 */
 	public static long findMaxCountInPlace(DataSet dataSet)
 	{
 		long maxCountInPlace = 0;
-		for ( Group group : resultsInPlacesForDataSet(dataSet) )
+		for ( Group group : getResultsInPlaces(dataSet) )
 		{
 			long count = group.getResult().getNumFound();
 			if (maxCountInPlace < count)
@@ -325,18 +412,4 @@ public class SolrDAO
 		return maxCountInPlace;
 	}
 	
-	/**
-	 * Pomocna metoda
-	 * 
-	 * @param coordinates
-	 * @return
-	 */
-	private static Point pointFromString(String coordinates)
-	{
-		String[] parts = coordinates.split(",");
-		double lat = Double.parseDouble(parts[0]);
-		double lon = Double.parseDouble(parts[1]);
-
-		return new Point(new Coordinate(lon, lat));
-	}
 }

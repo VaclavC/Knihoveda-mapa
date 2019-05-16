@@ -14,7 +14,7 @@ public class ResultsInPlacesModel extends LoadableDetachableModel<List<ResultsIn
 	@Override
 	protected List<ResultsInPlace> load()
 	{
-		return SolrDAO.loadResultsInPlaces();
+		return SolrDAO.getResultsInPlaces();
 	}
 
 }
