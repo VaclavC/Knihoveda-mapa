@@ -4,22 +4,22 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.IAjaxIndicatorAware;
 import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.danekja.java.util.function.serializable.SerializableFunction;
 
 import com.disnel.knihoveda.mapa.panel.CasovyGraf;
 import com.disnel.knihoveda.mapa.panel.Help;
 import com.disnel.knihoveda.mapa.panel.Mapa;
+import com.disnel.knihoveda.mapa.panel.PdfPrint;
 import com.disnel.knihoveda.mapa.panel.Search;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.behavior.CssClassNameAppender;
@@ -52,10 +52,8 @@ public class BasePage extends WebPage implements IAjaxIndicatorAware
 						|| actPanelIndex == null && item.getIndex() == 0 )
 					item.add(new CssClassNameAppender("active"));
 				
-				/* Icons */
-				Component icon;
-				item.add(icon = new WebMarkupContainer("icon"));
-				icon.add(new CssClassNameAppender(def.faIcon));
+				/* Tab */
+				item.add(def.tab);
 				
 				/* Open corresponding panel on click */
 				item.add(new AjaxEventBehavior("click")
@@ -110,23 +108,23 @@ public class BasePage extends WebPage implements IAjaxIndicatorAware
 	{
 		private static final long serialVersionUID = 1L;
 		
-		public String faIcon;
+		public static final String tabID = "tab";
+		
+		public Fragment tab;
 		public SerializableFunction<String, Panel> panelCreator;
 		
-		public TabDef(String faIcon, SerializableFunction<String, Panel> panelCreator)
+		public TabDef(Fragment tab, SerializableFunction<String, Panel> panelCreator)
 		{
 			super();
-			this.faIcon = faIcon;
+			this.tab = tab;
 			this.panelCreator = panelCreator;
 		}
 	}
 	
-	private static List<TabDef> sidePanelTabs = Arrays.asList(
-		new TabDef("fa-search", 	Search::new),
-		new TabDef("fa-question",	Help::new),
-		new TabDef("fa-question",	Help::new),
-		new TabDef("fa-question",	Help::new),
-		new TabDef("fa-question",	Help::new)
+	private List<TabDef> sidePanelTabs = Arrays.asList(
+		new TabDef(new Fragment(TabDef.tabID, "tab-search", this), 		Search::new),
+		new TabDef(new Fragment(TabDef.tabID, "tab-pdfprint", this),	PdfPrint::new),
+		new TabDef(new Fragment(TabDef.tabID, "tab-help", this),		Help::new)
 	);
 
 	

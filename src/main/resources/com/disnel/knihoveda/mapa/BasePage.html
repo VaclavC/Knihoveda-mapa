@@ -21,7 +21,12 @@
 	
 	<div id="SidePanel">
 		<div class="head main">
-			<span class="button" wicket:id="sidePanelButton"><i class="fas" wicket:id="icon"></i></span>
+			<span class="button" wicket:id="sidePanelButton"><wicket:container wicket:id="tab"></wicket:container></span>
+			
+			<wicket:fragment wicket:id="tab-search"><i class="fas fa-search"></i></wicket:fragment>
+			<wicket:fragment wicket:id="tab-pdfprint"><i class="far fa-file-pdf"></i> / <i class="fas fa-print"></i></wicket:fragment>
+			<wicket:fragment wicket:id="tab-help"><i class="fas fa-question"></i></wicket:fragment>
+			
 		</div>
 		<div class="content main" wicket:id="sidePanelContent"></div>
 	</div>
