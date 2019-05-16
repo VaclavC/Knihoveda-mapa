@@ -176,7 +176,9 @@ public class Search extends Panel
 
 			/* Title and possible number of results */
 			add(new Label("title", new ResourceModel("field." + fieldName)));
-			add(new Label("resultsNum", pvModel.getTotalCount()));
+			add(new Label("resultsNum",
+					new StringResourceModel("search.field.possibleValues")
+						.setParameters(svModel.getNumOfValues(), pvModel.getNumOfValues())));
 			
 			/* Already selected values */
 			add(new ListView<String>("valueRow", svModel)
@@ -275,6 +277,12 @@ public class Search extends Panel
 				return Collections.emptyList();
 			}
 			
+			public Integer getNumOfValues()
+			{
+				getObject();
+				
+				return valuesSet != null ? valuesSet.size() : 0;
+			}
 			
 			public boolean isSelected(String value)
 			{
@@ -292,7 +300,7 @@ public class Search extends Panel
 		
 		private PossibleValuesModel pvModel = new PossibleValuesModel();
 		
-		private class PossibleValuesModel extends LoadableDetachableModel<List<Count>>
+		protected class PossibleValuesModel extends LoadableDetachableModel<List<Count>>
 		{
 			private static final long serialVersionUID = 1L;
 
@@ -320,6 +328,14 @@ public class Search extends Panel
 				super.onDetach();
 			}
 			
+			public Integer getNumOfValues()
+			{
+				getObject();
+				
+				return byName.size();
+			}
+			
+			@SuppressWarnings("unused")
 			public Long getTotalCount()
 			{
 				getObject();
