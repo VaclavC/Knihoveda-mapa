@@ -381,16 +381,16 @@ public class Search extends Panel
 			add(new TimeInput("yearFrom", yearFromModel));
 			add(new TimeInput("yearTo", yearToModel));
 			
-//			add(new AjaxGeneralButton("clear", "click")
-//			{
-//				private static final long serialVersionUID = 1L;
-//
-//				@Override
-//				protected void onClick(AjaxRequestTarget target)
-//				{
-//					updateCurrentDataSet(target, null, null);
-//				}
-//			});
+			add(new AjaxGeneralButton("clear", "click")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onClick(AjaxRequestTarget target)
+				{
+					updateCurrentDataSet(target, null, null);
+				}
+			});
 		}
 
 		private void updateCurrentDataSet(AjaxRequestTarget target, Integer yearFrom, Integer yearTo)
