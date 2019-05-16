@@ -2,6 +2,8 @@ package com.disnel.knihoveda.mapa;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
 import org.apache.wicket.protocol.http.WebSession;
 import org.apache.wicket.request.Request;
 import org.wicketstuff.openlayers3.api.util.Color;
@@ -36,6 +38,9 @@ public class KnihovedaMapaSession extends WebSession
 		
 		// Pripravit maximalni pocet vysledku v jednom miste, casovy interval
 		initTimeRange();
+		
+		// Nastavit locale
+		setLocale(new Locale("cs"));
 	}
 
 
