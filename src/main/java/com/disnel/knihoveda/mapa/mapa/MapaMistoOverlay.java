@@ -1,5 +1,6 @@
 package com.disnel.knihoveda.mapa.mapa;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -7,6 +8,8 @@ import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.event.Broadcast;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.AbstractLink;
+import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -46,8 +49,13 @@ public class MapaMistoOverlay extends Panel
 		}
 
 		// Informace o miste
+		AbstractLink placeLink;
+		add(placeLink = new ExternalLink("placeLink",
+				"https://www.encyklopedieknihy.cz/index.php/"  + resultsInPlace.getPlaceName()));
+		placeLink.add(new AttributeModifier("target", "_blank"));
+		
 		Component placeName;
-		add(placeName = new Label("placeName", resultsInPlace.getPlaceName())
+		placeLink.add(placeName = new Label("placeName", resultsInPlace.getPlaceName())
 				.add(new AttributeAppender("style", "color: " + currentDataSet.getColor() + ";", ";")));
 		
 		// Tecka v miste obce
