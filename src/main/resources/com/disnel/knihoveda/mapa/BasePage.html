@@ -7,22 +7,24 @@
 </head>
 <body>
 
-<div id="Map" wicket:id="map"></div>
-
-<div id="Title">
-	<div class="logo">
-		<img src="/img/knihoveda-logo.svg" alt="" />
+<div id="TopPart">
+	<div id="Map" wicket:id="map"></div>
+	
+	<div id="Title">
+		<div class="logo">
+			<img src="/img/knihoveda-logo.svg" alt="" />
+		</div>
+		<div class="title">
+			<span><wicket:message key="title.title"></wicket:message></span>
+		</div>
 	</div>
-	<div class="title">
-		<span><wicket:message key="title.title"></wicket:message></span>
+	
+	<div id="SidePanel">
+		<div class="head main">
+			<span class="button" wicket:id="sidePanelButton"><i class="fas" wicket:id="icon"></i></span>
+		</div>
+		<div class="content main" wicket:id="sidePanelContent"></div>
 	</div>
-</div>
-
-<div id="SidePanel">
-	<div class="head main">
-		<span class="button" wicket:id="sidePanelButton"><i class="fas" wicket:id="icon"></i></span>
-	</div>
-	<div class="content main" wicket:id="sidePanelContent"></div>
 </div>
 
 <div id="Timeline" wicket:id="timeline"></div>

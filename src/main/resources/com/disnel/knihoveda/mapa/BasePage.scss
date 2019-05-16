@@ -44,8 +44,13 @@ h1 { font-size: 125%; }
 
 /* Page parts */
 
-#Title {
-	position: fixed; top: 0; left: 0; right: $sidePanelWidth; height: $headerHeight;  
+#TopPart { position: fixed; top: 0; left: 0; right: 0; bottom: $timelineHeight; }
+#Title { position: absolute; top: 0; left: 0; right: $sidePanelWidth; height: $headerHeight; }
+#Map { position: absolute; top: $headerHeight; left: 0; right: $sidePanelWidth; bottom: 0; }
+#SidePanel { position: absolute; top: 0; right: 0; width: $sidePanelWidth; bottom: 0; }
+#Timeline { position: fixed; left: 0; right: 0; bottom: 0; height: $timelineHeight; }
+
+#Title {  
 	display: flex; align-items: center; 
 	border-bottom: $border1;
 	.logo {
@@ -58,7 +63,6 @@ h1 { font-size: 125%; }
 }
 	
 #SidePanel {
-	position: fixed; top: 0; right: 0; width: $sidePanelWidth; bottom: 0; z-index: 9;
 	border-left: $border1;
 	display: flex; flex-direction: column;
 	
@@ -110,7 +114,6 @@ h1 { font-size: 125%; }
 }
 
 #Timeline {
-	position: fixed; left: 0; right: $sidePanelWidth; bottom: 0; height: $timelineHeight;
 	border-top: $border1;
 	overflow: hidden;
 	
@@ -129,7 +132,6 @@ h1 { font-size: 125%; }
 }
 
 #Map {
-	position: fixed; top: $headerHeight; left: 0; right: $sidePanelWidth; bottom: $timelineHeight;
 	#mapa-content { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 0; }
 	
 	.mistoOverlay {
