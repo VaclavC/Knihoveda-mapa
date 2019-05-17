@@ -368,6 +368,8 @@ public class Search extends Panel
 
 		private IModel<Integer> yearFromModel = new Model<>(), yearToModel = new Model<>();
 		
+		private TimeInput inputFrom, inputTo;
+		
 		public TimeRange(String id)
 		{
 			super(id);
@@ -378,8 +380,29 @@ public class Search extends Panel
 			yearFromModel.setObject(currentDataSet.getYearFrom());
 			yearToModel.setObject(currentDataSet.getYearTo());
 			
-			add(new TimeInput("yearFrom", yearFromModel));
-			add(new TimeInput("yearTo", yearToModel));
+			add(inputFrom = new TimeInput("yearFrom", yearFromModel)
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					target.appendJavaScript(String.format("$('#%s').select();", inputTo.getMarkupId()));
+				}
+			});
+			inputFrom.setOutputMarkupId(true);
+			
+			add(inputTo = new TimeInput("yearTo", yearToModel)
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					target.appendJavaScript(String.format("$('#%s').select();", inputFrom.getMarkupId()));
+				}
+			});
+			inputTo.setOutputMarkupId(true);
 			
 			add(new AjaxGeneralButton("clear", "click")
 			{
@@ -423,7 +446,7 @@ public class Search extends Panel
 		
 		/* Time input */
 		
-		private class TimeInput extends NumberTextField<Integer>
+		private abstract class TimeInput extends NumberTextField<Integer>
 		{
 			private static final long serialVersionUID = 1L;
 
@@ -455,10 +478,13 @@ public class Search extends Panel
 						}
 						
 						updateCurrentDataSet(target, yearFrom, yearTo);
+						
+						TimeInput.this.onUpdate(target);
 					}
 				});
 			}
 			
+			protected abstract void onUpdate(AjaxRequestTarget target);
 		}
 	}
 
