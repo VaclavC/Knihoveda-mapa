@@ -115,6 +115,21 @@ public class Search extends Panel
 						}}))
 				.setEscapeModelStrings(false));
 		
+		/* Clear selection */
+		title.add(new AjaxGeneralButton("clearSelection", "dblclick")
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected void onClick(AjaxRequestTarget target)
+			{
+				KnihovedaMapaSession.get().currentDataSet().clear();
+				
+				send(getPage(), Broadcast.BREADTH,
+						new UserSelectionChangedEvent(target));
+			}
+		});
+		
 		/* Content */
 		WebMarkupContainer content;
 		add(content = new WebMarkupContainer("content"));
@@ -432,12 +447,14 @@ public class Search extends Panel
 		@Override
 		public void onEvent(IEvent<?> event)
 		{
-			if ( event.getPayload() instanceof TimeSelectEvent )
+			if ( event.getPayload() instanceof UserSelectionChangedEvent )
 			{
-				TimeSelectEvent ev = (TimeSelectEvent) event.getPayload();
+				UserSelectionChangedEvent ev =  (UserSelectionChangedEvent) event.getPayload();
 			
-				yearFromModel.setObject(ev.yearFrom());
-				yearToModel.setObject(ev.yearTo());
+				DataSet currentDS = KnihovedaMapaSession.get().currentDataSet();
+				
+				yearFromModel.setObject(currentDS.getYearFrom());
+				yearToModel.setObject(currentDS.getYearTo());
 				
 				ev.getTarget().add(this);
 			}

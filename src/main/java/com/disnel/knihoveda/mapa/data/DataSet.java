@@ -101,6 +101,17 @@ public class DataSet implements Serializable
 		return false;
 	}
 
+	
+	/* Clear */
+	
+	public void clear()
+	{
+		fieldsValues.clear();
+		
+		yearFrom = null;
+		yearTo = null;
+	}
+	
 
 	/* Work with timeline */
 	
