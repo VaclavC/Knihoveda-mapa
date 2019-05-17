@@ -1,6 +1,7 @@
 package com.disnel.knihoveda.mapa.panel;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -10,6 +11,8 @@ import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.wicketstuff.openlayers3.DefaultOpenLayersMap;
 import org.wicketstuff.openlayers3.api.JavascriptObject;
@@ -18,15 +21,16 @@ import org.wicketstuff.openlayers3.api.coordinate.LongLat;
 import org.wicketstuff.openlayers3.api.layer.Layer;
 import org.wicketstuff.openlayers3.api.layer.Tile;
 
+import com.disnel.knihoveda.dao.SolrDAO;
 import com.disnel.knihoveda.mapa.KnihovedaMapaConfig;
 import com.disnel.knihoveda.mapa.KnihovedaMapaSession;
+import com.disnel.knihoveda.mapa.data.ResultsInPlace;
 import com.disnel.knihoveda.mapa.events.AjaxEvent;
 import com.disnel.knihoveda.mapa.events.FieldValuesChangedEvent;
 import com.disnel.knihoveda.mapa.events.UserSelectionChangedEvent;
 import com.disnel.knihoveda.mapa.mapa.MapaOverlays;
 import com.disnel.knihoveda.mapa.ol.CustomTileSource;
 import com.disnel.knihoveda.wicket.AjaxOLMap;
-import com.disnel.knihoveda.wicket.model.ResultsInPlacesModel;
 
 public class Mapa extends Panel
 {
@@ -38,7 +42,7 @@ public class Mapa extends Panel
 
 	private MapaOverlays mapaOverlays;
 	
-	private ResultsInPlacesModel resultsInPlacesModel;
+	private IModel<List<ResultsInPlace>> resultsInPlacesModel;
 	
 	public Mapa(String id)
 	{
@@ -60,7 +64,16 @@ public class Mapa extends Panel
 		mapaCont.setOutputMarkupId(true);
 
 		add(mapaOverlays = new MapaOverlays("overlays",
-				resultsInPlacesModel = new ResultsInPlacesModel()));
+				resultsInPlacesModel = new LoadableDetachableModel<List<ResultsInPlace>>()
+				{
+					private static final long serialVersionUID = 1L;
+
+					@Override
+					protected List<ResultsInPlace> load()
+					{
+						return SolrDAO.getResultsInPlaces();
+					}
+				}));
 		mapaOverlays.setOutputMarkupId(true);
 		
 		mapa.setOverlays(mapaOverlays.getOverlays());
