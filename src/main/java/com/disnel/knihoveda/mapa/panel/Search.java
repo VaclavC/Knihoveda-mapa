@@ -236,7 +236,7 @@ public class Search extends Panel
 			IModel<Count> selectedValue = new Model<>();
 			
 			FormComponent<?> select;
-			add(select = new BootstrapSelect<Count>("select",
+			add(select = new BootstrapSelect<Count>("fieldSelect",
 					selectedValue, pvModel.map( lc ->
 					{
 						return lc.stream()
