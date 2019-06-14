@@ -301,6 +301,7 @@ public class SolrDAO
 		
 		query.addField(KnihovedaMapaConfig.FIELD_PLACE_NAME);
 		query.addField(KnihovedaMapaConfig.FIELD_GEOLOC);
+		query.addField(KnihovedaMapaConfig.FIELD_PLACE_LINK);
 		query.add("group", "true");
 		query.add("group.field", KnihovedaMapaConfig.FIELD_PLACE_NAME);
 		query.setRows(-1);
@@ -335,13 +336,15 @@ public class SolrDAO
 					
 					SolrDocument doc = group.getResult().get(0);
 					String placeName = (String) doc.getFieldValue(KnihovedaMapaConfig.FIELD_PLACE_NAME);
-					String placePointS = ((List<String>)doc.getFieldValue(KnihovedaMapaConfig.FIELD_GEOLOC)).get(0);
+					String placePointS = ((List<String>) doc.getFieldValue(KnihovedaMapaConfig.FIELD_GEOLOC)).get(0);
 					Point placePoint = pointFromString(placePointS);
+					List<String> placeLinkAS = (List<String>) doc.getFieldValue(KnihovedaMapaConfig.FIELD_PLACE_LINK);
+					String placeLink = placeLinkAS != null && placeLinkAS.size() > 0 ? placeLinkAS.get(0) : null; 
 					
 					ResultsInPlace resultsInPlace = resultsInPlaces.get(placeName);
 					if ( resultsInPlace == null )
 					{
-						resultsInPlace = new ResultsInPlace(placeName, placePoint);
+						resultsInPlace = new ResultsInPlace(placeName, placePoint, placeLink);
 						resultsInPlaces.put(placeName, resultsInPlace);
 					}
 					

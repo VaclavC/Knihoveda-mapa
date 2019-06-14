@@ -50,8 +50,7 @@ public class MapaMistoOverlay extends Panel
 
 		// Informace o miste
 		AbstractLink placeLink;
-		add(placeLink = new ExternalLink("placeLink",
-				"https://www.encyklopedieknihy.cz/index.php/"  + resultsInPlace.getPlaceName()));
+		add(placeLink = new ExternalLink("placeLink", resultsInPlace.getPlaceLink()));
 		placeLink.add(new AttributeModifier("target", "_blank"));
 		
 		Component placeName;

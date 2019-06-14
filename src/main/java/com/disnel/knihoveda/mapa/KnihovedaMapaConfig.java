@@ -33,6 +33,7 @@ public class KnihovedaMapaConfig
 	public static final String FIELDS[] = new String[] { "publishPlace_geo", "masterPrinter", "topic", "genre", "language_cs" };
 	public static final String FIELD_TIME = "publishDate";
 	public static final String FIELD_GEOLOC = "long_lat";
+	public static final String FIELD_PLACE_LINK = "location_link";
 	
 	
 	public static final Color[] DATA_SET_COLORS = new Color[]

@@ -15,12 +15,15 @@ public class ResultsInPlace implements Serializable
 	
 	private Point placePoint;
 	
+	private String placeLink;
+	
 	private Map<DataSet, Long> numResults = new HashMap<>();
 	
-	public ResultsInPlace(String placeName, Point placePoint)
+	public ResultsInPlace(String placeName, Point placePoint, String placeLink)
 	{
 		this.placeName = placeName;
 		this.placePoint = placePoint;
+		this.placeLink = placeLink;
 	}
 
 	public String getPlaceName()
@@ -33,6 +36,11 @@ public class ResultsInPlace implements Serializable
 		return placePoint;
 	}
 	
+	public String getPlaceLink()
+	{
+		return placeLink;
+	}
+
 	public void setNumResultsForDataSet(DataSet dataSet, Long number)
 	{
 		numResults.put(dataSet, number);
