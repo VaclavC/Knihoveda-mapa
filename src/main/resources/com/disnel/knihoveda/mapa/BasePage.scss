@@ -40,6 +40,7 @@ h1 { font-size: 125%; }
 .myButton {
 	cursor: pointer;
 	&:hover { color: $color3; }
+	&.big { font-size: 110%; }
 }
 
 .hidden { display: none !important; }
