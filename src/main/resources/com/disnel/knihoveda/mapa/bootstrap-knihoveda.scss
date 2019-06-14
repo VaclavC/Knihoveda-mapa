@@ -1,11 +1,12 @@
 
 $primary: #400000;
 
-$card-spacer-x: 0.7rem;
-$card-spacer-y: 0.3rem;
-$enable-rounded: false;
+$card-spacer-x: 0.4rem;
+$card-spacer-y: 0.2rem;
 $list-group-item-padding-x: 0.4rem;
 $list-group-item-padding-y: 0.2rem;
+
+$font-size-base: 0.85rem;
 
 @import "webjars!bootstrap/current/scss/bootstrap.scss";
 

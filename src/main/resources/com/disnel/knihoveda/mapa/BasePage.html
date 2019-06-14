@@ -7,29 +7,28 @@
 </head>
 <body>
 
-<div id="TopPart">
-	<div id="Map" wicket:id="map"></div>
-	
-	<div id="Title">
-		<div class="logo">
-			<img src="/img/knihoveda-logo.svg" alt="" />
-		</div>
-		<div class="title">
-			<span><wicket:message key="title.title"></wicket:message></span>
-		</div>
+<div id="Map" wicket:id="map"></div>
+
+<div id="Title">
+	<div class="logo">
+		<img src="/img/knihoveda-logo.svg" alt="" />
 	</div>
-	
-	<div id="SidePanel">
-		<div class="head main">
-			<span class="button" wicket:id="sidePanelButton"><wicket:container wicket:id="tab"></wicket:container></span>
-			
-			<wicket:fragment wicket:id="tab-search"><i class="fas fa-search"></i></wicket:fragment>
-			<wicket:fragment wicket:id="tab-pdfprint"><i class="far fa-file-pdf"></i> / <i class="fas fa-print"></i></wicket:fragment>
-			<wicket:fragment wicket:id="tab-help"><i class="fas fa-question"></i></wicket:fragment>
-			
-		</div>
-		<div class="content main" wicket:id="sidePanelContent"></div>
+	<div class="title">
+		<span><wicket:message key="title.title"></wicket:message></span>
 	</div>
+	<div class="buttons">
+		<button class="btn btn-outline-primary" type="button" wicket:id="sidePanelButton">
+			<wicket:container wicket:id="tab"></wicket:container>
+		</button>
+		
+		<wicket:fragment wicket:id="tab-search"><i class="fas fa-search"></i></wicket:fragment>
+		<wicket:fragment wicket:id="tab-pdfprint"><i class="far fa-file-pdf"></i> / <i class="fas fa-print"></i></wicket:fragment>
+		<wicket:fragment wicket:id="tab-help"><i class="fas fa-question"></i></wicket:fragment>
+	</div>
+</div>
+
+<div id="SidePanel">
+	<div class="content main" wicket:id="sidePanelContent"></div>
 </div>
 
 <div id="Timeline" wicket:id="timeline"></div>

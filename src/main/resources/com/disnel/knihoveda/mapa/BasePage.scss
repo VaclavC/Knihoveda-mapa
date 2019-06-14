@@ -12,16 +12,18 @@ $color3: #bf0000;
 $color4: #e5cccc;
 $color5: #f2eded;
 
-$headerHeight: 5rem;
-$sidePanelWidth: 25rem;
+$headerHeight: 3.5rem;
+$sidePanelWidth: 20rem;
 $timelineHeight: 10rem;
+$spacing: 1rem;
 
-$border1: solid 1px $color1;
-$border1Hidden: solid 1px $color0; 
+$borderRadius: 0.5rem; 
 
 $searchBorderWidth: 1.2rem;
 
 $datasetsNum: 5;
+
+$shadow1: 0 0 0.5rem rgba(0, 0, 0, 0.33); 
 
 
 /* Main CSS */
@@ -44,27 +46,34 @@ h1 { font-size: 125%; }
 
 /* Page parts */
 
-#TopPart { position: fixed; top: 0; left: 0; right: 0; bottom: $timelineHeight; }
-#Title { position: absolute; top: 0; left: 0; right: $sidePanelWidth; height: $headerHeight; }
-#Map { position: absolute; top: $headerHeight; left: 0; right: $sidePanelWidth; bottom: 0; }
-#SidePanel { position: absolute; top: 0; right: 0; width: $sidePanelWidth; bottom: 0; }
-#Timeline { position: fixed; left: 0; right: 0; bottom: 0; height: $timelineHeight; }
+#Title { position: fixed; top: 0; left: 0; right: 0; height: $headerHeight; }
+#Map { position: fixed; top: $headerHeight; left: 0; right: 0; bottom: 0; }
+#SidePanel { position: fixed; top: $headerHeight + $spacing; right: $spacing; width: $sidePanelWidth; bottom: $timelineHeight + 2 * $spacing; }
+#Timeline { position: fixed; left: $spacing; right: $spacing; bottom: $spacing; height: $timelineHeight; }
 
 #Title {  
 	display: flex; align-items: center; 
-	border-bottom: $border1;
+	box-shadow: $shadow1;
+
 	.logo {
 		margin-left: 1rem;
-		img { height: $headerHeight - 2rem; }
+		img { height: $headerHeight - 1rem; }
 	}
+	
 	.title {
+		flex-grow: 1;
 		margin-left: 1rem; font-size: 190%; color: $color2;
+	}
+	
+	.buttons {
+		margin-right: 2rem;
+		.btn { margin-left: 1em; }
 	}
 }
 	
 #SidePanel {
-	border-left: $border1;
 	display: flex; flex-direction: column;
+	background: white; border-radius: $borderRadius; box-shadow: $shadow1;
 	
 	.content.main {
 		flex-grow: 1;
@@ -75,9 +84,7 @@ h1 { font-size: 125%; }
 		.button {
 			flex-grow: 1;  text-align: center;
 			cursor: pointer;
-			border-right: $border1; border-bottom: $border1;
 			&:last-child { border-right: none; }
-			&.active { border-bottom: $border1Hidden; }
 		}
 		&.main .button {
 			height: $headerHeight; line-height: $headerHeight; font-size: 150%;
@@ -91,9 +98,11 @@ h1 { font-size: 125%; }
 		
 		.head {
 			.button {
-				height: 3rem; line-height: 3rem;
-				color: $color0; font-weight: bold; font-size: 115%;
+				height: 2rem; line-height: 2rem;
+				color: $color0; font-weight: bold; font-size: 105%;
 				&:hover { color: $color1; } 
+				&:first-child { border-top-left-radius: $borderRadius; }
+				&:last-child { border-top-right-radius: $borderRadius; }
 			}	
 		}
 		
@@ -113,10 +122,10 @@ h1 { font-size: 125%; }
 }
 
 #Timeline {
-	border-top: $border1;
+	background: white; border-radius: $borderRadius; box-shadow: $shadow1;
 	overflow: hidden;
 	
-	canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-top: solid 2px #b0b0b0; }
+	canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 	
 	.detail {
 		position: absolute; z-index: 99999;
