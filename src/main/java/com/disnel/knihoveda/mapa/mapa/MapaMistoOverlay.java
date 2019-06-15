@@ -1,5 +1,7 @@
 package com.disnel.knihoveda.mapa.mapa;
 
+import java.util.stream.Collectors;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxEventBehavior;
@@ -54,8 +56,8 @@ public class MapaMistoOverlay extends Panel
 		placeLink.add(new AttributeModifier("target", "_blank"));
 		
 		Component placeName;
-		placeLink.add(placeName = new Label("placeName", resultsInPlace.getPlaceName())
-				.add(new AttributeAppender("style", "color: " + currentDataSet.getColor() + ";", ";")));
+		placeLink.add(placeName = new Label("placeName", resultsInPlace.getPlaceName()));
+				//.add(new AttributeAppender("style", "color: " + currentDataSet.getColor() + ";", ";")));
 		
 		// Tecka v miste obce
 		Component dot;
@@ -91,7 +93,11 @@ public class MapaMistoOverlay extends Panel
 		add(detail = new WebMarkupContainer("detail", Model.of(resultsInPlace.getPlaceName())));
 		detail.setOutputMarkupId(true);
 		
-		detail.add(new ListView<DataSet>("dataSet", KnihovedaMapaSession.get().dataSets())
+		detail.add(new ListView<DataSet>("dataSet",
+				KnihovedaMapaSession.get().dataSets()
+				.stream()
+				.filter( ds -> ds.isActive() && resultsInPlace.getNumResultsForDataSet(ds) > 0 )
+				.collect(Collectors.toList()))
 		{
 			private static final long serialVersionUID = 1L;
 
