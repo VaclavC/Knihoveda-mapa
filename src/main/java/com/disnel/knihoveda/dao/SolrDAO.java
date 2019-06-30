@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.SolrQuery.ORDER;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.FacetField.Count;
 import org.apache.solr.common.SolrDocument;
@@ -258,6 +259,8 @@ public class SolrDAO
 				+ fieldValuesQueryParams(dataSet.getFieldsValues(), fieldName)
 				+ timeRangeQueryParams(dataSet.getYearFrom(), dataSet.getYearTo());
 		query.add("q", qParams);
+		
+		query.setFacetSort(FacetParams.FACET_SORT_COUNT);
 		
 		query.addFacetField(facetFieldName);
 		query.setFacetLimit(-1);
