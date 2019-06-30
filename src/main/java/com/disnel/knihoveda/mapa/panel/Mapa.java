@@ -56,7 +56,8 @@ public class Mapa extends Panel
 								new CustomTileSource(KnihovedaMapaConfig.osmURL))
 				),
 				
-				new View(new LongLat(15.335125, 49.741807, "EPSG:4326" )
+//				new View(new LongLat(15.335125, 49.741807, "EPSG:4326" )
+				new View(new LongLat(16.644, 49.493, "EPSG:4326" )
 						.transform(View.DEFAULT_PROJECTION), 8)
 						.minZoom(8)
 						.maxZoom(11)
