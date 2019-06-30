@@ -116,7 +116,7 @@ public class Search extends Panel
 				.setEscapeModelStrings(false));
 		
 		/* Clear selection */
-		title.add(new AjaxGeneralButton("clearSelection", "dblclick")
+		title.add(new AjaxGeneralButton("clearSelection", "click")
 		{
 			private static final long serialVersionUID = 1L;
 
