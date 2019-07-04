@@ -17,15 +17,21 @@
 		<span><wicket:message key="title.title"></wicket:message></span>
 	</div>
 	<div class="buttons">
-		<button class="btn btn-outline-primary" type="button" wicket:id="sidePanelButton">
+		<button class="btn btn-outline-primary" type="button" data-toggle="tooltip" data-placement="bottom" wicket:id="sidePanelButton">
 			<wicket:container wicket:id="tab"></wicket:container>
 		</button>
+		<a class="btn btn-outline-primary" data-toggle="tooltip" data-placement="bottom" wicket:message="title:main.mapaLink" href="https://knihoveda.cz"><img src="/img/knihoveda-logo.svg" style="height: 1.25em; width: auto;"/></a>
 		
 		<wicket:fragment wicket:id="tab-search"><i class="fas fa-search"></i></wicket:fragment>
 		<wicket:fragment wicket:id="tab-pdfprint"><i class="far fa-file-pdf"></i> / <i class="fas fa-print"></i></wicket:fragment>
 		<wicket:fragment wicket:id="tab-help"><i class="fas fa-question"></i></wicket:fragment>
 	</div>
 </div>
+<script>
+	$(document).ready(function () {
+		$('[data-toggle="tooltip"]').tooltip();
+	});
+</script>
 
 <div id="SidePanel">
 	<div class="content main" wicket:id="sidePanelContent"></div>

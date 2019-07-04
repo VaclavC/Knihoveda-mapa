@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.IAjaxIndicatorAware;
@@ -14,6 +15,7 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.StringResourceModel;
 import org.danekja.java.util.function.serializable.SerializableFunction;
 
 import com.disnel.knihoveda.mapa.panel.CasovyGraf;
@@ -46,6 +48,8 @@ public class BasePage extends WebPage implements IAjaxIndicatorAware
 				
 				item.setOutputMarkupId(true);
 				
+				item.add(new AttributeModifier("title", new StringResourceModel("main." + def.tab.getAssociatedMarkupId() + ".tooltip")));
+				
 				/* Set CSS class for active panel */
 				Integer actPanelIndex = KnihovedaMapaSession.get().sidePanelIndex;
 				if ( actPanelIndex != null && actPanelIndex == item.getIndex()
@@ -72,7 +76,7 @@ public class BasePage extends WebPage implements IAjaxIndicatorAware
 						
 						target.add(sidePanel);
 						target.appendJavaScript(String.format(
-								"$('#SidePanel .head .button').removeClass('active'); $('#%s').addClass('active');",
+								"$('#Title .buttons .btn').removeClass('active'); $('#%s').addClass('active');",
 								item.getMarkupId()));
 					}
 				});
