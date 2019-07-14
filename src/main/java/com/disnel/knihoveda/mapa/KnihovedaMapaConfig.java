@@ -38,11 +38,11 @@ public class KnihovedaMapaConfig
 	
 	public static final Color[] DATA_SET_COLORS = new Color[]
 	{
-		new Color("#330505"),
-		new Color("#8C8B0E"),
 		new Color("#800000"),
+		new Color("#8C8B0E"),
 		new Color("#08324D"),
-		new Color("#0A81CC")
+		new Color("#0A81CC"),
+		new Color("#330505")
 	};
 	
 	// Pole, ktera potrebuji pridavat _facet pro facetove vyhledavani
