@@ -20,6 +20,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.NumberTextField;
+import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -31,6 +32,7 @@ import org.apache.wicket.model.StringResourceModel;
 
 import com.disnel.knihoveda.dao.SolrDAO;
 import com.disnel.knihoveda.dao.SolrDAO.FieldCounts;
+import com.disnel.knihoveda.dao.VuFindDAO;
 import com.disnel.knihoveda.mapa.KnihovedaMapaConfig;
 import com.disnel.knihoveda.mapa.KnihovedaMapaSession;
 import com.disnel.knihoveda.mapa.data.DataSet;
@@ -50,7 +52,6 @@ public class Search extends Panel
 {
 	private static final long serialVersionUID = 1L;
 
-	
 	/* Constructor */
 	
 	public Search(String id)
@@ -114,6 +115,18 @@ public class Search extends Panel
 							return SolrDAO.getCountForDataSet(KnihovedaMapaSession.get().currentDataSet());
 						}}))
 				.setEscapeModelStrings(false));
+		
+		/* Link to VuFind */
+		title.add(new ExternalLink("linkToVuFind", new IModel<String>()
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public String getObject()
+			{
+				return VuFindDAO.linkToVuFind(KnihovedaMapaSession.get().currentDataSet());
+			}
+		}));
 		
 		/* Clear selection */
 		title.add(new AjaxGeneralButton("clearSelection", "click")

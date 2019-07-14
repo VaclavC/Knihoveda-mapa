@@ -15,8 +15,10 @@ import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
+import com.disnel.knihoveda.dao.VuFindDAO;
 import com.disnel.knihoveda.mapa.KnihovedaMapaConfig;
 import com.disnel.knihoveda.mapa.KnihovedaMapaSession;
 import com.disnel.knihoveda.mapa.data.DataSet;
@@ -112,6 +114,18 @@ public class MapaMistoOverlay extends Panel
 				
 				Component results;
 				item.add(results = new Label("results", resultsInPlace.getNumResultsForDataSet(dataSet)));
+				
+				item.add(new ExternalLink("vuFindLink", new IModel<String>()
+				{
+					private static final long serialVersionUID = 1L;
+
+					@Override
+					public String getObject()
+					{
+						return VuFindDAO.linkToVuFind(KnihovedaMapaSession.get().currentDataSet(),
+								new DataSet.FieldValues(KnihovedaMapaConfig.FIELD_PLACE_NAME, resultsInPlace.getPlaceName()));
+					}
+				}));
 				
 				if ( ! dataSet.isActive()
 						|| resultsInPlace.getNumResultsForDataSet(dataSet) == 0 )

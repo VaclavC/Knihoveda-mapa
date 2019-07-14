@@ -4,7 +4,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -19,11 +21,13 @@ public class KnihovedaMapaConfig
 	// Property names
 	public static final String PROPERTY_OSM_URL = "osmURL";
 	public static final String PROPERTY_SOLR_URL = "solrURL";
+	public static final String PROPERTY_VUFIND_URL = "vuFindURL";
 	public static final String PROPERTY_LOCATIONS_FILE = "locationsFile";
 	
 	// Live configuration
 	public static String osmURL;
 	public static String solrURL;
+	public static String vuFindURL;
 
 	// Predefined values
 	public static final float MIN_PLACE_SIZE = 12.0f;
@@ -35,6 +39,15 @@ public class KnihovedaMapaConfig
 	public static final String FIELD_GEOLOC = "long_lat";
 	public static final String FIELD_PLACE_LINK = "location_link";
 	
+	public static final Map<String, String> SOLR_VUFIND_FIELDS_MAPPING = new HashMap<>();
+	static
+	{
+		SOLR_VUFIND_FIELDS_MAPPING.put(FIELDS[0], "publishPlace_facet");
+		SOLR_VUFIND_FIELDS_MAPPING.put(FIELDS[1], "printer_publisher_facet");
+		SOLR_VUFIND_FIELDS_MAPPING.put(FIELDS[2], "topic_facet");
+		SOLR_VUFIND_FIELDS_MAPPING.put(FIELDS[3], "genre_facet");
+		SOLR_VUFIND_FIELDS_MAPPING.put(FIELDS[4], "language");
+	}
 	
 	public static final Color[] DATA_SET_COLORS = new Color[]
 	{
@@ -68,6 +81,7 @@ public class KnihovedaMapaConfig
 			
 			osmURL = getProperty(props, PROPERTY_OSM_URL);
 			solrURL = getProperty(props, PROPERTY_SOLR_URL);
+			vuFindURL = getProperty(props, PROPERTY_VUFIND_URL);
 		}
 		catch (IOException e)
 		{

@@ -12,6 +12,8 @@ $color3: #bf0000;
 $color4: #e5cccc;
 $color5: #f2eded;
 
+$colorHighlight: #CC1413;
+
 $headerHeight: 3.5rem;
 $sidePanelWidth: 20rem;
 $timelineHeight: 10rem;
@@ -39,7 +41,7 @@ h1 { font-size: 125%; }
 
 .myButton {
 	cursor: pointer;
-	&:hover { color: $color3; }
+	&:hover { color: $colorHighlight; }
 	&.big { font-size: 110%; }
 }
 
@@ -101,7 +103,7 @@ h1 { font-size: 125%; }
 			.button {
 				height: 2rem; line-height: 2rem;
 				color: $color0; font-weight: bold; font-size: 105%;
-				&:hover { color: $color1; } 
+				&:hover { color: $colorHighlight; } 
 				&:first-child { border-top-left-radius: $borderRadius; }
 				&:last-child { border-top-right-radius: $borderRadius; }
 			}	
@@ -188,6 +190,7 @@ h1 { font-size: 125%; }
 		.detail { 
 			position: absolute; transform: translate(-$overlayDotSize/2, -$overlayDotSize/2);
 			z-index: 5;
+			cursor: auto;
 			
 			.title {
 				margin-left: 0.5*$overlayDotSize; padding-left: 0.75 * $overlayDotSize; padding-right: 0.5em; 
@@ -208,9 +211,12 @@ h1 { font-size: 125%; }
 					
 					.indicator { width: $detailLineH; height: $detailLineH; }
 					.results {
-						min-width: 4em; padding: 0 0.5em; //border-top: $detailLineRB; border-bottom: $detailLineRB; 
+						flex-grow: 1; display: flex;
+						min-width: 4em; padding: 0 0.5em; 
 						white-space: nowrap; line-height: $detailLineH - 2px; height: $detailLineH;
 						font-size: 0.65 * $detailLineH; font-weight: bold;
+						>span:first-child { flex-grow: 1; }
+						>span:last-child { margin-right: 0.7em; }
 					}
 				}
 			}
