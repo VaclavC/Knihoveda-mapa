@@ -13,8 +13,9 @@ $color4: #e5cccc;
 $color5: #f2eded;
 
 $colorLink: #CC1413;
-
 $colorHighlight: #CC1413;
+
+$colorDetailBg: rgba(55, 75, 65, 0.5);
 
 $headerHeight: 3.5rem;
 $sidePanelWidth: 20rem;
@@ -126,20 +127,47 @@ h1 { font-size: 125%; }
 	}
 }
 
+
+$overlayDotSize: 24px;
+$overlayDotMargin: 8px;
+$overlayFontSize: 10px;
+$overlayBgColor: $colorDetailBg; 
+		
+$detailH: 3.75 * $overlayDotSize;
+$detailAng: 40deg;
+$detailLineH: $detailH / $datasetsNum;
+$detailLineRB: solid 1px #ddd;
+
+
 #Timeline {
 	background: white; border-radius: $borderRadius; box-shadow: $shadow1;
-	overflow: hidden;
 	
 	canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 	
 	.detail {
-		position: absolute; z-index: 99999;
-		background: white; border: solid 1px black; border-radius: 4px;
-		font-size: 14px;
-		.head { background: black; color: white; font-weight: bold; padding: 0.5em; }
-		.vysledek {
-			margin: 0.5em 0; padding: 0 0.5em; white-space: nowrap; font-size: 12px;
-			.dataSetIndicator { display: inline-block; width: 1em; height: 1em; }
+		position: absolute; top: 0; transform: translate(-1px, -100%); z-index: 99; display: none;
+		pointer-events: none;
+		font-size: 12px;
+		.vysledky {
+			background: $colorDetailBg; border-top-right-radius: $borderRadius; margin-bottom: 1px;
+			font-size: 0.65 * $detailLineH; font-weight: bold; white-space: nowrap;
+			color: white;
+			
+			.dataSetIndicator { display: inline-block; width: $detailLineH; height: $detailLineH; }
+		}
+		.year {
+			background: $colorHighlight; color: white;
+			font-weight: bold;
+			padding: 0.2em 0.5em;
+		}
+		.arrow {
+			height: 0;
+			border: none; border-left: solid 12px $colorHighlight; border-bottom: solid 12px rgba(255, 255, 255, 0);
+		}
+		&.mirrored {
+			.arrow {
+				border: none; border-right: solid 12px $colorHighlight; border-bottom: solid 12px rgba(255, 255, 255, 0);
+			}
 		}
 	}
 }
@@ -150,11 +178,6 @@ h1 { font-size: 125%; }
 	
 	.mistoOverlay {
 		cursor: pointer; position: relative;
-		
-		$overlayDotSize: 24px;
-		$overlayDotMargin: 8px;
-		$overlayFontSize: 10px;
-		$overlayBgColor: rgba(55, 75, 65, 0.5); 
 		
 		.placeName {
 			position: absolute; transform: translate(-100%, -50%);
@@ -175,10 +198,6 @@ h1 { font-size: 125%; }
 			&.active { z-index: 10; }
 		}
 		
-		$detailH: 3.75 * $overlayDotSize;
-		$detailAng: 40deg;
-		$detailLineH: $detailH / $datasetsNum;
-		$detailLineRB: solid 1px #ddd;
 		
 		$tmpDetSinA: sin($detailAng);
 		$tmpDetCosA: cos($detailAng);

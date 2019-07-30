@@ -348,31 +348,33 @@ class Timeline {
 		
 		// Zobrazit panel s vysledky
 		$(this.detailPanelSel).show();
-		$(this.detailPanelSel + " .head").html(yearWithData.toString());
-		$(this.detailPanelSel + " .vysledek").remove();
+		$(this.detailPanelSel + " .vysledky").empty();
+		$(this.detailPanelSel + " .year").html(yearWithData.toString());
 		this.dataSets.forEach(function(dataset)
 		{
 			if ( yearWithData in dataset.data )
 			{
-				$("#" + this.config.detailPanelId)
+				$("#" + this.config.detailPanelId + " .vysledky")
 					.append(`<div class="vysledek">` +
-								`<span class="dataSetIndicator" style="background-color: ${dataset.color}">&nbsp;</span>` +
+							`<span class="dataSetIndicator" style="background-color: ${dataset.color}">&nbsp;</span>` +
 								`&nbsp;`+
-								`<span class="pocet">${dataset.data[yearWithData]}</span>` +
-							`</div>`);
+								`<span class="pocet">${dataset.data[yearWithData]}</span>`
+							+ `</div>`);
 			}
 		}, this);
 		
 		let xPos = xWithData - this.wrapLeft;
 		if ( xPos > 4*this.contWidth/5)
+		{
 			xPos -= $(this.detailPanelSel).width();
+			$(this.detailPanelSel).addClass("mirrored");
+		}
+		else
+		{
+			$(this.detailPanelSel).removeClass("mirrored");
+		}
 		
-		let yPos = relY;
-		let panelHeight = $(this.detailPanelSel).height(); 
-		if ( relY + panelHeight > this.canvas.height )
-			yPos -= panelHeight;
-		
-		$(this.detailPanelSel).css({ top: yPos, left: xPos})
+		$(this.detailPanelSel).css({ left: xPos})
 		
 		// Vyber casoveho intervalu
 		if ( this.mouseMoveButton == 1 )

@@ -27,7 +27,7 @@ public class TimelineConf implements Serializable
 	private String countAxisFontStyle = "#000000";
 	private Float cursorLineWidth1 = 1.0f;
 	private Float cursorLineWidth2 = 2.0f;
-	private String cursorStyle1 = "#FF9C00";
+	private String cursorStyle1 = "#CC1413";
 	private String cursorStyle2 = "#000000";
 	private String detailPanelId = null;
 	private String selectStyle = "#e0e0e0";
