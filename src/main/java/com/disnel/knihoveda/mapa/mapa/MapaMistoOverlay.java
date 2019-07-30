@@ -53,8 +53,11 @@ public class MapaMistoOverlay extends Panel
 		}
 
 		// Informace o miste
+		WebMarkupContainer placeNameCont;
+		add(placeNameCont = new WebMarkupContainer("placeNameCont"));
+		
 		AbstractLink placeLink;
-		add(placeLink = new ExternalLink("placeLink", resultsInPlace.getPlaceLink()));
+		placeNameCont.add(placeLink = new ExternalLink("placeLink", resultsInPlace.getPlaceLink()));
 		placeLink.add(new AttributeModifier("target", "_blank"));
 		
 		Component placeName;
@@ -136,13 +139,13 @@ public class MapaMistoOverlay extends Panel
 		// Nejaky ten JS pro zobrazovani detailu
 		AttributeAppender showOnOver = new AttributeAppender("onmouseover",
 				String.format("$('#%s').removeClass('hidden'); $('#%s').addClass('active');",
-						detail.getMarkupId(), dot.getMarkupId())); 
+						detail.getMarkupId(), placeNameCont.getMarkupId())); 
 		dot.add(showOnOver);
 		detail.add(showOnOver);
 		
 		AttributeAppender hideOnLeave = new AttributeAppender("onmouseleave",
 				String.format("$('#%s').addClass('hidden'); $('#%s').removeClass('active');",
-						detail.getMarkupId(), dot.getMarkupId())); 
+						detail.getMarkupId(), placeNameCont.getMarkupId())); 
 		detail.add(hideOnLeave);
 		placeName.add(hideOnLeave);
 		dot.add(hideOnLeave);

@@ -12,6 +12,8 @@ $color3: #bf0000;
 $color4: #e5cccc;
 $color5: #f2eded;
 
+$colorLink: #CC1413;
+
 $colorHighlight: #CC1413;
 
 $headerHeight: 3.5rem;
@@ -148,15 +150,10 @@ h1 { font-size: 125%; }
 	.mistoOverlay {
 		cursor: pointer; position: relative;
 		
-		font-family: "Helvetica Neue, Helvetica, Liberation Sans, Arial, sans-serif";
-		
 		$overlayDotSize: 24px;
 		$overlayDotMargin: 8px;
-		$overlayFontSize: 12px;
-//		$overlayBgColor: rgba(255, 255, 255, 0.9); 
+		$overlayFontSize: 10px;
 		$overlayBgColor: rgba(55, 75, 65, 0.5); 
-//		$overlayBgColor: rgba(140, 141, 169, 0.5); 
-//		$overlayBgColor: rgba(230, 230, 230, 0.7); 
 		
 		.placeName {
 			position: absolute; transform: translate(-100%, -50%);
@@ -164,16 +161,17 @@ h1 { font-size: 125%; }
 			line-height: $overlayDotSize; 
 			background: $overlayBgColor; color: white; text-shadow: -1px -1px 2px rgba(0, 0, 0, 0.75);
 			border-top-left-radius: $borderRadius;
-			white-space: nowrap; font-size: $overlayFontSize; font-weight: bold;
+			white-space: nowrap; font-size: $overlayFontSize; font-weight: bold; text-transform: uppercase;
 			z-index: 1;
 			a { color: white; }
+			&.active { background: black; }
 		}
 		.dot {
 			position: absolute; width: $overlayDotSize; height: $overlayDotSize; margin: $overlayDotMargin;
 			left: -$overlayDotSize/2 - $overlayDotMargin; top: -$overlayDotSize/2 - $overlayDotMargin; z-index: 1;
-			border-radius: 50%; background: black;
+			circle { stroke: white; fill: black; }
 			z-index: 10;
-			&.active { z-index: 15; }
+//			&.active { z-index: 15; }
 		}
 		
 		$detailH: 3.75 * $overlayDotSize;
@@ -222,7 +220,11 @@ h1 { font-size: 125%; }
 			}
 		}
 		
-		&.shaded { opacity: 0.4; }
+		&.selected {
+			.dot {
+				circle { fill: $colorLink; }
+			}
+		}
 	}
 }
 
