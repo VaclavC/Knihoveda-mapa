@@ -146,6 +146,7 @@ h1 { font-size: 125%; }
 
 #Map {
 	#mapa-content { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 0; }
+	#mapa-overlays { position: relative; }
 	
 	.mistoOverlay {
 		cursor: pointer; position: relative;
@@ -170,8 +171,8 @@ h1 { font-size: 125%; }
 			position: absolute; width: $overlayDotSize; height: $overlayDotSize; margin: $overlayDotMargin;
 			left: -$overlayDotSize/2 - $overlayDotMargin; top: -$overlayDotSize/2 - $overlayDotMargin; z-index: 1;
 			circle { stroke: white; fill: black; }
-			z-index: 10;
-//			&.active { z-index: 15; }
+			z-index: 3;
+			&.active { z-index: 10; }
 		}
 		
 		$detailH: 3.75 * $overlayDotSize;
