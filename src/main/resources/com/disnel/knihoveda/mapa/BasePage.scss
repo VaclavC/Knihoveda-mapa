@@ -154,6 +154,7 @@ $detailLineRB: solid 1px #ddd;
 			color: white;
 			
 			.dataSetIndicator { display: inline-block; width: $detailLineH; height: $detailLineH; }
+			.pocet { font-size: 11px; padding: 0.15em 0.5em 0.15em 0.1em; }
 		}
 		.year {
 			background: $colorHighlight; color: white;
