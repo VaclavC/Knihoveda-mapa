@@ -1,4 +1,25 @@
 
+/* Bootstrap */
+
+$primary: #400000;
+
+$card-spacer-x: 0.4rem;
+$card-spacer-y: 0.2rem;
+$list-group-item-padding-x: 0.4rem;
+$list-group-item-padding-y: 0.2rem;
+
+$font-size-base: 0.85rem;
+
+@import "webjars!bootstrap/current/scss/bootstrap.scss";
+
+.SearchField .dropdown-menu {
+	min-width: 100% !important; transform: none !important;
+	li a { white-space: normal !important; }
+}
+
+
+/* More styles */
+
 @import "trigonometry.scss";
 
 /* Fonts */

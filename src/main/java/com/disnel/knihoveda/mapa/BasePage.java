@@ -25,7 +25,6 @@ import com.disnel.knihoveda.mapa.panel.PdfPrint;
 import com.disnel.knihoveda.mapa.panel.Search;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.behavior.CssClassNameAppender;
-import de.agilecoders.wicket.sass.SassResourceReference;
 import de.agilecoders.wicket.webjars.request.resource.WebjarsCssResourceReference;
 
 public class BasePage extends WebPage implements IAjaxIndicatorAware
@@ -102,8 +101,6 @@ public class BasePage extends WebPage implements IAjaxIndicatorAware
 	{
 		response.render(CssHeaderItem.forReference(
 				new WebjarsCssResourceReference("font-awesome/5.7.2/css/all.css")));
-	
-		response.render(CssHeaderItem.forReference(new SassResourceReference(getClass(), "BasePage.scss")));
 	}
 	
 	/* Definition of tabs in side panel */
