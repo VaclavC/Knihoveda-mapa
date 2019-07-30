@@ -165,7 +165,7 @@ h1 { font-size: 125%; }
 			white-space: nowrap; font-size: $overlayFontSize; font-weight: bold; text-transform: uppercase;
 			z-index: 1;
 			a { color: white; }
-			&.active { background: black; }
+			&.active { background: black; z-index: 10; }
 		}
 		.dot {
 			position: absolute; width: $overlayDotSize; height: $overlayDotSize; margin: $overlayDotMargin;
