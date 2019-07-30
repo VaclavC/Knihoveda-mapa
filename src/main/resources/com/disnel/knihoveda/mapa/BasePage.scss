@@ -103,7 +103,7 @@ h1 { font-size: 125%; }
 	background: white; border-radius: $borderRadius; box-shadow: $shadow1;
 	
 	.content.main {
-		flex-grow: 1;
+		flex-grow: 1; height: 100%;
 	}
 	
 	.head {
@@ -145,6 +145,11 @@ h1 { font-size: 125%; }
 				overflow-y: scroll;
 			}
 		}
+	}
+	
+	.Help {
+		padding: 1em; overflow-y: auto; box-sizing: border-box; height: 100%;
+		text-align: justify;
 	}
 }
 

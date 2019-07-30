@@ -65,7 +65,7 @@ public class KnihovedaMapaApplication extends WebApplication
 		    public List<HeaderItem> getDependencies()
 		    {
 		    	return Arrays.asList(
-		    			CssHeaderItem.forReference(new SassResourceReference(BasePage.class, "bootstrap-knihoveda.scss"))
+		    			CssHeaderItem.forReference(new SassResourceReference(BasePage.class, "BasePage.scss"))
 		    			);
 		    }
 		}));

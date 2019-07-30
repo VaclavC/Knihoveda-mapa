@@ -6,8 +6,51 @@
 
 
 
-[HELP]
+<div class="accordion" id="Help">
+	<div class="card">
+		<div class="card-header">
+			<button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse-main">
+				<b><wicket:message key="help.main.title"></wicket:message></b>
+			</button>
+		</div>
+		<div id="collapse-main" class="collapse show" data-parent="#Help">
+			<div class="card-body"><wicket:message key="help.main.content"></wicket:message></div>
+		</div>
+	</div>
 
+	<div class="card">
+		<div class="card-header">
+			<button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse-datasets">
+				<b><wicket:message key="help.datasets.title"></wicket:message></b>
+			</button>
+		</div>
+		<div id="collapse-datasets" class="collapse" data-parent="#Help">
+			<div class="card-body"><wicket:message key="help.datasets.content"></wicket:message></div>
+		</div>
+	</div>
+
+	<div class="card">
+		<div class="card-header">
+			<button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse-fields">
+				<b><wicket:message key="help.fields.title"></wicket:message></b>
+			</button>
+		</div>
+		<div id="collapse-fields" class="collapse" data-parent="#Help">
+			<div class="card-body"><wicket:message key="help.fields.content"></wicket:message></div>
+		</div>
+	</div>
+
+	<div class="card">
+		<div class="card-header">
+			<button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse-timeline">
+				<b><wicket:message key="help.timeline.title"></wicket:message></b>
+			</button>
+		</div>
+		<div id="collapse-timeline" class="collapse" data-parent="#Help">
+			<div class="card-body"><wicket:message key="help.timeline.content"></wicket:message></div>
+		</div>
+	</div>
+</div>
 
 
 </wicket:panel>
