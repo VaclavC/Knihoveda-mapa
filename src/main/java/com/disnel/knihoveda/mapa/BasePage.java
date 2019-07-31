@@ -20,6 +20,7 @@ import org.danekja.java.util.function.serializable.SerializableFunction;
 
 import com.disnel.knihoveda.mapa.panel.CasovyGraf;
 import com.disnel.knihoveda.mapa.panel.Help;
+import com.disnel.knihoveda.mapa.panel.Info;
 import com.disnel.knihoveda.mapa.panel.Mapa;
 import com.disnel.knihoveda.mapa.panel.PdfPrint;
 import com.disnel.knihoveda.mapa.panel.Search;
@@ -125,7 +126,8 @@ public class BasePage extends WebPage implements IAjaxIndicatorAware
 	private List<TabDef> sidePanelTabs = Arrays.asList(
 		new TabDef(new Fragment(TabDef.tabID, "tab-search", this), 		Search::new),
 		new TabDef(new Fragment(TabDef.tabID, "tab-pdfprint", this),	PdfPrint::new),
-		new TabDef(new Fragment(TabDef.tabID, "tab-help", this),		Help::new)
+		new TabDef(new Fragment(TabDef.tabID, "tab-help", this),		Help::new),
+		new TabDef(new Fragment(TabDef.tabID, "tab-info", this),		Info::new)
 	);
 
 	
