@@ -4,6 +4,7 @@
 	<meta charset="UTF-8">
 	<meta name="author" content="Ing. arch. Václav Čermák (http://www.disnel.com)">
 	<title><wicket:message key="title.title"></wicket:message></title>
+	<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
 </head>
 <body>
 
@@ -59,6 +60,33 @@
 	</div>
 	<div id="ajaxIndicatorDetail"></div>
 </div></div>
+
+<div class="modal" tabindex="-1" role="dialog" id="Intro">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body text-justify">
+				<wicket:message key="intro"></wicket:message>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-dismiss="modal" id="CloseAndSetCookie"><wicket:message key="intro.close"></wicket:message></button>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+$(document).ready(function () {
+	if ( typeof Cookies.get('IntroShown') === 'undefined' )
+		$('#Intro').modal('show');
+});
+$('#CloseAndSetCookie').click(function () {
+	Cookies.set('IntroShown', 1);
+});
+</script>
 
 </body>
 </html>
