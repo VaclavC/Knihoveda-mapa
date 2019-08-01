@@ -77,6 +77,10 @@ public class Search extends Panel
 						String.format("background-color: %s;", dataSet.getColor().toString()),
 						";"));
 				
+				item.add(new AttributeModifier("title",
+						new StringResourceModel("search.dataSet.tooltip")
+						.setParameters(item.getIndex() + 1)));
+				
 				item.add(new Label("title", Integer.toString(item.getIndex() + 1)));
 				
 				item.add(new AjaxEventBehavior("click")
