@@ -24,12 +24,12 @@ public class VuFindDAO
 		fvList.addAll(Arrays.asList(additionalFieldValues));
 		for ( FieldValues fv : fvList )
 		{
-			sb.append(sep); sep = '&';
-			
 			String vuFindFilterName = KnihovedaMapaConfig.SOLR_VUFIND_FIELDS_MAPPING.get(fv.getName());
 			
 			for ( String val : fv.getValues() )
 			{
+				sb.append(sep); sep = '&';
+				
 				// Hack for languages
 				String vfVal = val;
 				if ( "language_cs".equals(fv.getName()) )
@@ -67,11 +67,15 @@ public class VuFindDAO
 			}
 		}
 		
+		/* Replace spaces with %20 */
+		String ret = sb.toString();
+		ret.replace(" ", "%20");
+		
 		/* Return */
-		return sb.toString();
+		return ret;
 	}
 	
-/* Solr -> VuFind langage map (hack) */
+	/* Solr -> VuFind langage map (hack) */
 	
 	private static Map<String, String> SOLR_TO_VUFIND_LANG = new HashMap<>();
 	static
