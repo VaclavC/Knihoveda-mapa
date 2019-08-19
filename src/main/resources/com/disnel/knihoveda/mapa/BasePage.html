@@ -5,10 +5,9 @@
 	<meta name="author" content="Ing. arch. Václav Čermák (http://www.disnel.com)">
 	<title><wicket:message key="title.title"></wicket:message></title>
 	<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+	<script src="/js/html2canvas.min.js"></script>
 </head>
 <body>
-
-<div id="Map" wicket:id="map"></div>
 
 <div id="Title">
 	<div class="logo">
@@ -20,6 +19,9 @@
 	<div class="buttons">
 		<button class="btn btn-outline-primary" type="button" data-toggle="tooltip" data-placement="bottom" wicket:id="sidePanelButton">
 			<wicket:container wicket:id="tab"></wicket:container>
+		</button>
+		<button class="btn btn-outline-primary" type="button" onclick="printAll();">
+			<i class="fas fa-print"></i>
 		</button>
 		<a target="_blank" class="btn btn-outline-primary" data-toggle="tooltip" data-placement="bottom" wicket:message="title:main.mapaLink" href="https://knihoveda.cz"><img src="/img/knihoveda-logo.svg" style="height: 1.25em; width: auto;"/></a>
 		
@@ -35,11 +37,16 @@
 	});
 </script>
 
+<div id="Map" wicket:id="map"></div>
+<div id="PrintMap"></div>
+
+<div id="Timeline" wicket:id="timeline" class="noprint"></div>
+<div id="PrintTimeline"></div>
+
 <div id="SidePanel">
 	<div class="content main" wicket:id="sidePanelContent"></div>
 </div>
-
-<div id="Timeline" wicket:id="timeline"></div>
+<div id="PrintDataSets" wicket:id="resultsForPrint"></div>
 
 <div id="ajaxIndicator"><div>
 	<div class="gears">
@@ -82,6 +89,29 @@ $(document).ready(function () {
 $('#CloseAndSetCookie').click(function () {
 	Cookies.set('IntroShown', 1);
 });
+</script>
+
+<script>
+function printAll()
+{
+	html2canvas($("#Map")[0], {
+		logging: true,
+		useCORS: true,
+		ignoreElements: (e) => e.classList.contains('ol-control'),
+	}).then(function(canvasMap) {
+		var nodeMap = document.getElementById("PrintMap");
+		nodeMap.innerHTML = '';
+		nodeMap.appendChild(canvasMap);
+		
+		html2canvas($("#Timeline .mainCanvas")[0]).then(function(canvasTimeline) {
+			var nodeTimeline = document.getElementById("PrintTimeline");
+			nodeTimeline.innerHTML = '';
+			nodeTimeline.appendChild(canvasTimeline);
+			
+			window.print();
+		});
+	});	
+}
 </script>
 
 </body>

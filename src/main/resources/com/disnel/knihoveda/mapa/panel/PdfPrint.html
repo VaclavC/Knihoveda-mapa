@@ -6,7 +6,23 @@
 
 
 
-[PDF / PRINT]
+<div class="container-fluid mt-3">
+	<p>
+		<wicket:message key="print.info"></wicket:message>
+	</p>
+
+<!-- 	<button class="btn btn-primary btn-block" type="button" onclick="doPrint();"> -->
+	<button class="btn btn-primary btn-block" type="button" onclick="beforePrint();">
+		<wicket:message key="print.printButton"></wicket:message>
+	</button>
+</div>
+<script>
+function doPrint()
+{
+	window.print();	
+}
+</script>
+
 
 
 

@@ -21,9 +21,9 @@ public class CustomTileSource extends TileSource
 
 	@Override
 	public String renderJs() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("{ 'url' : '" + url + "' }");
-		return builder.toString();
+		return String.format(
+				"{ 'url' : '%s', 'crossOrigin': null }",
+				url);
 	}
 
 }

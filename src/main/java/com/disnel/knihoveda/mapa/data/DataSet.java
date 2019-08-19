@@ -139,6 +139,11 @@ public class DataSet implements Serializable
 		return this;
 	}
 	
+	public boolean hasTimeRange()
+	{
+		return yearFrom != null && yearTo != null;
+	}
+	
 	
 	/* Get all field values */
 	

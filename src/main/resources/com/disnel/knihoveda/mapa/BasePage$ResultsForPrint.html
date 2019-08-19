@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:wicket="http://my.site.org">
+<body>
+
+<wicket:panel>
+
+
+
+<h1><wicket:message key="print.dataSets.heading"></wicket:message></h1>
+
+<div class="printResultSetsCont">
+	<div class="resultSet" wicket:id="resultSet">
+		<div class="head">
+			<span class="indicator" wicket:id="indicator">&nbsp;</span>
+			<span class="count" wicket:id="resultsCount"></span>
+		</div>
+		<div class="field" wicket:id="field">
+			<div class="title" wicket:id="title"></div>
+			<div class="value" wicket:id="value"><span wicket:id="content"></span></div>
+		</div>
+		<div class="field" wicket:id="timeRange">
+			<div class="title"><wicket:message key="field.casoveRozmezi"></wicket:message></div>
+			<div class="value">
+				<wicket:message key="field.casoveRozmezi.od"></wicket:message>
+				<span wicket:id="timeRangeFrom"></span>
+				<wicket:message key="field.casoveRozmezi.do"></wicket:message>
+				<span wicket:id="timeRangeTo"></span>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+</wicket:panel>
+
+</body>
+</html>
