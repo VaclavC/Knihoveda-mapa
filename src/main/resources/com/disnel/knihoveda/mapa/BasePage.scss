@@ -347,6 +347,8 @@ $detailLineRB: solid 1px #ddd;
 
 @media print {
 	
+	body { font-size: 20px; }
+	
 	#Title, #Map, #Timeline, #SidePanel {
 		display: none;
 	}
