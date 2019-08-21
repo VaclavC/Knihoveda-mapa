@@ -37,7 +37,7 @@ public class KnihovedaMapaSession extends WebSession
 		initDataSets();
 		
 		// Pripravit maximalni pocet vysledku v jednom miste, casovy interval
-		initTimeRange();
+		findDataLimits();
 		
 		// Nastavit locale
 		setLocale(new Locale("cs"));
@@ -86,16 +86,23 @@ public class KnihovedaMapaSession extends WebSession
 		this.currentDataSet = currentDataSet;
 	}
 	
+	public int currentDataSetIndex()
+	{
+		return dataSets.indexOf(currentDataSet);
+	}
 	
-	/* Minimalni a maximalni rok */
-	private int minYear, maxYear;
 	
-	private void initTimeRange()
+	/* Limitni udaje */
+	private int minYear, maxYear, maxCount;
+	
+	private void findDataLimits()
 	{
 		int[] timeRange = SolrDAO.findTimeRange();
 		
 		minYear = timeRange[0];
 		maxYear = timeRange[1];
+		
+		maxCount = SolrDAO.findMaxYearCount();
 	}
 	
 	public int minYear()
@@ -106,6 +113,11 @@ public class KnihovedaMapaSession extends WebSession
 	public int maxYear()
 	{
 		return maxYear;
+	}
+	
+	public int maxCount()
+	{
+		return maxCount;
 	}
 
 }

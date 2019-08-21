@@ -400,6 +400,31 @@ public class SolrDAO
 	}
 	
 	/**
+	 * Find maximal count per year
+	 * 
+	 * @return
+	 */
+	public static int findMaxYearCount()
+	{
+		SolrQuery query = new SolrQuery();
+		
+		String qParams = emptyQueryParams();
+		query.add("q", qParams);
+		
+		query.addFacetField(KnihovedaMapaConfig.FIELD_TIME);
+		query.setFacetMinCount(1);
+		query.setFacetSort(FacetParams.FACET_SORT_COUNT);
+		query.setFacetLimit(-1);
+		query.setRows(0);
+		
+		QueryResponse response = SolrDAO.getResponse(query);
+		FacetField publishPlaceFF = response.getFacetField("publishDate");
+		
+		List<Count> listCount = publishPlaceFF.getValues();
+		return Math.toIntExact(listCount.get(0).getCount());
+	}
+	
+	/**
 	 * Find maximal count of results in a place 
 	 * 
 	 * @return

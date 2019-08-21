@@ -6,7 +6,12 @@
 
 
 
-<canvas class="mainCanvas" wicket:id="timeline"></canvas>
+<div wicket:id="timelineCont" class="timelineCont">
+	<div class="selection"><canvas></canvas></div>
+	<div class="grid"><canvas></canvas></div>
+	<div class="dataSet" wicket:id="dataSet"><canvas></canvas></div>
+	<div class="cursor"><canvas></canvas></div>
+</div>
 
 <div id="timelineRecordInfo" class="detail">
 	<div class="vysledky">

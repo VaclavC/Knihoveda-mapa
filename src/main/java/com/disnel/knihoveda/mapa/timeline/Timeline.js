@@ -532,7 +532,7 @@ class Timeline {
 	yFromCount(count)
 	{
 		var y = this.y2 - (count / this.countMax ) * (this.y2 - this.y1);
-		return Math.floor(y) + 0.5;
+		return  ;
 	}
 	
 	closestYearTo(yearToFind)

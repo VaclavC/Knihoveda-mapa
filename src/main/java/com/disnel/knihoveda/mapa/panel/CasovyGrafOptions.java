@@ -1,16 +1,19 @@
-package com.disnel.knihoveda.mapa.timeline;
+package com.disnel.knihoveda.mapa.panel;
 
 import java.io.Serializable;
+
+import com.disnel.knihoveda.dao.JSON;
+import com.github.openjson.JSONException;
 
 import lombok.experimental.Accessors;
 
 @Accessors(chain = true)
 @lombok.Data
-public class TimelineConf implements Serializable
+public class CasovyGrafOptions implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	private Integer yearMin, yearMax;
+	private Integer yearMin, yearMax, countMax;
 	
 	private Float lineWidth = 1.5f;
 	private Float dotSize = 5.0f;
@@ -25,6 +28,7 @@ public class TimelineConf implements Serializable
 	private String countAxisStyle = "#b0b0b0";
 	private String countAxisFont = "10px Arial";
 	private String countAxisFontStyle = "#000000";
+	private Integer countAxisTextX = 4;
 	private Float cursorLineWidth1 = 1.0f;
 	private Float cursorLineWidth2 = 2.0f;
 	private String cursorStyle1 = "#CC1413";
@@ -35,4 +39,16 @@ public class TimelineConf implements Serializable
 	private String selectFontStyle = "#ffffff";
 	private Integer selectTextDist = 19;
 	private Float wheelScaleK = 1.1f;
+	
+	public String json()
+	{
+		try
+		{
+			return JSON.toJSON(this).toString();
+		}
+		catch (IllegalArgumentException | IllegalAccessException | JSONException e)
+		{
+			throw new IllegalStateException("Cannot convert to JSON");
+		}
+	}
 }

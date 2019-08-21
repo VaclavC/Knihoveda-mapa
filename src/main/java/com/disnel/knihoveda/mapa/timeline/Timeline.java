@@ -18,6 +18,7 @@ import com.disnel.knihoveda.dao.JSON;
 import com.disnel.knihoveda.mapa.KnihovedaMapaSession;
 import com.disnel.knihoveda.mapa.data.DataSet;
 import com.disnel.knihoveda.mapa.events.TimeSelectEvent;
+import com.disnel.knihoveda.mapa.panel.CasovyGrafOptions;
 import com.github.openjson.JSONException;
 
 public class Timeline extends WebMarkupContainer
@@ -26,13 +27,13 @@ public class Timeline extends WebMarkupContainer
 
 	public static final String AJAX_CALLBACK_DATA_NAME = "callback";
 	
-	private TimelineConf conf;
+	private CasovyGrafOptions conf;
 	
 	private List<TimelineDataset> data;
 	
 	private Integer yearFrom, yearTo;
 	
-	public Timeline(String id, TimelineConf conf)
+	public Timeline(String id, CasovyGrafOptions conf)
 	{
 		super(id);
 		this.conf = conf;
