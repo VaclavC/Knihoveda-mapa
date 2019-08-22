@@ -30,14 +30,18 @@ class CasovyGraf
 		
 		// Callbacks
 		$(window).resize( () => { cgThis.draw(); });
+		$('#' + this.contId).on('mousedown',	(ev) => { this.mouseDown(ev); });
+		$('body')           .on('mouseup',		(ev) => { this.mouseUp(ev); });
+		$('#' + this.contId).on('mousemove',	(ev) => { this.mouseMove(ev); });
+		$('#' + this.contId).on('wheel',		(ev) => { this.mouseWheel(ev); });
 	}
 	
 	
 	/* Data set methods */
 	
-	datasetSetData(index, years, counts)
+	datasetSetData(index, color, years, counts)
 	{
-		this.dataSets.set(index, new DataSet(index, years, counts));
+		this.dataSets.set(index, new DataSet(index, color, years, counts));
 	}
 	
 	datasetClear(index)
@@ -53,9 +57,13 @@ class CasovyGraf
 		var cgThis = this;
 		
 		this.initDraw();
+		
 		this.drawOsy();
+		
+		var dataSetsCtx = this.cont.find('canvas.dataSets')[0].getContext("2d");
+		dataSetsCtx.clearRect(0, 0, this.contW, this.contH);
 		this.dataSets.forEach(function (dataSet) {
-			cgThis.drawDataSet(dataSet);
+			cgThis.drawDataSet(dataSetsCtx, dataSet);
 		});
 	}
 	
@@ -81,17 +89,26 @@ class CasovyGraf
 		this.yearMax = Number.MIN_SAFE_INTEGER;
 		
 		this.dataSets.forEach(function (dataSet) {
-			cgThis.countMax = Math.max(cgThis.countMax, dataSet.countMax);
+			// Rok - muzeme vzit rovnou z rozmezi datove sady
 			cgThis.yearMin = Math.min(cgThis.yearMin, dataSet.yearMin);
 			cgThis.yearMax = Math.max(cgThis.yearMax, dataSet.yearMax);
+			
+			// Pocet vysledku - musime najit aktualne nejvetsi ve vyrezu
+			let actCountMax = Number.MIN_SAFE_INTEGER;
+			let year1 = cgThis.xToYear(0);
+			let year2 = cgThis.xToYear(cgThis.contW);
+			dataSet.data.forEach(function (count, year) {
+				if ( year >= year1 && year <= year2 )
+					actCountMax = Math.max(actCountMax, count);
+			});
+			
+			cgThis.countMax = Math.max(cgThis.countMax, actCountMax);
 		});
-		
-		console.log("countMax: " + this.countMax + " years: " + this.yearMin + " - " + this.yearMax);
 	}
 	
 	drawOsy()
 	{
-		var ctx = this.cont.find('.grid canvas')[0].getContext("2d");
+		var ctx = this.cont.find('canvas.grid')[0].getContext("2d");
 		ctx.clearRect(0, 0, this.contW, this.contH);
 		
 		// Casova osa
@@ -143,19 +160,13 @@ class CasovyGraf
 		ctx.stroke();
 	}
 	
-	drawDataSet(dataSet)
+	drawDataSet(ctx, dataSet)
 	{
 		var cgThis = this;
 		
-		var dataSetCont = $('#' + this.contId + " .dataSet")[dataSet.index];
-		var color = $(dataSetCont).data('color');
-		
-		var ctx = $(dataSetCont).find('canvas')[0].getContext("2d");
-		ctx.clearRect(0, 0, this.contW, this.contH);
-		
 		ctx.lineWidth = this.conf.lineWidth;
-		ctx.strokeStyle = color;
-		ctx.fillStyle = color;
+		ctx.strokeStyle = dataSet.color;
+		ctx.fillStyle = dataSet.color;
 		
 		ctx.beginPath();
 		for ( var year = dataSet.yearMin; year <= dataSet.yearMax; year++ )
@@ -187,6 +198,59 @@ class CasovyGraf
 	}
 	
 	
+	/* Interactive controls */
+	
+	mouseDown(ev)
+	{
+		this.mousePrevPageX 	= ev.pageX;
+		this.mouseDownButton	= ev.originalEvent.button;
+	}
+	
+	mouseUp(ev)
+	{
+		this.mouseDownButton = -1;
+	}
+	
+	mouseMove(ev)
+	{
+		// Posun grafu
+		if ( this.mouseDownButton == 1 )
+		{
+			let deltaX = ev.pageX - this.mousePrevPageX;
+			this.mousePrevPageX = ev.pageX;
+			
+			this.shiftX -= deltaX;
+
+			this.fixViewport();
+			
+			this.draw();
+		}
+	}
+	
+	mouseWheel(ev)
+	{
+		var whEv = ev.originalEvent;
+		var inChart, mouseX;
+		[ inChart, mouseX ] = this.mousePos(whEv);
+		
+		if ( inChart )
+		{
+			var year = this.xToYear(mouseX);
+			
+			var oldScaleX = this.scaleX;
+			if ( whEv.deltaY > 0 )
+				this.scaleX /= this.conf.wheelScaleK;
+			else
+				this.scaleX *= this.conf.wheelScaleK;
+		
+			this.shiftX += this.graphW * (year - this.yearMin) * (this.scaleX - oldScaleX) / (this.yearMax - this.yearMin);
+			
+			this.fixViewport();
+			
+			this.draw();
+		}
+	}
+	
 	
 	/* Coordinate transformations */
 	
@@ -209,18 +273,52 @@ class CasovyGraf
 	{
 		return (this.graphH + this.conf.paddingTop - y) * this.countMax / this.scaleY / this.graphH;
 	}
+
+	fixViewport()
+	{
+		var x1 = this.yearToX(this.yearMin);
+		if ( x1 > this.conf.paddingLeft )
+			this.shiftX += x1 - this.conf.paddingLeft;
+		
+		var x2 = this.yearToX(this.yearMax);
+		if ( x2 < this.contW - this.conf.paddingRight )
+		{
+			this.shiftX -= this.contW - this.conf.paddingRight - x2;
+			
+			if ( this.shiftX < 0 )
+			{
+				this.scaleX = 1.0;
+				this.shiftX = 0;
+			}
+		}
+	}
 	
+	mousePos(ev)
+	{
+		var parentOffset = $('#' + this.contId).offset();
+		var relX = ev.pageX - parentOffset.left;
+		var relY = this.contH - (ev.pageY - parentOffset.top);
+		
+		// Kdyz jsme mimo, nic neresime
+		if ( relX < this.conf.paddingLeft || relX > this.contW - this.conf.paddingRight
+				|| relY < this.conf.paddingBottom || relY > this.contH - this.conf.paddingTop )
+			return [false, relX, relY];
+		
+		return [true, relX, relY];
+	}
+
 }
 
 
 
 class DataSet
 {
-	constructor(index, years, counts)
+	constructor(index, color, years, counts)
 	{
 		var dsThis = this;
 		
 		this.index = index;
+		this.color = color;
 		this.years = years;
 		this.counts = counts;
 		

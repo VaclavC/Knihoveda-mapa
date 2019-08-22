@@ -1,18 +1,14 @@
 package com.disnel.knihoveda.mapa.panel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.solr.client.solrj.response.FacetField.Count;
-import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.event.IEvent;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.JavaScriptReferenceHeaderItem;
 import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.request.resource.PackageResourceReference;
 
@@ -22,8 +18,6 @@ import com.disnel.knihoveda.mapa.data.DataSet;
 import com.disnel.knihoveda.mapa.events.AjaxEvent;
 import com.disnel.knihoveda.mapa.events.DataSetChangedEvent;
 import com.disnel.knihoveda.mapa.events.UserSelectionChangedEvent;
-import com.disnel.knihoveda.mapa.timeline.Timeline;
-import com.disnel.knihoveda.mapa.timeline.TimelineDataset;
 
 public class CasovyGraf extends Panel
 {
@@ -43,24 +37,9 @@ public class CasovyGraf extends Panel
 		timelineConf.setYearMax(KnihovedaMapaSession.get().maxYear());
 		timelineConf.setCountMax(KnihovedaMapaSession.get().maxCount());
 		
-		// Vnejsi kontejner
+		// Kontejner
 		add(timelineCont = new WebMarkupContainer("timelineCont"));
 		timelineCont.setOutputMarkupId(true);
-		
-		// Datove sady
-		timelineCont.add(new ListView<DataSet>("dataSet", KnihovedaMapaSession.get().dataSets())
-		{
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected void populateItem(ListItem<DataSet> item)
-			{
-				DataSet dataSet = item.getModelObject();
-				
-				item.add(new AttributeModifier("data-color", dataSet.getColor().toString()));
-			}
-		});
 	}
 
 	
@@ -115,7 +94,7 @@ public class CasovyGraf extends Panel
 		return String.format("%s.draw();", jsVar());
 	}
 	
-	public String jsDataSetData(int dataSetIndex, List<Count> data)
+	public String jsDataSetData(int dataSetIndex, DataSet dataSet, List<Count> data)
 	{
 		StringBuilder sbYears = new StringBuilder();
 		StringBuilder sbCounts = new StringBuilder();
@@ -141,7 +120,9 @@ public class CasovyGraf extends Panel
 		sb.append(jsVar());
 		sb.append(".datasetSetData(");
 		sb.append(dataSetIndex);
-		sb.append(',');
+		sb.append(",'");
+		sb.append(dataSet.getColor().toString());
+		sb.append("',");
 		sb.append(sbYears);
 		sb.append(',');
 		sb.append(sbCounts);
@@ -153,7 +134,7 @@ public class CasovyGraf extends Panel
 	public String jsDataSetData(int index, DataSet dataSet)
 	{
 		List<Count> listCount = SolrDAO.getCountByYear(dataSet);
-		return jsDataSetData(index, listCount);
+		return jsDataSetData(index, dataSet, listCount);
 	}
 	
 	public String jsDataSetClear(int index)
@@ -177,16 +158,6 @@ public class CasovyGraf extends Panel
 		}
 		
 		return sb.toString();
-	}
-	
-	public String jsInitDraw()
-	{
-		return String.format("%s.initDraw();", jsVar());
-	}
-	
-	public String jsDrawDataSet(int dataSetIndex)
-	{
-		return String.format("%s.drawDataSetByIndex(%d);", jsVar(), dataSetIndex);
 	}
 	
 }
