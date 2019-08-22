@@ -299,7 +299,6 @@ class CasovyGraf
 		var relX = ev.pageX - parentOffset.left;
 		var relY = this.contH - (ev.pageY - parentOffset.top);
 		
-		// Kdyz jsme mimo, nic neresime
 		if ( relX < this.conf.paddingLeft || relX > this.contW - this.conf.paddingRight
 				|| relY < this.conf.paddingBottom || relY > this.contH - this.conf.paddingTop )
 			return [false, relX, relY];
