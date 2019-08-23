@@ -76,7 +76,7 @@ h1 { font-size: 125%; }
 #Title { position: fixed; top: 0; left: 0; right: 0; height: $headerHeight; }
 #Map { position: fixed; top: $headerHeight; left: 0; right: 0; bottom: 0; }
 #PrintMap { display: none; }
-#Timeline { position: fixed; left: $spacing; right: $spacing; bottom: $spacing; height: $timelineHeight; }
+#Timeline { position: fixed; left: $spacing; right: $spacing; bottom: $spacing; height: $timelineHeight; z-index: 9; }
 #PrintTimeline { display: none; }
 #SidePanel { position: fixed; top: $headerHeight + $spacing; right: $spacing; width: $sidePanelWidth; bottom: $timelineHeight + 2 * $spacing; }
 #PrintDataSets { display: none; }

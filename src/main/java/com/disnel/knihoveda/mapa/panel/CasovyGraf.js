@@ -213,6 +213,103 @@ class CasovyGraf
 	
 	mouseMove(ev)
 	{
+		// Kurzor
+		{
+			let ctx = this.cont.find('canvas.cursor')[0].getContext("2d");
+			ctx.clearRect(0, 0, this.contW, this.contH);
+			
+			let recordInfo = this.cont.parent().find('.timelineRecordInfo'); 
+			
+			var inChart, relX, relY;
+			[ inChart, relX, relY ] = this.mousePos(ev);
+
+			if ( inChart )
+			{
+				// Vybrany rok
+				let yearSelected = Math.round(this.xToYear(relX));
+				
+				// Nejblizsi rok se zaznamy
+				let yearWithData = Number.MIN_SAFE_INTEGER;
+				this.dataSets.forEach(function (dataSet) {
+					let yearBefore = Number.MIN_SAFE_INTEGER, yearAfter = Number.MAX_SAFE_INTEGER;
+					for ( const year of dataSet.years )
+						if ( year < yearSelected )
+						{
+							yearBefore = year;
+						}
+						else
+						{
+							yearAfter = year;
+							break;
+						}
+					
+					let yearCandidate = yearSelected - yearBefore > yearAfter - yearSelected ? yearAfter : yearBefore; 
+					
+					yearWithData = Math.abs(yearCandidate - yearSelected) < Math.abs(yearWithData - yearSelected) ?
+							yearCandidate : yearWithData;
+				});
+				
+				// Cara a popis pro vybrany rok
+				let xSelected = this.yearToX(yearSelected);
+				
+				ctx.lineWidth = this.conf.cursorLineWidth1;
+				ctx.strokeStyle = this.conf.cursorStyle1;
+				ctx.fillStyle = this.conf.cursorStyle1;
+				ctx.beginPath();
+				ctx.moveTo(xSelected, 0);
+				ctx.lineTo(xSelected, this.contH);
+				ctx.stroke();
+				
+				ctx.fillStyle = this.conf.cursorStyle1;
+				ctx.font = this.conf.timeAxisFont;
+				ctx.textAlign = "right";
+				ctx.fillText(yearSelected.toString() + " ", xSelected, this.conf.timeAxisTextY);
+
+				// Cara pro rok se zaznamy 
+				let xWithData = this.yearToX(yearWithData);
+				
+				ctx.lineWidth = this.conf.cursorLineWidth2;
+				ctx.strokeStyle = this.conf.cursorStyle2;
+				ctx.fillStyle = this.conf.cursorStyle2;
+				ctx.beginPath();
+				ctx.moveTo(xWithData, 0);
+				ctx.lineTo(xWithData, this.contH);
+				ctx.stroke();
+				
+				// Panel pro rok se zaznamy
+				$(recordInfo).show();
+				
+				$(recordInfo).find(".vysledky").empty();
+				$(recordInfo).find(".year").html(yearWithData.toString());
+				this.dataSets.forEach(function(dataset)
+				{
+					if ( dataset.data.has(yearWithData) )
+						$(recordInfo).find(".vysledky")
+							.append(`<div class="vysledek">` +
+									`<span class="dataSetIndicator" style="background-color: ${dataset.color}">&nbsp;</span>` +
+										`&nbsp;`+
+										`<span class="pocet">${dataset.data.get(yearWithData)}</span>`
+									+ `</div>`);
+				}, this);
+
+				let panelXPos = xWithData;
+				if ( panelXPos > 4*this.contW/5)
+				{
+					panelXPos -= $(recordInfo).width();
+					$(recordInfo).addClass("mirrored");
+				}
+				else
+				{
+					$(recordInfo).removeClass("mirrored");
+				}
+				$(recordInfo).css({ left: panelXPos})
+			}
+			else
+			{
+				$(recordInfo).hide();
+			}
+		}
+		
 		// Posun grafu
 		if ( this.mouseDownButton == 1 )
 		{
