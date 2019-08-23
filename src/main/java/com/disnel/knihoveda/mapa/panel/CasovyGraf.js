@@ -1,4 +1,5 @@
 
+/** Main class **/
 class CasovyGraf
 {
 
@@ -19,6 +20,9 @@ class CasovyGraf
 		
 		this.dataSets = new Map();
 		
+		this.selectionYearFrom 	= null;
+		this.selectionYearTo	= null;
+		
 		// Get timeline container
 		this.cont = $('#' + this.contId);
 		
@@ -35,6 +39,7 @@ class CasovyGraf
 		$('#' + this.contId).on('mousemove',	(ev) => { this.mouseMove(ev); });
 		$('#' + this.contId).on('wheel',		(ev) => { this.mouseWheel(ev); });
 		$('#' + this.contId).on('mouseleave',	(ev) => { this.mouseLeave(ev); });
+		$('#' + this.contId).on('dblclick',		(ev) => { this.dblclick(ev); });
 	}
 	
 	
@@ -48,6 +53,18 @@ class CasovyGraf
 	datasetClear(index)
 	{
 		this.dataSets.delete(index);
+	}
+	
+	timeRangeSet(yearFrom, yearTo)
+	{
+		this.selectionYearFrom 	= yearFrom;
+		this.selectionYearTo	= yearTo;
+	}
+	
+	timeRangeClear()
+	{
+		this.selectionYearFrom 	= null;
+		this.selectionYearTo	= null;
 	}
 	
 	
@@ -66,6 +83,8 @@ class CasovyGraf
 		this.dataSets.forEach(function (dataSet) {
 			cgThis.drawDataSet(dataSetsCtx, dataSet);
 		});
+		
+		this.drawSelection();
 	}
 	
 	
@@ -198,6 +217,41 @@ class CasovyGraf
 		this.drawDataSet(this.dataSets.get(index));
 	}
 	
+	drawSelection()
+	{
+		var ctx = this.cont.find('canvas.selection')[0].getContext("2d");
+		ctx.clearRect(0, 0, this.contW, this.contH);
+
+		if ( this.selectionYearFrom === null  || this.selectionYearTo === null )
+			return;
+		
+		let x1 = this.yearToX(this.selectionYearFrom);
+		let x2 = this.yearToX(this.selectionYearTo);
+
+		// Podbarveni
+		ctx.fillStyle = this.conf.selectStyle;
+		ctx.fillRect(x1, 0, x2 - x1, this.contH);
+		
+		// Letopocty na zacatku a konci
+		ctx.fillStyle = this.conf.selectFontStyle;
+		ctx.textAlign = "center";
+		ctx.font = this.conf.selectFont;
+		let k = (x2 > x1) ? 1 : -1;
+		let textY = this.contH / 2;
+		
+		ctx.save();
+		ctx.translate(x1, textY);
+		ctx.rotate(-k*Math.PI/2);
+		ctx.fillText(this.selectionYearFrom.toString(), 0, this.conf.selectTextDist);
+		ctx.restore();
+
+		ctx.save();
+		ctx.translate(x2, textY);
+		ctx.rotate(k*Math.PI/2);
+		ctx.fillText(this.selectionYearTo.toString(), 0, this.conf.selectTextDist);
+		ctx.restore();
+	}
+	
 	
 	/* Interactive controls */
 	
@@ -205,12 +259,42 @@ class CasovyGraf
 	{
 		this.mousePrevPageX 	= ev.pageX;
 		this.mouseDownButton	= ev.originalEvent.button;
+		this.lastMouseDownTime 	= new Date().getTime();
 		
-		console.log("Button: " + this.mouseDownButton);
+		// Vyber casoveho intervalu
+		if ( this.mouseDownButton == 0 )
+		{
+			var inChart, relX;
+			[ inChart, relX ] = this.mousePos(ev);
+			
+			if ( inChart )
+			{
+				this.selectionYearFrom = Math.round(this.xToYear(relX));
+				this.selectionYearTo = null;
+			}			
+		}
 	}
 	
 	mouseUp(ev)
 	{
+		// Vyber casoveho intervalu
+		if ( this.mouseDownButton == 0 && this.selectionYearFrom != null
+				&& new Date().getTime() - this.lastMouseDownTime >= 200 )
+		{
+			let inChart, relX;
+			[ inChart, relX ] = this.mousePos(ev);
+			
+			let year = Math.round(this.xToYear(relX));
+			
+			this.selectionYearTo = Math.max(year, this.selectionYearFrom);
+			this.selectionYearFrom = Math.min(year, this.selectionYearFrom);
+			
+			this.drawSelection();
+			
+			console.log("Selection: " + this.selectionYearFrom + "-" + this.selectionYearTo);
+			this.ajaxCall("S" + this.selectionYearFrom + "-" + this.selectionYearTo);
+		}
+		
 		this.mouseDownButton = -1;
 	}
 	
@@ -313,6 +397,20 @@ class CasovyGraf
 			}
 		}
 		
+		// Vyber casoveho intervalu
+		if ( this.mouseDownButton == 0 && this.selectionYearFrom != null )
+		{
+			let inChart, relX;
+			[ inChart, relX ] = this.mousePos(ev);
+			
+			let year = Math.round(this.xToYear(relX));
+			
+			this.selectionYearTo = Math.max(year, this.selectionYearFrom);
+			this.selectionYearFrom = Math.min(year, this.selectionYearFrom);
+			
+			this.drawSelection();
+		}
+		
 		// Posun grafu
 		if ( this.mouseDownButton == 1 )
 		{
@@ -361,6 +459,17 @@ class CasovyGraf
 			let recordInfo = this.cont.parent().find('.timelineRecordInfo');
 			$(recordInfo).hide();
 		}
+	}
+	
+	dblclick(ev)
+	{
+		this.selectionYearTo = null;
+		this.selectionYearFrom = null;
+		
+		this.drawSelection();
+		
+		console.log("Clear selection");
+		this.ajaxCall("C");
 	}
 	
 	
@@ -418,10 +527,24 @@ class CasovyGraf
 		return [true, relX, relY];
 	}
 
+	
+	/* Ajax */
+	
+	ajaxCall(data)
+	{
+		Wicket.Ajax.post({
+			"u": $('#' + this.contId).data("callback"),
+			"ep": {
+				"data" : data,
+			},
+			"i": "ajaxIndicator",
+		});
+	}
+	
 }
 
 
-
+/** Data class */
 class DataSet
 {
 	constructor(index, color, years, counts)

@@ -3,13 +3,17 @@ package com.disnel.knihoveda.mapa.panel;
 import java.util.List;
 
 import org.apache.solr.client.solrj.response.FacetField.Count;
+import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.event.Broadcast;
 import org.apache.wicket.event.IEvent;
+import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.JavaScriptReferenceHeaderItem;
 import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.resource.PackageResourceReference;
 
 import com.disnel.knihoveda.dao.SolrDAO;
@@ -17,6 +21,7 @@ import com.disnel.knihoveda.mapa.KnihovedaMapaSession;
 import com.disnel.knihoveda.mapa.data.DataSet;
 import com.disnel.knihoveda.mapa.events.AjaxEvent;
 import com.disnel.knihoveda.mapa.events.DataSetChangedEvent;
+import com.disnel.knihoveda.mapa.events.TimeSelectEvent;
 import com.disnel.knihoveda.mapa.events.UserSelectionChangedEvent;
 
 public class CasovyGraf extends Panel
@@ -40,6 +45,8 @@ public class CasovyGraf extends Panel
 		// Kontejner
 		add(timelineCont = new WebMarkupContainer("timelineCont"));
 		timelineCont.setOutputMarkupId(true);
+		
+		timelineCont.add(new CGAjaxBehavior());
 	}
 
 	
@@ -117,6 +124,7 @@ public class CasovyGraf extends Panel
 		sbCounts.append(']');
 		
 		StringBuilder sb = new StringBuilder();
+		
 		sb.append(jsVar());
 		sb.append(".datasetSetData(");
 		sb.append(dataSetIndex);
@@ -127,6 +135,21 @@ public class CasovyGraf extends Panel
 		sb.append(',');
 		sb.append(sbCounts);
 		sb.append(");");
+		
+		if ( dataSet.hasTimeRange() )
+		{
+			sb.append(jsVar());
+			sb.append(".timeRangeSet(");
+			sb.append(dataSet.getYearFrom());
+			sb.append(',');
+			sb.append(dataSet.getYearTo());
+			sb.append(");");
+		}
+		else
+		{
+			sb.append(jsVar());
+			sb.append(".timeRangeClear();");
+		}
 		
 		return sb.toString();
 	}
@@ -158,6 +181,60 @@ public class CasovyGraf extends Panel
 		}
 		
 		return sb.toString();
+	}
+	
+	
+	/* Ajax behavior */
+	
+	private class CGAjaxBehavior extends AbstractDefaultAjaxBehavior
+	{
+		private static final long serialVersionUID = 1L;
+
+		public static final String AJAX_CALLBACK_DATA_NAME = "callback";
+		
+		@Override
+	    protected void onComponentTag(ComponentTag tag) {
+	        tag.put("data-" + AJAX_CALLBACK_DATA_NAME,
+	        		getCallbackUrl().toString());
+		}
+		
+		@Override
+		protected void respond(AjaxRequestTarget target)
+		{
+			RequestCycle requestCycle = RequestCycle.get();
+			String data = requestCycle.getRequest().getRequestParameters()
+					.getParameterValue("data").toString();
+			
+			DataSet currentDataSet = KnihovedaMapaSession.get().currentDataSet(); 
+			
+			// Tady predpokladame vstup ve formatu [SC]yyyy-yyyy
+			switch ( data.charAt(0) )
+			{
+			case 'S':
+				int yearFrom = Integer.parseInt(data.substring(1, 5));
+				int yearTo = Integer.parseInt(data.substring(6, 10));
+				
+				currentDataSet
+					.setYearFrom(yearFrom)
+					.setYearTo(yearTo);
+				
+				break;
+				
+			case 'C':
+				currentDataSet
+					.setYearFrom(null)
+					.setYearTo(null);
+				
+				break;
+				
+			default:
+				return;
+			}
+			
+			send(getPage(), Broadcast.BREADTH,
+					new TimeSelectEvent(target,
+							currentDataSet.getYearFrom(), currentDataSet.getYearTo()));
+		}
 	}
 	
 }
