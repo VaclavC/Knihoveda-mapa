@@ -34,6 +34,7 @@ class CasovyGraf
 		$('body')           .on('mouseup',		(ev) => { this.mouseUp(ev); });
 		$('#' + this.contId).on('mousemove',	(ev) => { this.mouseMove(ev); });
 		$('#' + this.contId).on('wheel',		(ev) => { this.mouseWheel(ev); });
+		$('#' + this.contId).on('mouseleave',	(ev) => { this.mouseLeave(ev); });
 	}
 	
 	
@@ -204,6 +205,8 @@ class CasovyGraf
 	{
 		this.mousePrevPageX 	= ev.pageX;
 		this.mouseDownButton	= ev.originalEvent.button;
+		
+		console.log("Button: " + this.mouseDownButton);
 	}
 	
 	mouseUp(ev)
@@ -345,6 +348,18 @@ class CasovyGraf
 			this.fixViewport();
 			
 			this.draw();
+		}
+	}
+	
+	mouseLeave(ev)
+	{
+		// Kurzor
+		{
+			let ctx = this.cont.find('canvas.cursor')[0].getContext("2d");
+			ctx.clearRect(0, 0, this.contW, this.contH);
+			
+			let recordInfo = this.cont.parent().find('.timelineRecordInfo');
+			$(recordInfo).hide();
 		}
 	}
 	
