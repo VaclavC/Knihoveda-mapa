@@ -103,7 +103,7 @@ function printAll()
 		nodeMap.innerHTML = '';
 		nodeMap.appendChild(canvasMap);
 		
-		html2canvas($("#Timeline .mainCanvas")[0]).then(function(canvasTimeline) {
+		html2canvas($("#Timeline .timelineCont")[0]).then(function(canvasTimeline) {
 			var nodeTimeline = document.getElementById("PrintTimeline");
 			nodeTimeline.innerHTML = '';
 			nodeTimeline.appendChild(canvasTimeline);

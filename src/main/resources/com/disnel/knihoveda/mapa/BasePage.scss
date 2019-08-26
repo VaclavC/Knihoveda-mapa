@@ -349,9 +349,15 @@ $detailLineRB: solid 1px #ddd;
 	}
 }
 
+@page {
+	size: A4;
+	margin: 10mm;
+}
 @media print {
 	
-	body { font-size: 20px; }
+	html, body { 
+		width: 210mm; height: 297mm; position: relative;
+	}
 	
 	#Title, #Map, #Timeline, #SidePanel {
 		display: none;
@@ -361,6 +367,9 @@ $detailLineRB: solid 1px #ddd;
 		position: relative; top: 0; left: 0; right: 0; bottom: 0; width: 100%;
 		border-radius: 0; box-shadow: none;
 		margin-top: 4rem; 		
+		
+		
+		canvas { width: 100% !important; height: auto !important; }
 	}
 
 	#PrintMap, #PrintTimeline, #PrintDataSets {
