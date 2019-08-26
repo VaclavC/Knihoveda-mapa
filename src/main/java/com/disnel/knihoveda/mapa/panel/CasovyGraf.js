@@ -26,12 +26,6 @@ class CasovyGraf
 		// Get timeline container
 		this.cont = $('#' + this.contId);
 		
-		// Set size for all canvases
-		$('#' + this.contId + " canvas").each(function () {
-			this.width = cgThis.cont.width();
-			this.height = cgThis.cont.height();
-		});
-		
 		// Callbacks
 		$(window).resize( () => { cgThis.draw(); });
 		$('#' + this.contId).on('mousedown',	(ev) => { this.mouseDown(ev); });
@@ -75,6 +69,12 @@ class CasovyGraf
 		var cgThis = this;
 		
 		this.initDraw();
+		
+		// Set size for all canvases
+		$('#' + this.contId + " canvas").each(function () {
+			this.width = cgThis.cont.width();
+			this.height = cgThis.cont.height();
+		});
 		
 		this.drawOsy();
 		
