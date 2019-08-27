@@ -284,6 +284,14 @@ $detailLineRB: solid 1px #ddd;
 }
 
 
+#Intro {
+	.modal-dialog {
+		max-width: none; margin: 0;
+		position: absolute; width: auto; right: 1rem; bottom: 1rem;
+	}
+}
+
+
 /* Ajax indicator */
 
 #ajaxIndicator {
