@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.IAjaxIndicatorAware;
 import org.apache.wicket.behavior.AttributeAppender;
@@ -19,9 +18,9 @@ import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.danekja.java.util.function.serializable.SerializableFunction;
@@ -36,6 +35,7 @@ import com.disnel.knihoveda.mapa.panel.Help;
 import com.disnel.knihoveda.mapa.panel.Info;
 import com.disnel.knihoveda.mapa.panel.Mapa;
 import com.disnel.knihoveda.mapa.panel.Search;
+import com.disnel.knihoveda.wicket.AjaxGeneralButton;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.behavior.CssClassNameAppender;
 import de.agilecoders.wicket.webjars.request.resource.WebjarsCssResourceReference;
@@ -49,51 +49,39 @@ public class BasePage extends WebPage implements IAjaxIndicatorAware
 	public BasePage()
 	{
 		/* Side panel select */
-		add(new ListView<TabDef>("sidePanelButton", sidePanelTabs)
+		for ( TabDef tDef : sidePanelTabs )
 		{
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected void populateItem(ListItem<TabDef> item)
+			AjaxGeneralButton button;
+			add(button  = new AjaxGeneralButton(tDef.tabId, Model.of(tDef), "click")
 			{
-				TabDef def = item.getModelObject();
-				
-				item.setOutputMarkupId(true);
-				
-				item.add(new AttributeModifier("title", new StringResourceModel("main." + def.tab.getAssociatedMarkupId() + ".tooltip")));
-				
-				/* Set CSS class for active panel */
-				Integer actPanelIndex = KnihovedaMapaSession.get().sidePanelIndex;
-				if ( actPanelIndex != null && actPanelIndex == item.getIndex()
-						|| actPanelIndex == null && item.getIndex() == 0 )
-					item.add(new CssClassNameAppender("active"));
-				
-				/* Tab */
-				item.add(def.tab);
-				
-				/* Open corresponding panel on click */
-				item.add(new AjaxEventBehavior("click")
-				{
-					private static final long serialVersionUID = 1L;
+				private static final long serialVersionUID = 1L;
 
-					@Override
-					protected void onEvent(AjaxRequestTarget target)
-					{
-						KnihovedaMapaSession.get().sidePanelIndex = item.getIndex();
-						
-						TabDef def = item.getModelObject();
-						
-						sidePanel.replaceWith(sidePanel = def.panelCreator.apply(sidePanel.getId()));
-						sidePanel.setOutputMarkupId(true);
-						
-						target.add(sidePanel);
-						target.appendJavaScript(String.format(
-								"$('#Title .buttons .btn').removeClass('active'); $('#%s').addClass('active');",
-								item.getMarkupId()));
-					}
-				});
-			}
-		});
+				@Override
+				protected void onClick(AjaxRequestTarget target)
+				{
+					TabDef def = (TabDef) getDefaultModelObject();
+					KnihovedaMapaSession.get().sidePanelIndex = sidePanelTabs.indexOf(def);
+					
+					sidePanel.replaceWith(sidePanel = def.panelCreator.apply(sidePanel.getId()));
+					sidePanel.setOutputMarkupId(true);
+					
+					target.add(sidePanel);
+					target.appendJavaScript(String.format(
+							"$('#Title .buttons .btn').removeClass('active'); $('#%s').addClass('active');",
+							getMarkupId()));
+				}
+			});
+			button.setOutputMarkupId(true);
+
+			button.add(new AttributeModifier("title", new StringResourceModel("main." + tDef.tabId + ".tooltip")));
+			
+			/* Set CSS class for active panel */
+			Integer actPanelIndex = KnihovedaMapaSession.get().sidePanelIndex;
+			int thisPanelIndex = sidePanelTabs.indexOf(tDef);
+			if ( actPanelIndex != null && actPanelIndex == thisPanelIndex
+					|| actPanelIndex == null && thisPanelIndex == 0 )
+				button.add(new CssClassNameAppender("active"));
+		}
 		
 		/* Side panel */
 		int actPanelIndex = KnihovedaMapaSession.get().sidePanelIndex != null ? KnihovedaMapaSession.get().sidePanelIndex : 0;
@@ -125,24 +113,21 @@ public class BasePage extends WebPage implements IAjaxIndicatorAware
 	{
 		private static final long serialVersionUID = 1L;
 		
-		public static final String tabID = "tab";
-		
-		public Fragment tab;
+		public String tabId;
 		public SerializableFunction<String, Panel> panelCreator;
 		
-		public TabDef(Fragment tab, SerializableFunction<String, Panel> panelCreator)
+		public TabDef(String tabId, SerializableFunction<String, Panel> panelCreator)
 		{
 			super();
-			this.tab = tab;
+			this.tabId = tabId;
 			this.panelCreator = panelCreator;
 		}
 	}
 	
 	private List<TabDef> sidePanelTabs = Arrays.asList(
-		new TabDef(new Fragment(TabDef.tabID, "tab-search", this), 		Search::new),
-//		new TabDef(new Fragment(TabDef.tabID, "tab-pdfprint", this),	PdfPrint::new),
-		new TabDef(new Fragment(TabDef.tabID, "tab-help", this),		Help::new),
-		new TabDef(new Fragment(TabDef.tabID, "tab-info", this),		Info::new)
+		new TabDef("tab-search",	Search::new),
+		new TabDef("tab-help",		Help::new),
+		new TabDef("tab-info",		Info::new)
 	);
 
 	
