@@ -171,8 +171,9 @@ public class BasePage extends WebPage implements IAjaxIndicatorAware
 					DataSet dataSet = itemDataSet.getModelObject();
 					
 					/* Data set head */
-					itemDataSet.add(new WebMarkupContainer("indicator")
-							.add(new AttributeAppender("style", "border-color: " + dataSet.getColor())));
+					itemDataSet.add(new WebMarkupContainer("indicatorColor")
+							.add(new AttributeAppender("style", String.format("fill:%s;", dataSet.getColor().toString(), ";"))));
+					itemDataSet.add(new Label("indicatorIndex", itemDataSet.getIndex() + 1));
 					
 					itemDataSet.add(new Label("resultsCount", SolrDAO.getCountForDataSet(dataSet)));
 					

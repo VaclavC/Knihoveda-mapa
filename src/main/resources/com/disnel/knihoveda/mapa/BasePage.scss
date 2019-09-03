@@ -332,26 +332,28 @@ $detailLineRB: solid 1px #ddd;
 
 /* Print styles */
 
-//#PrintDataSets {
-//	position: fixed; top: 20%; bottom: 20%; left: 20%; right: 20%;
-//	background: white; display: block;
-//	z-index: 9999999999;
-//}
-
-
 #PrintDataSets {
 	.printResultSetsCont {
+		font-size: 85%;
 		display: flex; position: relative;
 		.resultSet {
 			padding: 1em; width: 20%;
 			.head {
 				display: flex; align-items: center;
-				.indicator { display: inline-block; width: 0; height: 0; border-width: 1em; border-style: solid; margin-right: 1em; }
+				.indicator {
+					display: inline-block; width: 2em; margin-right: 1em; position: relative;
+					text-align: center;
+					svg { position: absolute; left:0; right: 0; width: 100%; height: 100%; z-index: 0; }
+					span {
+						position: relative; display: block; z-index: 2; margin: 0.25em;
+						font-weight: bold; color: white;
+					}
+				}
 			}
 			.field {
 				margin-top: 0.5em;
-				.title { font-style: italic; }
-				.value { text-align: right; }
+				.title::after { content: ": "; }
+				.value:not(:last-child)::after {content: "; "; }
 			}
 		}
 		.resultSet:not(:last-child) { border-right: solid 1px black; }
@@ -383,11 +385,6 @@ $detailLineRB: solid 1px #ddd;
 
 	#PrintMap, #PrintTimeline, #PrintDataSets {
 		display: block;
-	}	
-	
-	
-//	#Title {
-//		.buttons { display: none; }
-//	}
-		
+	}
+			
 }

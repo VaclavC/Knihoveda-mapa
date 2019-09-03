@@ -11,12 +11,15 @@
 <div class="printResultSetsCont">
 	<div class="resultSet" wicket:id="resultSet">
 		<div class="head">
-			<span class="indicator" wicket:id="indicator">&nbsp;</span>
+			<span class="indicator">
+				<svg width="100" height="100"><rect wicket:id="indicatorColor"  width="100" height="100" style="stroke-width: 0;"/></svg>
+				<span wicket:id="indicatorIndex"></span>
+			</span>
 			<span class="count" wicket:id="resultsCount"></span>
 		</div>
 		<div class="field" wicket:id="field">
-			<div class="title" wicket:id="title"></div>
-			<div class="value" wicket:id="value"><span wicket:id="content"></span></div>
+			<span class="title" wicket:id="title"></span>
+			<span class="value" wicket:id="value"><wicket:container wicket:id="content"></wicket:container></span>
 		</div>
 		<div class="field" wicket:id="timeRange">
 			<div class="title"><wicket:message key="field.casoveRozmezi"></wicket:message></div>
