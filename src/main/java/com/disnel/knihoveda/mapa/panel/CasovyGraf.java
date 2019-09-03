@@ -57,7 +57,7 @@ public class CasovyGraf extends Panel
 				new PackageResourceReference(getClass(), "CasovyGraf.js")));
 		
 		response.render(OnDomReadyHeaderItem.forScript(
-				jsInit() + jsSetAllData() + jsDraw()));
+				jsInit() + jsSetAllData() + jsDraw(false)));
 	}
 
 	@Override
@@ -71,13 +71,13 @@ public class CasovyGraf extends Panel
 			if ( ev instanceof DataSetChangedEvent )
 			{
 				target.appendJavaScript(jsSetAllData());
-				target.appendJavaScript(jsDraw());
+				target.appendJavaScript(jsDraw(false));
 			}
 			else
 			{
 				int index = KnihovedaMapaSession.get().currentDataSetIndex();
 				target.appendJavaScript(jsDataSetData(index, KnihovedaMapaSession.get().currentDataSet()));
-				target.appendJavaScript(jsDraw());
+				target.appendJavaScript(jsDraw(ev instanceof TimeSelectEvent));
 			}
 		}
 	}
@@ -96,9 +96,9 @@ public class CasovyGraf extends Panel
 				jsVar(), timelineCont.getMarkupId(), timelineConf.json());
 	}
 	
-	public String jsDraw()
+	public String jsDraw(boolean zoomToTimeRange)
 	{
-		return String.format("%s.draw();", jsVar());
+		return String.format("%s.draw(%b);", jsVar(), zoomToTimeRange);
 	}
 	
 	public String jsDataSetData(int dataSetIndex, DataSet dataSet, List<Count> data)

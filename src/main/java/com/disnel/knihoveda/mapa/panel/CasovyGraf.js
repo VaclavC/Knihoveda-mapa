@@ -64,11 +64,11 @@ class CasovyGraf
 	
 	/* Drawing methods */
 	
-	draw()
+	draw(zoomToTimeRange = false)
 	{
 		var cgThis = this;
 		
-		this.initDraw();
+		this.initDraw(zoomToTimeRange);
 		
 		// Set size for all canvases
 		$('#' + this.contId + " canvas").each(function () {
@@ -88,7 +88,7 @@ class CasovyGraf
 	}
 	
 	
-	initDraw()
+	initDraw(zoomToTimeRange = false)
 	{
 		var cgThis = this;
 		
@@ -102,17 +102,22 @@ class CasovyGraf
 		this.gW = this.conf.yearMax - this.conf.yearMin;
 		this.gH = this.conf.countMax;
 		
-		// Find limits for displayed data
-		this.countMin = 0;
-		this.countMax = Number.MIN_SAFE_INTEGER
+		// Find min and max years in all datasets
 		this.yearMin = Number.MAX_SAFE_INTEGER;
 		this.yearMax = Number.MIN_SAFE_INTEGER;
-		
 		this.dataSets.forEach(function (dataSet) {
 			// Rok - muzeme vzit rovnou z rozmezi datove sady
 			cgThis.yearMin = Math.min(cgThis.yearMin, dataSet.yearMin);
 			cgThis.yearMax = Math.max(cgThis.yearMax, dataSet.yearMax);
-			
+		});
+		
+		if ( zoomToTimeRange )
+			this.zoomToTimeRange();
+		
+		// Find max count
+		this.countMin = 0;
+		this.countMax = Number.MIN_SAFE_INTEGER;
+		this.dataSets.forEach(function (dataSet) {
 			// Pocet vysledku - musime najit aktualne nejvetsi ve vyrezu
 			let actCountMax = Number.MIN_SAFE_INTEGER;
 			let year1 = cgThis.xToYear(0);
@@ -124,6 +129,35 @@ class CasovyGraf
 			
 			cgThis.countMax = Math.max(cgThis.countMax, actCountMax);
 		});
+	}
+	
+	zoomToTimeRange()
+	{
+		if ( this.selectionYearFrom === null  || this.selectionYearTo === null )
+		{
+			this.scaleX = 1.0;
+			this.shiftX = 0.0;
+		}
+		else
+		{
+			let x1 = 0.1 * this.contW + this.conf.paddingLeft;
+			let x2 = 0.9 * this.contW - this.conf.paddingRight;
+			let y1 = this.selectionYearFrom;
+			let y2 = this.selectionYearTo;
+			
+			if ( y2 - y1 < 4 )
+			{
+				y1 -= 2;
+				y2 += 2;
+			}
+			
+			let k = this.graphW / (this.yearMax - this.yearMin);
+			
+			this.scaleX = (x1 - x2) / ( y1 - y2 ) / k;
+			this.shiftX = k * this.scaleX * ( y1 - this.yearMin ) + this.conf.paddingLeft - x1;
+			
+			this.fixViewport();
+		}
 	}
 	
 	drawOsy()
@@ -291,7 +325,6 @@ class CasovyGraf
 			
 			this.drawSelection();
 			
-			console.log("Selection: " + this.selectionYearFrom + "-" + this.selectionYearTo);
 			this.ajaxCall("S" + this.selectionYearFrom + "-" + this.selectionYearTo);
 		}
 		
@@ -468,7 +501,6 @@ class CasovyGraf
 		
 		this.drawSelection();
 		
-		console.log("Clear selection");
 		this.ajaxCall("C");
 	}
 	
