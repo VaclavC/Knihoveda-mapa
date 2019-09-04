@@ -13,7 +13,7 @@ import com.disnel.knihoveda.mapa.data.DataSet.FieldValues;
 public class VuFindDAO
 {
 
-	public static String linkToVuFind(DataSet dataSet, FieldValues... additionalFieldValues)
+	public static String linkToVuFindForDataset(DataSet dataSet, FieldValues... additionalFieldValues)
 	{
 		StringBuilder sb = new StringBuilder(KnihovedaMapaConfig.vuFindURL);
 		
@@ -74,6 +74,31 @@ public class VuFindDAO
 		/* Return */
 		return ret;
 	}
+	
+	public static String linkToVuFindForTimeRange(DataSet dataSet)
+	{
+		StringBuilder sb = new StringBuilder(KnihovedaMapaConfig.vuFindURL);
+		
+		if ( dataSet.getYearFrom() != null || dataSet.getYearTo() != null )
+		{
+			sb.append("?daterange[]=publishDateSingle");
+			
+			if ( dataSet.getYearFrom() != null )
+			{
+				sb.append("&publishDateSinglefrom=");
+				sb.append(dataSet.getYearFrom());
+			}
+			
+			if ( dataSet.getYearTo() != null )
+			{
+				sb.append("&publishDateSingleto=");
+				sb.append(dataSet.getYearTo());
+			}
+		}
+		
+		return sb.toString();
+	}
+	
 	
 	/* Solr -> VuFind langage map (hack) */
 	

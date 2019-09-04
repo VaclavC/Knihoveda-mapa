@@ -85,6 +85,16 @@ class CasovyGraf
 		});
 		
 		this.drawSelection();
+		
+		// Set link to VuFind position
+		if ( this.selectionYearFrom && this.selectionYearTo )
+		{
+			let link = this.cont.parent().find('.vuFindLink'); 
+			let x1 = this.yearToX(this.selectionYearFrom);
+			let x2 = this.yearToX(this.selectionYearTo);
+			let xPos = (x1 + x2) / 2 - $(link).width()/2;
+			$(link).css({ "left": xPos });
+		}
 	}
 	
 	

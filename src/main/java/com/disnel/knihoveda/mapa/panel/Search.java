@@ -128,7 +128,7 @@ public class Search extends Panel
 			@Override
 			public String getObject()
 			{
-				return VuFindDAO.linkToVuFind(KnihovedaMapaSession.get().currentDataSet());
+				return VuFindDAO.linkToVuFindForDataset(KnihovedaMapaSession.get().currentDataSet());
 			}
 		}));
 		

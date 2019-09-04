@@ -3,6 +3,7 @@ package com.disnel.knihoveda.mapa.panel;
 import java.util.List;
 
 import org.apache.solr.client.solrj.response.FacetField.Count;
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.event.Broadcast;
@@ -12,11 +13,14 @@ import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.JavaScriptReferenceHeaderItem;
 import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.resource.PackageResourceReference;
 
 import com.disnel.knihoveda.dao.SolrDAO;
+import com.disnel.knihoveda.dao.VuFindDAO;
 import com.disnel.knihoveda.mapa.KnihovedaMapaSession;
 import com.disnel.knihoveda.mapa.data.DataSet;
 import com.disnel.knihoveda.mapa.events.AjaxEvent;
@@ -30,6 +34,7 @@ public class CasovyGraf extends Panel
 
 	private CasovyGrafOptions timelineConf;
 	private WebMarkupContainer timelineCont;
+	private Component vuFindLink;
 	
 	public CasovyGraf(String id)
 	{
@@ -47,6 +52,27 @@ public class CasovyGraf extends Panel
 		timelineCont.setOutputMarkupId(true);
 		
 		timelineCont.add(new CGAjaxBehavior());
+		
+		// Link do VuFindu
+		add(vuFindLink = new ExternalLink("vuFindLink", new IModel<String>()
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public String getObject()
+			{
+				return VuFindDAO.linkToVuFindForTimeRange(KnihovedaMapaSession.get().currentDataSet());
+			}
+		})
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public boolean isVisible()
+			{
+				return KnihovedaMapaSession.get().currentDataSet().hasTimeRange();
+			}
+		}.setOutputMarkupPlaceholderTag(true));
 	}
 
 	
@@ -79,6 +105,8 @@ public class CasovyGraf extends Panel
 				target.appendJavaScript(jsDataSetData(index, KnihovedaMapaSession.get().currentDataSet()));
 				target.appendJavaScript(jsDraw(ev instanceof TimeSelectEvent));
 			}
+			
+			target.add(vuFindLink);
 		}
 	}
 

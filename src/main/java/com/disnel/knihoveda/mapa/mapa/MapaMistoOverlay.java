@@ -125,7 +125,7 @@ public class MapaMistoOverlay extends Panel
 					@Override
 					public String getObject()
 					{
-						return VuFindDAO.linkToVuFind(KnihovedaMapaSession.get().currentDataSet(),
+						return VuFindDAO.linkToVuFindForDataset(KnihovedaMapaSession.get().currentDataSet(),
 								new DataSet.FieldValues(KnihovedaMapaConfig.FIELD_PLACE_NAME, resultsInPlace.getPlaceName()));
 					}
 				}));
