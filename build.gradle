@@ -5,8 +5,9 @@ apply plugin: "war"
 project.webAppDirName = 'WebContent'
 
 ext.wicket = "8.3.0"
-ext.wicketBootstrap = "3.0.0-M9-SNAPSHOT"
+ext.wicketBootstrap = "3.0.0-M9"
 ext.solr = "5.5.0"
+//ext.solr = "8.5.2"
 
 repositories {
 	jcenter()

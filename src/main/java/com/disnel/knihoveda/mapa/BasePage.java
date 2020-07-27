@@ -62,6 +62,7 @@ public class BasePage extends WebPage implements IAjaxIndicatorAware
 					TabDef def = (TabDef) getDefaultModelObject();
 					KnihovedaMapaSession.get().sidePanelIndex = sidePanelTabs.indexOf(def);
 					
+					// TODO: Rewrite it to use replace instead of replaceWith
 					sidePanel.replaceWith(sidePanel = def.panelCreator.apply(sidePanel.getId()));
 					sidePanel.setOutputMarkupId(true);
 					

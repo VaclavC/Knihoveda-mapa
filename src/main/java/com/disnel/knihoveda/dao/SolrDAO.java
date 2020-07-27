@@ -232,7 +232,7 @@ public class SolrDAO
 		query.setRows(0);
 		
 		QueryResponse response = SolrDAO.getResponse(query);
-		FacetField publishPlaceFF = response.getFacetField("publishDate");
+		FacetField publishPlaceFF = response.getFacetField(KnihovedaMapaConfig.FIELD_TIME);
 		
 		return publishPlaceFF.getValues();
 	}
@@ -418,7 +418,7 @@ public class SolrDAO
 		query.setRows(0);
 		
 		QueryResponse response = SolrDAO.getResponse(query);
-		FacetField publishPlaceFF = response.getFacetField("publishDate");
+		FacetField publishPlaceFF = response.getFacetField(KnihovedaMapaConfig.FIELD_TIME);
 		
 		List<Count> listCount = publishPlaceFF.getValues();
 		return Math.toIntExact(listCount.get(0).getCount());
