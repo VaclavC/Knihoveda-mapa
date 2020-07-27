@@ -66,6 +66,10 @@ public class VuFindDAO
 				sb.append(dataSet.getYearTo());
 			}
 		}
+
+		/* Filter by geo */
+		sb.append(sep); sep = '&';
+		sb.append("filter[]=geo:*");
 		
 		/* Replace spaces with %20 */
 		String ret = sb.toString();
