@@ -73,7 +73,7 @@ h1 { font-size: 125%; }
 
 /* Page parts */
 
-#Title { position: fixed; top: 0; left: 0; right: 0; height: $headerHeight; }
+#Title { position: fixed; top: 0; left: 0; right: 0; height: $headerHeight; z-index: 1; }
 #Map { position: fixed; top: $headerHeight; left: 0; right: 0; bottom: 0; }
 #PrintMap { display: none; }
 #Timeline { position: fixed; left: $spacing; right: $spacing; bottom: $spacing; height: $timelineHeight; z-index: 9; }
