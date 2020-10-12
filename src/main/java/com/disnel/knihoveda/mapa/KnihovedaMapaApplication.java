@@ -2,6 +2,7 @@ package com.disnel.knihoveda.mapa;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.Session;
@@ -88,5 +89,10 @@ public class KnihovedaMapaApplication extends WebApplication
 	{
 		return new KnihovedaMapaSession(request);
 	}
+	
+	
+	public static List<Locale> availableLocales = Arrays.asList(
+			new Locale("cs"),
+			new Locale("en")); 	
 	
 }

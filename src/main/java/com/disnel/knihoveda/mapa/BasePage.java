@@ -4,13 +4,17 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Session;
+import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.IAjaxIndicatorAware;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.event.IEvent;
+import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -19,6 +23,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
@@ -99,6 +104,54 @@ public class BasePage extends WebPage implements IAjaxIndicatorAware
 		
 		/* Timeline */
 		add(new CasovyGraf("timeline"));
+		
+		/* Language switch */
+		WebMarkupContainer langSwitch;
+		add(langSwitch = new WebMarkupContainer("langSwitch"));
+		langSwitch.setOutputMarkupId(true);
+		
+		langSwitch.add(new ListView<Locale>("lang", KnihovedaMapaApplication.availableLocales)
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected ListItem<Locale> newItem(final int index, IModel<Locale> itemModel)
+			{
+				return new ListItem<Locale>(index, itemModel)
+				{
+					private static final long serialVersionUID = 1L;
+					
+					@Override
+					protected void onComponentTag(ComponentTag tag)
+					{
+						super.onComponentTag(tag);
+						
+						if ( itemModel.getObject().equals(Session.get().getLocale()) )
+							tag.append("class", "active", " ");
+					}
+				};
+			}
+			
+			@Override
+			protected void populateItem(ListItem<Locale> item)
+			{
+				item.add(new Label("locale", item.getModel()));
+				
+				if ( ! item.getModelObject().equals(Session.get().getLocale()) )
+					item.add(new AjaxEventBehavior("click")
+					{
+						private static final long serialVersionUID = 1L;
+
+						@Override
+						protected void onEvent(AjaxRequestTarget target)
+						{
+							Session.get().setLocale(item.getModelObject());
+							
+							setResponsePage(BasePage.class);
+						}
+					});
+			}
+		});
 	}
 
 	@Override
