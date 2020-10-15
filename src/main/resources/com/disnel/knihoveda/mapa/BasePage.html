@@ -48,9 +48,33 @@
 <div id="PrintTimeline"></div>
 
 <div id="SidePanel">
+	<div id="hideControlShadow">&nbsp;</div>
 	<div class="content main" wicket:id="sidePanelContent"></div>
+	<div id="hideControl"><a href="#" onClick="return sidePanelToggle();"><i class="fas fa-angle-right"></i></a></div>
 </div>
 <div id="PrintDataSets" wicket:id="resultsForPrint"></div>
+<script>
+var sidePanelWTemp = 0;
+function sidePanelToggle()
+{
+	if ( sidePanelWTemp == 0 ) {
+		sidePanelWTemp = $('#SidePanel').width();
+		$('#SidePanel').width(0);
+		$('#SidePanel .content.main').hide();
+		$('#hideControlShadow').addClass('panelHidden');
+		$('#hideControl').addClass('panelHidden');
+		$('#hideControl i').attr('class', 'fas fa-angle-left')
+	} else {
+		$('#SidePanel').width(sidePanelWTemp);
+		sidePanelWTemp = 0;
+		$('#SidePanel .content.main').show();
+		$('#hideControl').removeClass('panelHidden');
+		$('#hideControl').removeClass('panelHidden');
+		$('#hideControl i').attr('class', 'fas fa-angle-right')
+	}
+	return false;
+}
+</script>
 
 <div id="ajaxIndicator"><div>
 	<div class="gears">

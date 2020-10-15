@@ -121,10 +121,11 @@ h1 { font-size: 125%; }
 	
 #SidePanel {
 	display: flex; flex-direction: column;
-	background: white; border-radius: $borderRadius; box-shadow: $shadow1;
+	background: white; box-shadow: $shadow1; border-radius: $borderRadius;
 	
 	.content.main {
-		flex-grow: 1; height: 100%;
+		flex-grow: 1; height: 100%; z-index: 2;
+		background: white; border-radius: $borderRadius;  
 	}
 	
 	.head {
@@ -173,6 +174,14 @@ h1 { font-size: 125%; }
 		text-align: left;
 		a { text-decoration: underline; }
 	}
+	
+	#hideControlShadow, #hideControl {
+		position: absolute; left: -1.6rem; bottom: 0; padding: 0.4rem;
+		font-size: 200%; border-radius: $borderRadius;
+	}
+	#hideControlShadow { box-shadow: $shadow1; z-index: 1; width: 2.1rem; }
+	#hideControl { background: white; z-index: 3; width: 2.4rem; }
+	#hideControl.panelHidden, #hideControlShadow.panelHidden { width: 1.8rem; left: -1.8rem; }
 }
 
 
